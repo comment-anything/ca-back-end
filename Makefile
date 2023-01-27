@@ -15,15 +15,15 @@ start_postgres:
 stop_postgres:
 	docker stop ${DB_CONTAINER_NAME}
 
+remove_postgres:
+	docker stop ${DB_CONTAINER_NAME}
+	docker rm ${DB_CONTAINER_NAME}
+
 create_db:
 	docker exec -it ${DB_CONTAINER_NAME} createdb --username=${DB_USER} --owner=${DB_USER} ${DB_DATABASE_NAME}
 
 create_test_db:
 	docker exec -it ${DB_CONTAINER_NAME} createdb --username=${DB_USER} --owner=${DB_USER} ${TEST_DB_DATABASE_NAME}
-
-remove_postgres:
-	docker stop ${DB_CONTAINER_NAME}
-	docker rm ${DB_CONTAINER_NAME}
 
 migrate_up:
 	migrate -path database/migration -database "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_HOST_PORT}/${DB_DATABASE_NAME}?sslmode=disable" -verbose up
