@@ -6,7 +6,6 @@ Config holds values parsed from the .env file. It is used across the application
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -86,7 +85,7 @@ func (c *config) loadDBEnv() error {
 	testingMode := os.Getenv("CA_TESTING_MODE")
 	prodDBname := os.Getenv("DB_DATABASE_NAME")
 	testDBname := os.Getenv("TEST_DB_DATABASE_NAME")
-	if testingMode == "" || testingMode == "false" || testingMode == "0" {
+	if testingMode == "false" || testingMode == "0" {
 		if prodDBname == "" {
 			return getEnvError("DB_DATABASE_NAME")
 		} else {
@@ -133,8 +132,7 @@ func (c *config) loadServerEnv() error {
 	}
 	cookie_name := os.Getenv("JWT_COOKIE_NAME")
 	if cookie_name == "" {
-		log.Println("No JWT_COOKIE_NAME in .env. Defaulting to 'canywauth'")
-		Vals.Server.JWTCookieName = "canywauth"
+		return getEnvError("JWT_COOKIE_NAME")
 	} else {
 		Vals.Server.JWTCookieName = cookie_name
 	}
