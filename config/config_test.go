@@ -8,10 +8,8 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var testEnvFile = "test.env"
-
 func TestLoadDbEnv(t *testing.T) {
-	createEnvFile()
+	envFilePopulate()
 	godotenv.Load(testEnvFile)
 	Vals.loadDBEnv()
 	if Vals.DB.DBname != "comm-anything-tests" {
@@ -32,14 +30,26 @@ func TestLoadDbEnv(t *testing.T) {
 	deleteEnvFile()
 }
 
-func TestLoad(t *testing.T) {
-	createEnvFile()
-	Vals.Load(testEnvFile)
+func TestConnectString(t *testing.T) {
+	envFilePopulate()
+	godotenv.Load(testEnvFile)
+	Vals.loadDBEnv()
+	test_str := Vals.DB.ConnectString()
+	if test_str != "host=localhost port=5433 user=root password=dbsuperuser991 dbname=comm-anything-tests sslmode=disable" {
+		t.Errorf("The connection string was not formatted as expected.")
+	}
 	deleteEnvFile()
 }
 
+func TestLoad(t *testing.T) {
+	envFilePopulate()
+	defer deleteEnvFile()
+	Vals.Load(testEnvFile)
+}
+
 func TestLoadServerEnv(t *testing.T) {
-	createEnvFile()
+	envFilePopulate()
+	defer deleteEnvFile()
 	godotenv.Load(testEnvFile)
 	Vals.loadServerEnv()
 	if Vals.Server.DoesLogAll != true {
@@ -54,30 +64,36 @@ func TestLoadServerEnv(t *testing.T) {
 	if Vals.Server.Port != ":3000" {
 		t.Errorf("SERVER_PORT is not correct: %v", Vals.Server.Port)
 	}
-	deleteEnvFile()
 }
 
-func createEnvFile() {
-	f, e := os.Create(testEnvFile)
-	if e != nil {
-		panic(e)
-	}
+// ------------- Test Assistance Functions ---------------------
+
+var testEnvFile = "test.env"
+
+func envFileWrite(key string, value string) {
+	f, _ := os.OpenFile(testEnvFile, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 	defer f.Close()
-	fmt.Fprintln(f, "CA_TESTING_MODE=true")
-	fmt.Fprintln(f, "SERVER_LOG_ALL=true")
-	fmt.Fprintln(f, "DB_IMAGE=postgres:14.5-alpine")
-	fmt.Fprintln(f, "DB_CONTAINER_NAME=923postgres")
-	fmt.Fprintln(f, "DB_CONTAINER_PORT=5432")
-	fmt.Fprintln(f, "DB_HOST=localhost")
-	fmt.Fprintln(f, "DB_HOST_PORT=5433")
-	fmt.Fprintln(f, "DB_USER=root")
-	fmt.Fprintln(f, "DB_PASSWORD=dbsuperuser991")
-	fmt.Fprintln(f, "SERVER_PORT = 3000  ")
-	fmt.Fprintln(f, "JWT_KEY=key1111111")
-	fmt.Fprintln(f, "JWT_COOKIE_NAME= canywauth")
-	fmt.Fprintln(f, "DB_DATABASE_NAME=comm-anything")
-	fmt.Fprintln(f, "TEST_DB_DATABASE_NAME = comm-anything-tests")
+	fmt.Fprintln(f, fmt.Sprintf("%s=%s", key, value))
 }
+
+func envFilePopulate() {
+	envFileWrite("CA_TESTING_MODE", "true")
+	envFileWrite("CA_TESTING_MODE", "true")
+	envFileWrite("SERVER_LOG_ALL", "true")
+	envFileWrite("DB_IMAGE", "postgres:14.5-alpine")
+	envFileWrite("DB_CONTAINER_NAME", "923postgres")
+	envFileWrite("DB_CONTAINER_PORT", "5432")
+	envFileWrite("DB_HOST", "localhost")
+	envFileWrite("DB_HOST_PORT", "5433")
+	envFileWrite("DB_USER", "root")
+	envFileWrite("DB_PASSWORD", "dbsuperuser991")
+	envFileWrite("SERVER_PORT", "3000")
+	envFileWrite("JWT_KEY", "key1111111")
+	envFileWrite("JWT_COOKIE_NAME", "canywauth")
+	envFileWrite("DB_DATABASE_NAME", "comm-anything")
+	envFileWrite("TEST_DB_DATABASE_NAME", "comm-anything-tests")
+}
+
 func deleteEnvFile() {
 	os.Remove(testEnvFile)
 }
