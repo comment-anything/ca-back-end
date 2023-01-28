@@ -1,9 +1,8 @@
 package config
 
 /*
-Config holds values parsed from the .env file in project root. It is used across the application to configure connections.
+Config holds values parsed from the .env file. It is used across the application to configure connections. It is accessed through the global singleton config.Vals.
 */
-
 import (
 	"fmt"
 	"log"
@@ -14,18 +13,27 @@ import (
 
 // DbCredentials are stored in the global Config singleton as Config.DB. It holds the connection settings for accessing the Postgres database.
 type DbCredentials struct {
-	Host     string
-	Port     string
-	User     string
+	/* The address the database lives at, e.g., localhost or a url. */
+	Host string
+	/* The name of the database. */
+	DBname string
+	/* The port the database is served on. */
+	Port string
+	/* The username credential. */
+	User string
+	/* The password credential. */
 	Password string
-	DBname   string
 }
 
 // ServerConfig is stored in the global Config singleton as Config.server. It holds the connection settings for the server.
 type ServerConfig struct {
-	Port          string
-	DoesLogAll    bool
-	JWTKey        string
+	/* The port to serve the server on. */
+	Port string
+	/* Whether the server will log all incoming requests. */
+	DoesLogAll bool
+	/* A key to encrypt access tokens (JWT standard) */
+	JWTKey string
+	/* The cookie name to store the access tokens as on user devices. */
 	JWTCookieName string
 }
 
@@ -47,7 +55,7 @@ func (c *config) Load(path string) {
 	Vals.loadServerEnv()
 }
 
-// loadDBEnv loads environment variables into the configuration struct. If it fails to load a variable, it terminates the program process. Correct environment variables are required for the server to run.
+// loadDBEnv loads database related environment variables into the configuration struct. If it fails to load a variable, it terminates the program process. Correct environment variables are required for the program to run.
 func (c *config) loadDBEnv() {
 	c.DB.Host = os.Getenv("DB_HOST")
 	if c.DB.Host == "" {
@@ -65,16 +73,23 @@ func (c *config) loadDBEnv() {
 	if c.DB.Password == "" {
 		badEnvTerminate("DB_PASSWORD")
 	}
-	if os.Getenv("CA_TESTING_MODE") != "true" {
-		c.DB.DBname = os.Getenv("DB_DATABASE_NAME")
-		if c.DB.DBname == "" {
+	testingMode := os.Getenv("CA_TESTING_MODE")
+	prodDBname := os.Getenv("DB_DATABASE_NAME")
+	testDBname := os.Getenv("TEST_DB_DATABASE_NAME")
+	if testingMode == "" || testingMode == "false" || testingMode == "0" {
+		if prodDBname == "" {
 			badEnvTerminate("DB_DATABASE_NAME")
+		} else {
+			c.DB.DBname = prodDBname
+		}
+	} else if testingMode == "true" || testingMode == "1" {
+		if testDBname == "" {
+			badEnvTerminate("TEST_DB_DATABASE_NAME")
+		} else {
+			c.DB.DBname = testDBname
 		}
 	} else {
-		c.DB.DBname = os.Getenv("TEST_DB_DATABASE_NAME")
-		if c.DB.DBname == "" {
-			badEnvTerminate("TEST_DB_DATABASE_NAME")
-		}
+		badEnvTerminate("CA_TESTING_MODE")
 	}
 }
 
@@ -83,6 +98,7 @@ func (d *DbCredentials) ConnectString() string {
 	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", d.Host, d.Port, d.User, d.Password, d.DBname)
 }
 
+// loadServerEnv loads server related environment variables into the configuration struct. If it fails to load a variable, it terminates the program process. Correct environment variables are required for the program to run.
 func (c *config) loadServerEnv() {
 	port := os.Getenv("SERVER_PORT")
 	if port == "" {
@@ -113,6 +129,7 @@ func (c *config) loadServerEnv() {
 	}
 }
 
-func badEnvTerminate(name string) {
-	log.Fatalf(" Error parsing environment variable %v. Terminating.\n", name)
+// badEnvTerminate terminates the program and describes which environment variable caused the problem.
+func badEnvTerminate(problematic_env_variable_name string) {
+	log.Fatalf("Error parsing environment variable %v. Terminating.\n", problematic_env_variable_name)
 }

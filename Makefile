@@ -51,4 +51,15 @@ sqlc:
 	docker run --rm -v "$(CURDIR):/src" -w /src kjconroy/sqlc generate
 
 test-server:
-	go test ./server -v
+	go test ./server -v -cover
+
+test-config:
+	go test ./config -v -cover
+
+test-verbose:
+	go test ./... -v -cover
+
+test-detailed-report:
+	go test ./... -coverprofile=tests_rep.tmp
+	go tool cover -html tests_rep.tmp
+
