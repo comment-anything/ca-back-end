@@ -117,6 +117,19 @@ func TestLoad(t *testing.T) {
 
 }
 
+func TestReset(t *testing.T) {
+	envFilePopulate()
+	_ = Vals.Load(testEnvFile)
+	Vals.Reset()
+	actual := os.Getenv("DB_NAME")
+	if actual != "" {
+		t.Errorf("Expected env vars to be reset, but got %v", actual)
+	}
+	if Vals.IsLoaded != false {
+		t.Errorf("Expected 'isLoaded' to be set to false in config after reset")
+	}
+}
+
 func TestLoadServerEnv(t *testing.T) {
 	setAllEnv()
 	defer os.Clearenv()

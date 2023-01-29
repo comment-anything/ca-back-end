@@ -37,6 +37,12 @@ migrate_down:
 migrate_test_down:
 	migrate -path database/migration -database "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_HOST_PORT}/${TEST_DB_DATABASE_NAME}?sslmode=disable" -verbose down
 
+drop_db: 
+	docker exec -it ${DB_CONTAINER_NAME} dropdb ${DB_DATABASE_NAME}
+
+drop_test_db:
+	docker exec -it ${DB_CONTAINER_NAME} dropdb ${TEST_DB_DATABASE_NAME}
+
 psql:
 	docker exec -it ${DB_CONTAINER_NAME} psql -U ${DB_USER} ${DB_DATABASE_NAME}
 
@@ -45,7 +51,6 @@ psql_testdb:
 
 container_shell:
 	docker exec -it ${DB_CONTAINER_NAME} /bin/sh
-
 
 sqlc:
 	docker run --rm -v "$(CURDIR):/src" -w /src kjconroy/sqlc generate

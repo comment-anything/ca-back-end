@@ -139,6 +139,14 @@ func (c *config) loadServerEnv() error {
 	return nil
 }
 
+// Reset resets all environment variables and sets isLoaded to false. Used in testing when multiple functions may need to initialize the server in arbitrary order.
+func (c *config) Reset() {
+	os.Clearenv()
+	c.DB = DbCredentials{}
+	c.Server = ServerConfig{}
+	c.IsLoaded = false
+}
+
 // Gets an error object describing the environmnet variable that was missing or malformed.
 func getEnvError(problematic_env_variable_name string) error {
 	return errors.New(fmt.Sprintf("Error parsing environment variable %v", problematic_env_variable_name))

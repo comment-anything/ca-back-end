@@ -22,6 +22,7 @@ func TestNew(t *testing.T) {
 	if error != nil {
 		t.Errorf("Error with the server: %s", error)
 	}
+	config.Vals.Reset()
 }
 
 func TestSetupRouter(t *testing.T) {
@@ -39,6 +40,7 @@ func shutdown(s *Server, secs float32) {
 
 func TestStart(t *testing.T) {
 	config.Vals.Load("../.env")
+	defer config.Vals.Reset()
 	s, _ := New()
 	go shutdown(s, 0.25)
 	s.Start()
@@ -46,15 +48,9 @@ func TestStart(t *testing.T) {
 
 func TestStop(t *testing.T) {
 	config.Vals.Load("../.env")
+	defer config.Vals.Reset()
 	s, _ := New()
 	go s.Start()
 	time.Sleep(2)
 	s.Stop()
-}
-
-func BenchMarkNew(b *testing.B) {
-	config.Vals.Load("../.env")
-	server, error := New()
-	_ = server
-	_ = error
 }

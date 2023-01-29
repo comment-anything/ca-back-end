@@ -31,6 +31,7 @@ func New() (*Server, error) {
 // setupRouter configures the API endpoints and middleware.
 func (s *Server) setupRouter() {
 	r := mux.NewRouter()
+	r.HandleFunc("/register", s.postRegister).Methods(http.MethodPost)
 	s.httpServer.Handler = r
 }
 
