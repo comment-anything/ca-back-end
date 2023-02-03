@@ -2,8 +2,8 @@ package communication
 
 // ServerResponse wraps server-client communication entities, providing information to the client as to what type of entity data is.
 type ServerResponse struct {
-	name string
-	data []byte
+	Name string
+	Data interface{}
 }
 
 // LoginResponse is sent to the client when they successfully log in.

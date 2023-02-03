@@ -45,9 +45,9 @@ func New() (*Server, error) {
 func (s *Server) setupRouter() {
 	r := mux.NewRouter()
 	// setup the middleware
-	r.Use(s.ReadsAuth, s.EnsureController)
+	r.Use(s.ReadsAuth, s.EnsureController, CORS)
 	// register api endpoint
-	r.HandleFunc("/register", responder(s.postRegister))
+	r.HandleFunc("/register", responder(s.postRegister)).Methods(http.MethodPost)
 	s.router = r
 }
 
@@ -73,7 +73,7 @@ func responder(last func(w http.ResponseWriter, r *http.Request)) http.HandlerFu
 		last(w, r)
 		cont := r.Context().Value(CtxController).(UserControllerInterface)
 		if cont == nil { // if the code is structured correctly, this should never occur, as a guest controller should always be attached to a new request
-			w.Write(communication.MessageBytes(false, "Failed to find controller for response!!!"))
+			w.Write(communication.GetErrMsg(false, "Failed to find controller for response!!!"))
 		} else {
 			cont.Respond(w, r)
 		}

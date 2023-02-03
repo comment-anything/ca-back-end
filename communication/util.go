@@ -2,19 +2,23 @@ package communication
 
 import "encoding/json"
 
-// MessageBytes is a convenience method for getting a message wrapped as a server response for pushing to controller responses
-func MessageBytes(success bool, text string) []byte {
-	msg := &Message{}
-	msg.Success = success
-	msg.Text = text
-	bytes, _ := json.Marshal(msg)
-	return Wrap("Message", bytes)
+// GetMessage is a convenience method for getting a message wrapped as a server response for pushing to controller responses
+func GetMessage(success bool, text string) ServerResponse {
+	return Wrap("Message", text)
 }
 
-func Wrap(name string, data []byte) []byte {
-	rsp := &ServerResponse{}
-	rsp.name = name
-	rsp.data = data
-	bytes, _ := json.Marshal(rsp)
-	return bytes
+// Wrap is a convenience method for wrapping some data as a server response
+func Wrap(name string, data interface{}) ServerResponse {
+	rsp := ServerResponse{}
+	rsp.Name = name
+	rsp.Data = data
+	return rsp
+}
+
+func GetErrMsg(success bool, text string) []byte {
+	msg := Message{}
+	msg.Success = success
+	msg.Text = text
+	b, _ := json.Marshal(msg)
+	return b
 }

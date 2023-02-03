@@ -31,7 +31,7 @@ func (c *GuestController) HandleCommandRegister(comm *communication.Register, se
 
 	canRegister, failMsg := validateRegisterRequest(comm, server)
 	if !canRegister {
-		c.nextResponse = append(c.nextResponse, communication.MessageBytes(false, failMsg))
+		c.nextResponse = append(c.nextResponse, communication.GetMessage(false, failMsg))
 	} else {
 		var args generated.CreateUserParams
 		args.Username = comm.Username
@@ -39,15 +39,15 @@ func (c *GuestController) HandleCommandRegister(comm *communication.Register, se
 		args.Password = comm.Password
 		user, err := server.DB.Queries.CreateUser(context.Background(), args)
 		if err != nil {
-			c.nextResponse = append(c.nextResponse, communication.MessageBytes(false, "Failed to register."))
+			c.nextResponse = append(c.nextResponse, communication.GetMessage(false, "Failed to register."))
 		} else {
 			c.manager.TransferGuest(c, &user)
-			c.nextResponse = append(c.nextResponse, communication.MessageBytes(true, "You registered succesfully."))
+			c.nextResponse = append(c.nextResponse, communication.GetMessage(true, "You registered succesfully."))
 		}
 	}
 }
 
 // HandleCommandRegister on a UserController will fail.
 func (c *UserControllerBase) HandleCommandRegister(comm *communication.Register, server *Server) {
-	c.nextResponse = append(c.nextResponse, communication.MessageBytes(false, "You are already logged in."))
+	c.nextResponse = append(c.nextResponse, communication.GetMessage(false, "You are already logged in."))
 }

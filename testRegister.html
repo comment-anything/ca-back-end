@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <form action="/register" method="post" id="regform">
+        <button id="register" type="submit">Register</button>
+    </form>
+    <h3>Cookie</h3>
+    <div id="cookie"></div>
+    <h3>Last Response</h3>
+    <div id="lastResponse" style="width:200px;"></div>
+
+<script>
+    let form = document.getElementById("regform")
+    let lresponse = document.getElementById("lastResponse")
+    form.addEventListener("submit", (ev)=>{
+        event.preventDefault()
+
+        const fd = new FormData(form)
+        
+        async function sendRegForm() {
+
+            const response = await fetch("http://localhost:3000/register", {
+                method: "POST",
+                mode: "cors"
+            })
+            console.log(response)
+            return response.text()
+        }
+        sendRegForm().then((data)=>{
+            lresponse.innerHTML = data
+            p = JSON.parse(data)
+        })
+    })
+    console.log('l');
+</script>
+</body>
+</html>

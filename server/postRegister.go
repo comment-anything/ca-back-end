@@ -11,18 +11,20 @@ import (
 func (s *Server) postRegister(w http.ResponseWriter, r *http.Request) {
 	cont := r.Context().Value(CtxController).(UserControllerInterface)
 	if cont != nil {
+		cont.AddMessage(true, "TEST MESG")
 		//cont.HandleCommandRegister()
-	}
-	resp := &communication.LoginResponse{}
-	resp.LoggedInAs.Username = "testme"
-	resp.LoggedInAs.UserId = 0
-	resp.LoggedInAs.IsAdmin = false
-	resp.LoggedInAs.CreatedOn = 0
-	resp.LoggedInAs.IsDomainModerator = false
-	resp.LoggedInAs.IsGlobalModerator = false
-	resp.LoggedInAs.ProfileBlurb = "blablablah"
+	} else {
+		resp := &communication.LoginResponse{}
+		resp.LoggedInAs.Username = "testme"
+		resp.LoggedInAs.UserId = 0
+		resp.LoggedInAs.IsAdmin = false
+		resp.LoggedInAs.CreatedOn = 0
+		resp.LoggedInAs.IsDomainModerator = false
+		resp.LoggedInAs.IsGlobalModerator = false
+		resp.LoggedInAs.ProfileBlurb = "blablablah"
 
-	respString, _ := json.Marshal(resp)
-	w.Write(respString)
+		respString, _ := json.Marshal(resp)
+		w.Write(respString)
+	}
 
 }

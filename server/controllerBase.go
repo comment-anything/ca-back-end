@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/comment-anything/ca-back-end/communication"
 	"github.com/comment-anything/ca-back-end/database/generated"
 )
 
@@ -16,8 +17,14 @@ func (c *UserControllerBase) GetUser() *generated.User {
 func (c *UserControllerBase) Respond(w http.ResponseWriter, r *http.Request) {
 	outp, err := json.Marshal(c.nextResponse)
 	if err != nil {
-		w.Write([]byte("ERROR WRITING RESPONSE"))
+		w.Write(communication.GetErrMsg(false, "ERROR WRITING RESPONSE"))
+	} else if outp == nil {
+		w.Write(communication.GetErrMsg(true, ""))
 	} else {
 		w.Write(outp)
 	}
+}
+
+func (c *UserControllerBase) AddMessage(success bool, text string) {
+	c.nextResponse = append(c.nextResponse, communication.GetMessage(success, text))
 }

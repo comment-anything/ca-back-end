@@ -17,6 +17,7 @@ type UserControllerInterface interface {
 	GetUser() *generated.User
 	Respond(w http.ResponseWriter, r *http.Request)
 	SetCookie(w http.ResponseWriter, r *http.Request)
+	AddMessage(success bool, text string)
 }
 
 // UserControllerBase provides data members for UserControllers. It does not implement UserControllerInterface fully. Other controllers are defined by extending this Base class and implementing the rest of the interface. Controllers also retain an array of messages that need to be sent to the client, which will be dispatched the next time a request from that user is received
@@ -24,7 +25,7 @@ type UserControllerBase struct {
 	User             *generated.User
 	manager          *UserManager
 	lastTokenRefresh time.Time
-	nextResponse     [][]byte
+	nextResponse     []interface{}
 }
 
 // MemberControllerBase provides data members for MemberControllers. It extends UserControllerBase, adding some fields necessary for validation and password reset tracking.
