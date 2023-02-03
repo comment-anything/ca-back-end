@@ -1,0 +1,12 @@
+
+---- Register pipeline
+
+- create sub functions for encrypting and decrypting user password
+- create function for validating email address and username
+- run these functions in the handle register method of a guest controller, push appropriate message errors
+- tests for communication methods
+- tests for controller methods and sub functions
+
+---- auth 
+
+- gettoken function in server/auth ; we should make the expiration time changable in the .env file perhaps

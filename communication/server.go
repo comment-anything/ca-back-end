@@ -1,5 +1,11 @@
 package communication
 
+// ServerResponse wraps server-client communication entities, providing information to the client as to what type of entity data is.
+type ServerResponse struct {
+	name string
+	data []byte
+}
+
 // LoginResponse is sent to the client when they successfully log in.
 type LoginResponse struct {
 	LoggedInAs UserProfile
@@ -15,4 +21,10 @@ type UserProfile struct {
 	IsDomainModerator bool
 	IsGlobalModerator bool
 	ProfileBlurb      string
+}
+
+// Message is a general communication entity used to provide feedback to a client that some action has completed (or not completed) on requests where the client has not asked for any particular data.
+type Message struct {
+	Success bool
+	Text    string
 }

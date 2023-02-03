@@ -9,7 +9,10 @@ import (
 
 // postRegister is the endpoint for when a user attempts to register a new account. It expects a JSON object of type 'Register' and will ultimately return an object of type 'LoginResponse'.
 func (s *Server) postRegister(w http.ResponseWriter, r *http.Request) {
-
+	cont := r.Context().Value(CtxController).(UserControllerInterface)
+	if cont != nil {
+		//cont.HandleCommandRegister()
+	}
 	resp := &communication.LoginResponse{}
 	resp.LoggedInAs.Username = "testme"
 	resp.LoggedInAs.UserId = 0

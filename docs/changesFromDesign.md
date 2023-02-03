@@ -1,6 +1,13 @@
 
 
 
+# Package communication
+
+2/3/2023
+
+- added methods for, e.g., wrapping responses
+
+
 ## DB Structs
 
 2/2/2023
