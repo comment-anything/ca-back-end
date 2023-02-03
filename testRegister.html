@@ -3,7 +3,22 @@
 
 <body>
     <form action="/register" method="post" id="regform">
-        <button id="register" type="submit">Register</button>
+        <label>username</label>
+        <input type="text" id="username"/>
+        <br />
+        <label>password</label>
+        <input type="password" id ="password"/>
+        <br />
+        <label>retype password</label>
+        <input type="password" id="rtpassword"/>
+        <br />
+        <label>email</label>
+        <input type="email" id="email"/>
+        <br />
+        <label>Agree to terms</label>
+        <input type="checkbox" id="agreed"/>
+        <br />
+        <button id="register" type="button">Register</button>
     </form>
     <h3>Cookie</h3>
     <div id="cookie"></div>
@@ -11,25 +26,47 @@
     <div id="lastResponse" style="width:200px;"></div>
 
 <script>
-    let form = document.getElementById("regform")
-    let lresponse = document.getElementById("lastResponse")
-    form.addEventListener("submit", (ev)=>{
-        event.preventDefault()
+    let username = document.getElementById("username")
+    let password = document.getElementById("password")
+    let retypePassword = document.getElementById("rtpassword")
+    let email = document.getElementById("email")
+    let agreed = document.getElementById("agreed")
+    let submit = document.getElementById("register")
 
-        const fd = new FormData(form)
-        
+    function getInputs() {
+        return {
+            Username: username.value ? username.value : "",
+            Password: password.value ? password.value : "",
+            RetypePassword: retypePassword.value ? retypePassword.value : "", 
+            Email: email.value ? email.value : "",
+            AgreedToTerms: agreed.value == "on" ? true : false
+        }
+    }
+
+    let lresponse = document.getElementById("lastResponse")
+    submit.addEventListener("click", (ev)=>{        
+        let dt = getInputs()
+        console.log(dt)
+        console.log("sending",JSON.stringify(dt))
         async function sendRegForm() {
+
 
             const response = await fetch("http://localhost:3000/register", {
                 method: "POST",
-                mode: "cors"
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(getInputs())
             })
+
             console.log(response)
             return response.text()
         }
         sendRegForm().then((data)=>{
             lresponse.innerHTML = data
-            p = JSON.parse(data)
+        }).catch( (err)=> {
+            lresponse.innerHTML = err
         })
     })
     console.log('l');

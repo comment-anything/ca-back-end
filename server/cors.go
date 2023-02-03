@@ -1,6 +1,8 @@
 package server
 
-import "net/http"
+import (
+	"net/http"
+)
 
 // from: https://stackoverflow.com/questions/64062803/how-to-enable-cors-in-go
 func CORS(handler http.Handler) http.Handler {

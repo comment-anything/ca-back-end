@@ -45,21 +45,22 @@ func New() (*Server, error) {
 func (s *Server) setupRouter() {
 	r := mux.NewRouter()
 	// setup the middleware
-	r.Use(s.ReadsAuth, s.EnsureController, CORS)
+	r.Use(CORS, s.ReadsAuth, s.EnsureController)
 	// register api endpoint
-	r.HandleFunc("/register", responder(s.postRegister)).Methods(http.MethodPost)
+	r.HandleFunc("/register", responder(s.postRegister))
 	s.router = r
 }
 
 /* Start causes the Server to start listening on the port defined in the config.go. */
 func (s *Server) Start() {
 	fmt.Println("Server listening on port ", config.Vals.Server.Port)
-	go fmt.Println(http.ListenAndServe(config.Vals.Server.Port, s.router))
-
+	go http.ListenAndServe(config.Vals.Server.Port, s.router)
+	fmt.Println("Running")
 	// If user presses a key, we terminate the server.
 	var userIn [10]byte
 	os.Stdin.Read(userIn[:])
 	fmt.Print(userIn)
+
 }
 
 /* Stop stops the server. */

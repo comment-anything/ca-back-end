@@ -6,3 +6,8 @@
 - fleshed out store.go
 - lots of tests for register and store
 - enabled debugging in VSCode
+- register pipeline
+- usermanager
+- controllers were created
+- validate functions created and package util created
+- altogether ~6 hours of work at least

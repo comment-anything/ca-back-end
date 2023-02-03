@@ -1,5 +1,18 @@
 
+
+--- Validators
+
+- these will be fun to implement
+
+password entropy check : https://golangexample.com/validate-the-strength-of-a-password-in-go/
+
+should also check a rainbow table of common passwords
+
+Can move to util module
+
 ---- Register pipeline
+
+- finish creating testRegister.html / integrate test with the front end work
 
 - create sub functions for encrypting and decrypting user password
 - create function for validating email address and username
