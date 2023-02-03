@@ -3,11 +3,11 @@ CREATE TABLE "Users" (
   "username" varchar UNIQUE NOT NULL,
   "password" varchar NOT NULL,
   "email" varchar UNIQUE NOT NULL,
-  "is_verified" boolean,
+  "is_verified" boolean NOT NULL DEFAULT (FALSE),
   "created_at" timestamptz NOT NULL DEFAULT (now()),
   "last_login" timestamptz NOT NULL DEFAULT (now()),
   "profile_blurb" varchar,
-  "banned" boolean
+  "banned" boolean NOT NULL DEFAULT (FALSE)
 );
 
 CREATE TABLE "DomainBans" (

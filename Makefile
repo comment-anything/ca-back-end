@@ -61,6 +61,12 @@ test-server:
 test-config:
 	go test ./config -v -cover
 
+test-database:
+	go test ./database -v -cover
+
+test-generated:
+	go test ./database/generated -v -cover
+
 test-verbose:
 	go test ./... -v -cover
 
