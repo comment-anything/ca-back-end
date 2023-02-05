@@ -4,7 +4,10 @@ import "encoding/json"
 
 // GetMessage is a convenience method for getting a communication.Message wrapped as a communication.ServerResponse for pushing to controller responses.
 func GetMessage(success bool, text string) ServerResponse {
-	return Wrap("Message", text)
+	msg := Message{}
+	msg.Success = success
+	msg.Text = text
+	return Wrap("Message", msg)
 }
 
 // Wrap is a convenience method for wrapping some data as a communicaiton.ServerResponse.

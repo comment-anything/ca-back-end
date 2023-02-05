@@ -25,7 +25,7 @@ func (c *UserControllerBase) Respond(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// AddMessage adds an object of type Message wrapped, like every other item in c.nextResponse, in a ServerResponse struct.
+// AddMessage adds an object of type Message wrapped, like every other item in c.nextResponse, in a ServerResponse struct. The success parameter will usually only have the effect of possible changing how a message appears in the front end.
 func (c *UserControllerBase) AddMessage(success bool, text string) {
 	c.nextResponse = append(c.nextResponse, communication.GetMessage(success, text))
 }

@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-// CORS stands for Cross Origin Resource Sharing. For security reasons, browsers and websites restrict cross-origin HTTP requests eminating from scripts. By setting "Access-Control-Allow-Origin" to *, CORS should be enabled for this server. This is necessary because the script accessing our site (in the browser extension front-end) is not actually served by our site. It's essentially running locally on the user computer. The logic for this function was taken from: https://stackoverflow.com/questions/64062803/how-to-enable-cors-in-go
+// CORS stands for Cross Origin Resource Sharing. For security reasons, browsers and websites restrict cross-origin HTTP requests eminating from scripts. By setting "Access-Control-Allow-Origin" to *, CORS becomes enabled for this server. This is necessary because the script accessing our site (in the browser extension front-end) is not actually served by our site. It's essentially running locally on the user computer. The logic for this function was taken from: https://stackoverflow.com/questions/64062803/how-to-enable-cors-in-go
 func CORS(handler http.Handler) http.Handler {
 
 	next := handler.ServeHTTP

@@ -8,7 +8,7 @@ import (
 	"github.com/comment-anything/ca-back-end/util"
 )
 
-// validateRegisterRequest validates whether a register request can succeed or not. If it can't succeed, this function will return a string intended for transmission to the end user explaining generally why the request doesn't work.
+// validateRegisterRequest validates whether a register request can succeed or not by verifying the password, username, etc. are acceptable. If it can't succeed, this function will return a string intended for transmission to the end user explaining generally why the request doesn't work.
 func validateRegisterRequest(comm *communication.Register, server *Server) (bool, string) {
 	if !comm.AgreedToTerms {
 		return false, "You must agree to the terms and conditions."
