@@ -68,7 +68,7 @@ func (s *Server) Stop() error {
 	return s.httpServer.Close()
 }
 
-// responder wraps an API endpoint so that it calls "Respond" on the associated controller after all other operations to actually write the response
+// responder wraps an API endpoint so that it calls "SetCookie" and "Respond" on the associated controller after all other operations to actually write the response and provide the token.
 func responder(last func(w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		last(w, r)
@@ -76,6 +76,7 @@ func responder(last func(w http.ResponseWriter, r *http.Request)) http.HandlerFu
 		if cont == nil { // if the code is structured correctly, this should never occur, as a guest controller should always be attached to a new request
 			w.Write(communication.GetErrMsg(false, "Failed to find controller for response!!!"))
 		} else {
+			cont.SetCookie(w, r)
 			cont.Respond(w, r)
 		}
 	}
