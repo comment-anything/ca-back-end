@@ -43,14 +43,14 @@ func TestStart(t *testing.T) {
 	defer config.Vals.Reset()
 	s, _ := New()
 	go shutdown(s, 0.25)
-	s.Start()
+	s.Start(false)
 }
 
 func TestStop(t *testing.T) {
 	config.Vals.Load("../.env")
 	defer config.Vals.Reset()
 	s, _ := New()
-	go s.Start()
+	go s.Start(false)
 	time.Sleep(2)
 	s.Stop()
 }

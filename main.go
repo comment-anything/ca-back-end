@@ -14,7 +14,7 @@ func main() {
 	} else {
 		s, err := server.New()
 		if err == nil {
-			s.Start()
+			s.Start(true)
 		}
 	}
 }

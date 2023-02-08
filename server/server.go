@@ -47,19 +47,25 @@ func (s *Server) setupRouter() {
 	r.Use(CORS, LogMiddleware, s.ReadsAuth, s.EnsureController)
 	// register api endpoint
 	r.HandleFunc("/register", responder(s.postRegister))
+	s.httpServer.Handler = s.router
 	s.router = r
 }
 
-/* Start causes the Server to start listening on the port defined in the config.go. */
-func (s *Server) Start() {
+/* Start causes the Server to start listening on the port defined in the config.go. Generally, the CLI is not started during tests (so the parameter passed is false). */
+func (s *Server) Start(startCli bool) {
 	fmt.Println("Server running on port ", config.Vals.Server.Port)
 	s.httpServer.Handler = s.router
 	s.httpServer.Addr = config.Vals.Server.Port
-	go s.httpServer.ListenAndServe()
-	/* The CLI blocks on the main thread. */
-	s.CLIBegin()
-	/* When the CLI is done, we can close the server. */
-	s.httpServer.Close()
+	if startCli {
+		go s.httpServer.ListenAndServe()
+		/* The CLI blocks on the main thread. */
+		s.CLIBegin()
+		/* When the CLI is done, we can close the server. */
+		s.httpServer.Close()
+	} else {
+		/* if startCli is false, server blocks main thread. */
+		s.httpServer.ListenAndServe()
+	}
 
 }
 

@@ -56,7 +56,7 @@ func TestAuths(t *testing.T) {
 	config.Vals.Load("../.env")
 	defer config.Vals.Reset()
 	server, _ := New()
-	go server.Start()
+	go server.Start(false)
 	time.Sleep(time.Duration(int(time.Second / 10)))
 	r, _ := http.NewRequest("GET", "/", nil)
 	w := httptest.NewRecorder()
