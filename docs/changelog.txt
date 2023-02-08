@@ -1,4 +1,6 @@
 
+2/7/2023 : Karl
+ - Added a simple CLI and logger to the server. There is now a separate thread for the CLI and the server runs in the background. The server can be stopped through the CLI. The CLI can also toggle logging and get a count of the active users.
 
 2/4/2023 : Karl
  - More detailed comments.

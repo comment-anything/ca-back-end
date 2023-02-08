@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/comment-anything/ca-back-end/database/generated"
 )
@@ -79,6 +80,11 @@ func (um *UserManager) CreateGuestController() *GuestController {
 		id++
 	}
 	gc.User.ID = id
+	gc.User.Username = "--Guest--"
 	um.guests[id] = gc
 	return gc
+}
+
+func (um *UserManager) GetUserCountString() string {
+	return fmt.Sprintf("%v users active; %v members and %v guests.", len(um.members)+len(um.guests), len(um.members), len(um.guests))
 }

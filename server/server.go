@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/comment-anything/ca-back-end/communication"
 	"github.com/comment-anything/ca-back-end/config"
@@ -45,7 +44,7 @@ func New() (*Server, error) {
 func (s *Server) setupRouter() {
 	r := mux.NewRouter()
 	// setup the middleware
-	r.Use(CORS, s.ReadsAuth, s.EnsureController)
+	r.Use(CORS, LogMiddleware, s.ReadsAuth, s.EnsureController)
 	// register api endpoint
 	r.HandleFunc("/register", responder(s.postRegister))
 	s.router = r
@@ -53,13 +52,14 @@ func (s *Server) setupRouter() {
 
 /* Start causes the Server to start listening on the port defined in the config.go. */
 func (s *Server) Start() {
-	fmt.Println("Server listening on port ", config.Vals.Server.Port)
-	go http.ListenAndServe(config.Vals.Server.Port, s.router)
-	fmt.Println("Running")
-	// If user presses a key, we terminate the server.
-	var userIn [10]byte
-	os.Stdin.Read(userIn[:])
-	fmt.Print(userIn)
+	fmt.Println("Server running on port ", config.Vals.Server.Port)
+	s.httpServer.Handler = s.router
+	s.httpServer.Addr = config.Vals.Server.Port
+	go s.httpServer.ListenAndServe()
+	/* The CLI blocks on the main thread. */
+	s.CLIBegin()
+	/* When the CLI is done, we can close the server. */
+	s.httpServer.Close()
 
 }
 
@@ -68,9 +68,9 @@ func (s *Server) Stop() error {
 	return s.httpServer.Close()
 }
 
-// responder wraps an API endpoint so that it calls "SetCookie" and "Respond" on the associated controller after all other operations to actually write the response and provide the token.
+// responder wraps an API endpoint so that it calls "SetCookie" and "Respond" on the associated controller after all other operations to actually write the response and provide the token. It wraps its middleware in the EndLogMiddleware so that it can provide some logging before the request finishes, if desired.
 func responder(last func(w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+	responder_func := func(w http.ResponseWriter, r *http.Request) {
 		last(w, r)
 		cont := r.Context().Value(CtxController).(UserControllerInterface)
 		if cont == nil { // if the code is structured correctly, this should never occur, as a guest controller should always be attached to a new request
@@ -80,4 +80,5 @@ func responder(last func(w http.ResponseWriter, r *http.Request)) http.HandlerFu
 			cont.Respond(w, r)
 		}
 	}
+	return EndLogMiddleware(responder_func)
 }

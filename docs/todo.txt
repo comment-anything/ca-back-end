@@ -23,3 +23,8 @@ Can move to util module
 ---- auth 
 
 - gettoken function in server/auth ; we should make the expiration time changable in the .env file perhaps
+
+
+
+
+-- decent tuts on digitalocean, always: https://www.digitalocean.com/community/tutorials/how-to-make-an-http-server-in-go
