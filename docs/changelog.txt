@@ -1,5 +1,7 @@
 2/10/2023: Karl
  - Added the login pipeline.
+    - Had to do major work including changing the way a token is transmitted from being a cookie to being an actual server object that comes back on the response.
+ - Merged the 'SetCookie' method of memberControllerBase and GuestController to be one method of UserController base. 
  - Added debugging and appropriate launch.json config for that.
 
 

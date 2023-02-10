@@ -25,8 +25,21 @@ func NewUserManager() UserManager {
 // TransferGuest deletes a previous guest controller from the map, sets the user in the calling guestController to the logged in user, and sets the hasLogged val to true for correct cookie generation.
 func (um *UserManager) TransferGuest(oldGuestController *GuestController, user *generated.User) {
 	delete(um.guests, oldGuestController.User.ID)
+
 	oldGuestController.User = user
 	oldGuestController.hasloggedin = true
+}
+
+// TransferMember deletes a member controller from the map, and sets the calling member controller User to an associated member ID, and sets the hasLoggedIn val to false for correct cookie generation.
+func (um *UserManager) TransferMember(oldMemberController *MemberControllerBase) {
+	delete(um.members, oldMemberController.User.ID)
+	gc := um.CreateGuestController()
+	oldMemberController.User.ID = gc.User.ID
+	oldMemberController.hasloggedin = false
+	newmembctrlr, err := um.AttemptCreateMemberController(oldMemberController.User.ID)
+	if err != nil {
+		um.members[oldMemberController.User.ID] = newmembctrlr
+	}
 }
 
 // GetControllerById returns a UserController if it exists in the map and returns an error if it doesnt.
@@ -36,15 +49,18 @@ func (um *UserManager) GetControllerById(id int64, isGuest bool) (UserController
 		if ok {
 			return cont, nil
 		} else {
-			return nil, errors.New("No guest controller with that id is present.")
+			return um.CreateGuestController(), nil
 		}
 	} else {
 		cont, ok := um.members[id]
 		if ok {
 			return cont, nil
 		} else {
-
-			return nil, errors.New("No member controller with that id is present.")
+			newcont, err := um.AttemptCreateMemberController(id)
+			if err != nil {
+				return nil, errors.New("Member controller could not be created.")
+			}
+			return newcont, nil
 		}
 	}
 }
@@ -61,6 +77,8 @@ func (um *UserManager) AttemptCreateMemberController(id int64) (UserControllerIn
 		} else {
 			cont := &MemberController{}
 			cont.User = &user
+			cont.manager = um
+			cont.hasloggedin = true
 			um.members[id] = cont
 			return cont, nil
 		}
@@ -81,6 +99,7 @@ func (um *UserManager) CreateGuestController() *GuestController {
 	}
 	gc.User.ID = id
 	gc.User.Username = "--Guest--"
+	gc.hasloggedin = false
 	um.guests[id] = gc
 	return gc
 }

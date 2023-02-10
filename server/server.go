@@ -43,11 +43,15 @@ func New() (*Server, error) {
 // setupRouter configures the API endpoints and middleware.
 func (s *Server) setupRouter() {
 	r := mux.NewRouter()
+
 	// setup the middleware
 	r.Use(CORS, LogMiddleware, s.ReadsAuth, s.EnsureController)
+
 	// register api endpoint
 	r.HandleFunc("/register", responder(s.postRegister))
 	r.HandleFunc("/login", responder(s.postLogin))
+	r.HandleFunc("/logout", responder(s.putLogout))
+
 	s.httpServer.Handler = s.router
 	s.router = r
 }

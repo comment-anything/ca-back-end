@@ -11,6 +11,9 @@ type LoginResponse struct {
 	LoggedInAs UserProfile
 }
 
+// LogoutResponse is sent to the client when they succesfully log out.
+type LogoutResponse struct{}
+
 // UserProfile contains data needed by the Front End to display a profile for a user.
 type UserProfile struct {
 	UserId            int64
@@ -27,4 +30,9 @@ type UserProfile struct {
 type Message struct {
 	Success bool
 	Text    string
+}
+
+// Token provides the front end with an authentication key they can use to stay logged in.
+type Token struct {
+	JWT string
 }

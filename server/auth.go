@@ -58,12 +58,11 @@ func (s *Server) ReadsAuth(handler http.Handler) http.Handler {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		cook, err := r.Cookie(config.Vals.Server.JWTCookieName)
-		if err != nil {
+		tstring := r.Header.Get(config.Vals.Server.JWTCookieName)
+		if tstring == "" {
 			next(w, r)
 			return
 		}
-		tstring := cook.Value
 		token, err := jwt.Parse(tstring, keyfunc)
 		if err != nil {
 			next(w, r)
@@ -102,10 +101,11 @@ func (s *Server) ReadsAuth(handler http.Handler) http.Handler {
 		}
 		controller, err := s.users.GetControllerById(user_id, is_guest)
 		if err != nil {
+			fmt.Println("Problem acquiring controller!", err.Error())
 			next(w, r)
 			return
 		}
-		newctx := context.WithValue(r.Context(), CtxController, &controller)
+		newctx := context.WithValue(r.Context(), CtxController, controller)
 		next(w, r.WithContext(newctx))
 	})
 }

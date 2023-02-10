@@ -16,6 +16,9 @@ type UserControllerInterface interface {
 	// HandleCommandLogin handles a login request. Only Guest controllers should not respond with an error message if this is called.
 	HandleCommandLogin(*communication.Login, *Server)
 
+	// HandleCommandLogout handles a logout request. Guest Controllers should respond with an error message.
+	HandleCommandLogout(*communication.Logout, *Server)
+
 	GetUser() *generated.User
 	Respond(w http.ResponseWriter, r *http.Request)
 	SetCookie(w http.ResponseWriter, r *http.Request)
@@ -28,6 +31,8 @@ type UserControllerBase struct {
 	manager          *UserManager
 	lastTokenRefresh time.Time
 	nextResponse     []interface{}
+	// This flag is used when a GuestController logs in or a Member Controller logs out.
+	hasloggedin bool
 }
 
 // MemberControllerBase provides data members for MemberControllers. It extends UserControllerBase, adding some fields necessary for validation and password reset tracking.
@@ -39,7 +44,6 @@ type MemberControllerBase struct {
 // GuestController is attached to an HTTP Request Context when a non-logged in user accesses Comment Anywhere.
 type GuestController struct {
 	UserControllerBase
-	hasloggedin bool
 }
 
 // MemberController is attached to an HTTP Request Context when a regular member accesses Comment Anywhere.
