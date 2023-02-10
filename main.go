@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	fmt.Println("Start")
 	err := config.Vals.Load(".env")
 	if err != nil {
 		fmt.Printf("There was an error parsing environment variables: %s", err.Error())

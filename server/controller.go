@@ -13,6 +13,8 @@ type UserControllerInterface interface {
 
 	// HandleCommandRegister handles a register request. Only Guest controllers should not automatically produce an error if this is called.
 	HandleCommandRegister(*communication.Register, *Server)
+	// HandleCommandLogin handles a login request. Only Guest controllers should not respond with an error message if this is called.
+	HandleCommandLogin(*communication.Login, *Server)
 
 	GetUser() *generated.User
 	Respond(w http.ResponseWriter, r *http.Request)

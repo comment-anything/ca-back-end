@@ -47,6 +47,7 @@ func (s *Server) setupRouter() {
 	r.Use(CORS, LogMiddleware, s.ReadsAuth, s.EnsureController)
 	// register api endpoint
 	r.HandleFunc("/register", responder(s.postRegister))
+	r.HandleFunc("/login", responder(s.postLogin))
 	s.httpServer.Handler = s.router
 	s.router = r
 }

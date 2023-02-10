@@ -1,3 +1,4 @@
 .env
 tests_rep.tmp
 localnotes.txt
+__debug_bin.exe

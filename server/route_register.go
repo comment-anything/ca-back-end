@@ -71,7 +71,7 @@ func (c *GuestController) HandleCommandRegister(comm *communication.Register, se
 }
 
 // HandleCommandRegister on a UserController will fail.
-func (c *UserControllerBase) HandleCommandRegister(comm *communication.Register, server *Server) {
+func (c *MemberControllerBase) HandleCommandRegister(comm *communication.Register, server *Server) {
 	c.nextResponse = append(c.nextResponse, communication.GetMessage(false, "You are already logged in."))
 }
 

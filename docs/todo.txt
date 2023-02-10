@@ -1,4 +1,8 @@
 
+--- UserProfile
+
+- in both register and login, the UserProfile portion of a LoginResponse is generated line by line, but is incomplete. Additional queries need to be performed to determine, for example, which domains a user can moderate. A func which converts a User to a UserProfile response could be used in both situations. 
+
 
 --- Validators
 

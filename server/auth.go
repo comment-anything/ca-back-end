@@ -105,7 +105,7 @@ func (s *Server) ReadsAuth(handler http.Handler) http.Handler {
 			next(w, r)
 			return
 		}
-		newctx := context.WithValue(r.Context(), CtxController, controller)
+		newctx := context.WithValue(r.Context(), CtxController, &controller)
 		next(w, r.WithContext(newctx))
 	})
 }
