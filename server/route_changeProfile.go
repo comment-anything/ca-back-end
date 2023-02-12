@@ -32,6 +32,11 @@ func (c *MemberControllerBase) HandleCommandChangeProfileBlurb(comm *communicati
 		} else {
 			c.AddMessage(true, "Profile updated.")
 			c.User.ProfileBlurb = params.ProfileBlurb
+			prof := serv.GetProfile(c.User)
+			profResponse := communication.ProfileUpdateResponse{}
+			profResponse.Email = c.User.Email
+			profResponse.LoggedInAs = prof
+			c.AddWrapped("ProfileUpdateResponse", profResponse)
 		}
 	}
 }

@@ -23,19 +23,17 @@ func (c *GuestController) HandleCommandLogin(comm *communication.Login, server *
 	} else {
 		user, err := server.DB.Queries.GetUserByUserName(context.Background(), comm.Username)
 		if err != nil {
-			c.nextResponse = append(c.nextResponse, communication.GetMessage(false, "Could not log in with those credentials."))
+			c.AddMessage(false, "Could not log in with those credentials.")
 		} else {
 			if user.Password == comm.Password {
 				c.manager.TransferGuest(c, &user)
 				var loginResponse communication.LoginResponse
-				loginResponse.LoggedInAs.CreatedOn = user.CreatedAt.Unix()
-				loginResponse.LoggedInAs.UserId = user.ID
-				loginResponse.LoggedInAs.Username = user.Username
-				loginResponse.LoggedInAs.ProfileBlurb = user.ProfileBlurb.String
-				c.nextResponse = append(c.nextResponse, communication.Wrap("LoginResponse", loginResponse))
-				c.nextResponse = append(c.nextResponse, communication.GetMessage(true, "Logged in."))
+				loginResponse.LoggedInAs = server.GetProfile(&user)
+				loginResponse.Email = user.Email
+				c.AddWrapped("LoginResponse", loginResponse)
+				c.AddMessage(true, "Logged in.")
 			} else {
-				c.nextResponse = append(c.nextResponse, communication.GetMessage(false, "Could not log in with those credentials."))
+				c.AddMessage(false, "Could not log in with those credentials.")
 			}
 		}
 	}
@@ -43,7 +41,7 @@ func (c *GuestController) HandleCommandLogin(comm *communication.Login, server *
 
 // HandleCommandLogin on a MemberController will fail.
 func (c *MemberControllerBase) HandleCommandLogin(comm *communication.Login, server *Server) {
-	c.nextResponse = append(c.nextResponse, communication.GetMessage(false, "You are already logged in."))
+	c.AddMessage(false, "You are already logged in.")
 }
 
 // postRegister is the API endpoint for when a user attempts to login to their account. It expects a JSON object of type 'communication.Login'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. postLogin then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the actual login logic.

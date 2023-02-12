@@ -13,6 +13,7 @@
 2/12/2023
 
 - Got rid of PasswordResetCode client-server communication entity and combined into one SetNewPass struct. Got rid of associated API endpoint. 
+- Added ProfileUpdateResponse which is dispatched to the client when a change to their profile has been realized on the server.
 
 
 2/10/2023

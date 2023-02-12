@@ -17,8 +17,8 @@ func (c *GuestController) HandleCommandLogout(comm *communication.Logout, server
 func (c *MemberControllerBase) HandleCommandLogout(comm *communication.Logout, server *Server) {
 	c.manager.TransferMember(c)
 	var logoutResponse communication.LogoutResponse
-	c.nextResponse = append(c.nextResponse, communication.Wrap("LogoutResponse", logoutResponse))
-	c.nextResponse = append(c.nextResponse, communication.GetMessage(false, "You have logged out."))
+	c.AddWrapped("LogoutResponse", logoutResponse)
+	c.AddMessage(false, "You have logged out.")
 }
 
 // postRegister is the API endpoint for when a user attempts to login to their account. It expects a JSON object of type 'communication.Login'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. postLogin then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the actual login logic.

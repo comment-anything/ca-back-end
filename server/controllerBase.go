@@ -42,3 +42,7 @@ func (c *UserControllerBase) SetCookie(w http.ResponseWriter, r *http.Request) {
 func (c *UserControllerBase) AddMessage(success bool, text string) {
 	c.nextResponse = append(c.nextResponse, communication.GetMessage(success, text))
 }
+
+func (c *UserControllerBase) AddWrapped(name string, data interface{}) {
+	c.nextResponse = append(c.nextResponse, communication.Wrap(name, data))
+}

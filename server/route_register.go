@@ -47,7 +47,7 @@ func (c *GuestController) HandleCommandRegister(comm *communication.Register, se
 
 	canRegister, failMsg := validateRegisterRequest(comm, server)
 	if !canRegister {
-		c.nextResponse = append(c.nextResponse, communication.GetMessage(false, failMsg))
+		c.AddMessage(false, failMsg)
 	} else {
 		var args generated.CreateUserParams
 		args.Username = comm.Username
@@ -55,24 +55,21 @@ func (c *GuestController) HandleCommandRegister(comm *communication.Register, se
 		args.Password = comm.Password
 		user, err := server.DB.Queries.CreateUser(context.Background(), args)
 		if err != nil {
-			c.nextResponse = append(c.nextResponse, communication.GetMessage(false, "Failed to register."))
+			c.AddMessage(false, "Failed to register.")
 		} else {
 			c.manager.TransferGuest(c, &user)
-			c.nextResponse = append(c.nextResponse, communication.GetMessage(true, "You registered succesfully."))
+			c.AddMessage(true, "You registered succesfully.")
 			var loginResponse communication.LoginResponse
-			loginResponse.LoggedInAs.CreatedOn = user.CreatedAt.Unix()
-			loginResponse.LoggedInAs.UserId = user.ID
-			loginResponse.LoggedInAs.Username = user.Username
-			loginResponse.LoggedInAs.ProfileBlurb = user.ProfileBlurb.String
-			c.nextResponse = append(c.nextResponse, communication.Wrap("LoginResponse", loginResponse))
-
+			loginResponse.LoggedInAs = serv.GetProfile(&user)
+			loginResponse.Email = user.Email
+			c.AddWrapped("LoginResponse", loginResponse)
 		}
 	}
 }
 
 // HandleCommandRegister on a UserController will fail.
 func (c *MemberControllerBase) HandleCommandRegister(comm *communication.Register, server *Server) {
-	c.nextResponse = append(c.nextResponse, communication.GetMessage(false, "You are already logged in."))
+	c.AddMessage(false, "You are already logged in.")
 }
 
 // postRegister is the API endpoint for when a user attempts to register a new account. It expects a JSON object of type 'communication.Register'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. PostRegister then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the actual registration logic.

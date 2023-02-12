@@ -1,3 +1,9 @@
+2/12/2023: Karl
+- ChangeEmail, ChangeProfile blurb
+- Logout
+- Added comm entities necessary for correct client side communication
+
+
 2/10/2023: Karl
  - Added the login pipeline.
     - Had to do major work including changing the way a token is transmitted from being a cookie to being an actual server object that comes back on the response.
