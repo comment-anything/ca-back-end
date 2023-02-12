@@ -51,3 +51,9 @@ func ValidateEmail(s string) (bool, string) {
 	}
 	return true, ""
 }
+
+// ValidateProfile runs regexes to determine that a user's profile contains acceptable content.
+func ValidateProfile(s string) (bool, string) {
+	// TODO: run regexes here
+	return true, ""
+}

@@ -19,6 +19,18 @@ type UserControllerInterface interface {
 	// HandleCommandLogout handles a logout request. Guest Controllers should respond with an error message.
 	HandleCommandLogout(*communication.Logout, *Server)
 
+	// HandleCommandEmail handles a user's request to change the email associated with their account.
+	HandleCommandChangeEmail(*communication.ChangeEmail, *Server)
+
+	// HandleCommandChangeProfileBlurb handles a user's request to change their profile blurb.
+	HandleCommandChangeProfileBlurb(*communication.ChangeProfileBlurb, *Server)
+
+	// HandleCommandPasswordResetRequest handles a user's request for a new password by generating a unique code, saving it in the database, and deleting any previous codes for that user.
+	HandleCommandPasswordResetRequest(*communication.PasswordReset, *Server)
+
+	// HandleCommandChangePassword handles when a user submits a password reset code. If the code is valid, it's deleted from the database.
+	HandleCommandChangePassword(*communication.SetNewPass, *Server)
+
 	GetUser() *generated.User
 	Respond(w http.ResponseWriter, r *http.Request)
 	SetCookie(w http.ResponseWriter, r *http.Request)

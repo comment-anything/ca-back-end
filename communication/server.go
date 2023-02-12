@@ -32,6 +32,12 @@ type Message struct {
 	Text    string
 }
 
+// NewPassResponse is dispatched to the client when they try to use a password reset code to reset their password. It indicates whether the password was reset or not.
+type NewPassResponse struct {
+	Success bool
+	Text    string
+}
+
 // Token provides the front end with an authentication key they can use to stay logged in.
 type Token struct {
 	JWT string

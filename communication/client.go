@@ -1,5 +1,16 @@
 package communication
 
+// ChangeProfileBlurb is dispatched to the server when a client updates their profile blurb.
+type ChangeProfileBlurb struct {
+	NewBlurb string
+}
+
+// ChangeEmail is dispatched to the server when a client wants to change their email. They must supply the correct password as well.
+type ChangeEmail struct {
+	NewEmail string
+	Password string
+}
+
 // Register is dispatched to the server when the client clicks “Submit” on the register form.
 type Register struct {
 	Username       string
@@ -23,13 +34,10 @@ type PasswordReset struct {
 	Email string
 }
 
-// PasswordResetCode is dispatched by a user when they enter a password reset code. After a user clicks “Forgot My Password”, users may enter the code emailed to them. When they subsequently click the “submit” button, this request is dispatched to the server.
-type PasswordResetCode struct {
-	Code int32
-}
-
 // SetNewPass is dispatched to the Server when the user changes their password. After submitting a valid password reset code, users are prompted to set a new password. When they subsequently click “submit”, this request is dispatched to the server.
 type SetNewPass struct {
+	Email          string
+	Code           int64
 	Password       string
 	RetypePassword string
 }

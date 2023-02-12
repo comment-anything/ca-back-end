@@ -10,6 +10,10 @@
 
 # Package communication
 
+2/12/2023
+
+- Got rid of PasswordResetCode client-server communication entity and combined into one SetNewPass struct. Got rid of associated API endpoint. 
+
 
 2/10/2023
 
@@ -27,6 +31,11 @@
 
 
 ## DB Structs
+
+2/12/2023
+
+- The password reset code is now equal to the unique primary key ID of the reset code in the reset code database. 
+
 
 2/2/2023
 

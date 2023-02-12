@@ -104,10 +104,9 @@ type Log struct {
 }
 
 type PasswordResetCode struct {
-	ID         int64          `json:"id"`
-	UserID     sql.NullInt64  `json:"user_id"`
-	VerifyCode sql.NullString `json:"verify_code"`
-	CreatedOn  time.Time      `json:"created_on"`
+	ID        int64     `json:"id"`
+	UserID    int64     `json:"user_id"`
+	CreatedOn time.Time `json:"created_on"`
 }
 
 type Path struct {
