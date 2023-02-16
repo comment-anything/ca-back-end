@@ -12,10 +12,11 @@ import (
 )
 
 type Server struct {
-	DB         *database.Store
-	httpServer http.Server
-	users      UserManager
-	router     *mux.Router
+	DB          *database.Store
+	httpServer  http.Server
+	users       UserManager
+	PageManager PageManager
+	router      *mux.Router
 }
 
 /* New returns a new server with routing applied and a database connection initialized. */
@@ -25,6 +26,7 @@ func New() (*Server, error) {
 	}
 	s := &Server{}
 	s.users = NewUserManager()
+	s.PageManager = NewPageManager()
 	s.users.serv = s
 
 	db, err := database.New(true)

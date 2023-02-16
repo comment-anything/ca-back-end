@@ -1,3 +1,14 @@
+2/16/2023: Karl
+- Comm entities: Comment, CommentVoteDimension, CommentReply, CommentVote, GetCommnets
+- PageManager started
+- Page started 
+- Added GetPage() to UC interface & implemented in Base 
+- Started route_getComments, HandleGetComments, getComments, etc.
+- Resetting password from code now deletes code in db 
+
+
+
+
 2/12/2023: Karl
 - ChangeEmail, ChangeProfile blurb
 - Logout

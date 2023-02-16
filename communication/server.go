@@ -49,3 +49,30 @@ type NewPassResponse struct {
 type Token struct {
 	JWT string
 }
+
+// CommentVoteRecord contains data for the number of votes on a comment.
+type CommentVoteDimension struct {
+	AlreadyVoted int8
+	Downs        int64
+	Ups          int64
+}
+
+// Comment provides the data the Front End needs to render a comment.
+type Comment struct {
+	UserId     int64
+	Username   string
+	CommentId  int64
+	Content    string
+	Factual    CommentVoteDimension
+	Funny      CommentVoteDimension
+	Agree      CommentVoteDimension
+	Hidden     bool
+	Parent     int64
+	Removed    bool
+	TimePosted int64
+}
+
+// FullPage is returned when a user first requests comments for a new page. It contains an array of all comment data for that page.
+type FullPage struct {
+	Comments []Comment
+}

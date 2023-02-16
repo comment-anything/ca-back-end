@@ -10,6 +10,11 @@
 
 # Package communication
 
+2/16/2023
+- Change Comment.UserId from type 'string' to type 'int64'. (Typo in design doc. )
+- Added FullPage server-client communication entity for when a client first requests comments for a page.  
+
+
 2/12/2023
 
 - Got rid of PasswordResetCode client-server communication entity and combined into one SetNewPass struct. Got rid of associated API endpoint. 
@@ -43,7 +48,7 @@
 - got rid of "NewConnect" function in database/store.go; only using New now, with a boolean if you don't want to connect to the database
 
 
-## Server struct
+## Server
 
 2/10/2023
 

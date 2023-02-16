@@ -31,15 +31,28 @@ type UserControllerInterface interface {
 	// HandleCommandChangePassword handles when a user submits a password reset code. If the code is valid, it's deleted from the database.
 	HandleCommandChangePassword(*communication.SetNewPass, *Server)
 
+	// HandleCommandGetComments handles when a user requests the comment data for a particular url.
+	HandleCommandGetComments(comm *communication.GetComments, server *Server)
+
+	// GetUser returns the user associated with this controller
 	GetUser() *generated.User
+
+	// GetPage gets the current page associated with this controller.
+	GetPage() *Page
+	// Respond writes pending server responses to the response writer.
 	Respond(w http.ResponseWriter, r *http.Request)
+	// SetCookie adds a Token to the pending server responses. (It no longer actually sets a cookie.)
 	SetCookie(w http.ResponseWriter, r *http.Request)
+	// AddMessage adds a message to the pending server responses.
 	AddMessage(success bool, text string)
+	// AddMessage adds a ServerResponse of key 'name' containing data given by the data parameter.
+	AddWrapped(name string, data interface{})
 }
 
 // UserControllerBase provides data members for UserControllers. It does not implement UserControllerInterface fully. Other controllers are defined by extending this Base class and implementing the rest of the interface. Controllers also retain an array of messages that need to be sent to the client, which will be dispatched the next time a request from that user is received
 type UserControllerBase struct {
 	User             *generated.User
+	Page             *Page
 	manager          *UserManager
 	lastTokenRefresh time.Time
 	nextResponse     []interface{}

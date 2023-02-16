@@ -35,6 +35,7 @@ func (c *UserControllerBase) HandleCommandChangePassword(comm *communication.Set
 				if err != nil {
 					response.Text = "Unable to reset password."
 				} else {
+					serv.DB.Queries.DeletePreviousPWRestCodesForUser(context.Background(), user.ID)
 					response.Text = "Password reset successful."
 					response.Success = true
 				}

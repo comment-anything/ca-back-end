@@ -41,3 +41,23 @@ type SetNewPass struct {
 	Password       string
 	RetypePassword string
 }
+
+// CommentReply is dispatched to the server when a logged-in user submits a reply to an existing comment or posts a new root-level comment on a page.
+type CommentReply struct {
+	ReplyingTo int64
+	Reply      string
+}
+
+// CommentVote is dispatched to the server when a logged-in user votes on a comment.
+type CommentVote struct {
+	VotingOn int64
+	VoteType string
+	Value    int8
+}
+
+// GetComments is dispatched to the server when a user opens the Browser Extension or when they navigate to a new page with the browser extension over. It is a request for all comments associated with the given url.
+type GetComments struct {
+	Url           string
+	SortedBy      string
+	SortAscending bool
+}

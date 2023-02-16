@@ -14,6 +14,11 @@ func (c *UserControllerBase) GetUser() *generated.User {
 	return c.User
 }
 
+// GetPage gets the page associated with the current user.
+func (c *UserControllerBase) GetPage() *Page {
+	return c.Page
+}
+
 // Respond writes the cached data from c.nextResponse to the responseWriter, and clears it. This should virtually always be the only function in the program which actually writes the body of the http.ResponseWriter.
 func (c *UserControllerBase) Respond(w http.ResponseWriter, r *http.Request) {
 	outp, err := json.Marshal(c.nextResponse)
