@@ -42,12 +42,15 @@ func (p *Page) AddGuestToPage(user *GuestController) {
 	p.GuestsOnPage[user_data.ID] = user
 }
 
-func (p *Page) GetComments(user UserControllerInterface, SortedBy string, Ascending bool) {
+func (p *Page) GetComments(user UserControllerInterface) {
 
 	r := make([]communication.Comment, len(p.CachedComments))
 
 	for _, val := range p.CachedComments {
 		r = append(r, val)
 	}
-	user.AddWrapped("FullPage", r)
+
+	var fp communication.FullPage
+	fp.Comments = r
+	user.AddWrapped("FullPage", fp)
 }

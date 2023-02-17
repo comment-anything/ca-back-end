@@ -19,6 +19,11 @@ func (c *UserControllerBase) GetPage() *Page {
 	return c.Page
 }
 
+// SetPage sets the user controller's reference to the new page.
+func (c *UserControllerBase) SetPage(page *Page) {
+	c.Page = page
+}
+
 // Respond writes the cached data from c.nextResponse to the responseWriter, and clears it. This should virtually always be the only function in the program which actually writes the body of the http.ResponseWriter.
 func (c *UserControllerBase) Respond(w http.ResponseWriter, r *http.Request) {
 	outp, err := json.Marshal(c.nextResponse)

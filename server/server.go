@@ -57,6 +57,7 @@ func (s *Server) setupRouter() {
 	r.HandleFunc("/changeProfile", responder(s.postChangeProfileBlurb))
 	r.HandleFunc("/pwResetReq", responder(s.postPasswordResetRequest))
 	r.HandleFunc("/newPassword", responder(s.postSetNewPass))
+	r.HandleFunc("/getComments", responder(s.getComments))
 
 	s.httpServer.Handler = s.router
 	s.router = r

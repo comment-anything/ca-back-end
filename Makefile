@@ -66,6 +66,8 @@ test-database:
 
 test-generated:
 	go test ./database/generated -v -cover
+test-util:
+	go test ./util -v -cover
 
 test-verbose:
 	go test ./... -v -cover

@@ -1,3 +1,10 @@
+2/17/2023: Karl
+- Page.GetComments 
+- HandleCommandGetComments in guest and member controllers (separate, because different maps get updated)
+- endpoint listener
+- path extract regex in package util, and unit tests
+
+
 2/16/2023: Karl
 - Comm entities: Comment, CommentVoteDimension, CommentReply, CommentVote, GetCommnets
 - PageManager started
