@@ -4,7 +4,9 @@ import "github.com/comment-anything/ca-back-end/communication"
 
 // Page contains cached data for a page, which is a discrete set of comments associated with a particular URL. It also contains a map of all users and guests on the current page.
 type Page struct {
-	fullPath       string
+	domain         string
+	path           string
+	pathID         int64
 	CachedComments map[int64]communication.Comment
 	MembersOnPage  map[int64]UserControllerInterface
 	GuestsOnPage   map[int64]*GuestController
@@ -42,12 +44,21 @@ func (p *Page) AddGuestToPage(user *GuestController) {
 	p.GuestsOnPage[user_data.ID] = user
 }
 
-func (p *Page) GetComments(user UserControllerInterface, SortedBy string, Ascending bool) {
+func (p *Page) GetComments(user UserControllerInterface) {
 
 	r := make([]communication.Comment, len(p.CachedComments))
 
 	for _, val := range p.CachedComments {
 		r = append(r, val)
 	}
-	user.AddWrapped("FullPage", r)
+
+	var fp communication.FullPage
+	fp.Comments = r
+	user.AddWrapped("FullPage", fp)
+}
+
+func (p *Page) LoadComments(comments []communication.Comment) {
+	for _, val := range comments {
+		p.CachedComments[val.CommentId] = val
+	}
 }

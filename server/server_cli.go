@@ -37,6 +37,8 @@ func parseCommand(inp string) {
 		fmt.Printf("\nToggled Logging to: %v\n\n", config.Vals.Server.DoesLogAll)
 	} else if inp == "user count" {
 		fmt.Printf("\n%s\n\n", serv.users.GetUserCountString())
+	} else if inp == "pages count" {
+		fmt.Printf("\n%s\n\n", serv.PageManager.GetPageManagerCountString())
 	} else {
 		fmt.Printf(getHelp())
 	}
@@ -54,5 +56,6 @@ func getHelp() string {
    stop/exit      stop the server and exit the cli.
    log            toggle logging
    user count     get a count of the users
+   pages count    get a count of the pages
 ` + "\n")
 }

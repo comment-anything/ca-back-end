@@ -1,3 +1,16 @@
+
+2/17/2023: Karl
+- Page.GetComments 
+- HandleCommandGetComments in guest and member controllers (separate, because different maps get updated)
+- endpoint listener
+- path extract regex in package util, and unit tests (pretty tough regex to right, and we should test it more!)
+- store.GetComments now handles performing multiple queries to construct appropriate comment responses
+- generated path, domain, and comment code (comments.sql, domains.sql, paths.sql, comments.sql.go, domains.sql.go, paths.sql.go)
+- changed page struct to break domain, path, pathID into separate things.
+- All member page transfers now occur in pageManager, not in member controllers. 
+- Member controllers are, however, still ultimately responsible for passing themselves to the Page to populate their response with comments. 
+
+
 2/16/2023: Karl
 - Comm entities: Comment, CommentVoteDimension, CommentReply, CommentVote, GetCommnets
 - PageManager started
@@ -5,7 +18,6 @@
 - Added GetPage() to UC interface & implemented in Base 
 - Started route_getComments, HandleGetComments, getComments, etc.
 - Resetting password from code now deletes code in db 
-
 
 
 

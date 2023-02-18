@@ -39,6 +39,10 @@ type UserControllerInterface interface {
 
 	// GetPage gets the current page associated with this controller.
 	GetPage() *Page
+
+	// SetPage sets a controller's page reference to a new page.
+	SetPage(page *Page)
+
 	// Respond writes pending server responses to the response writer.
 	Respond(w http.ResponseWriter, r *http.Request)
 	// SetCookie adds a Token to the pending server responses. (It no longer actually sets a cookie.)
