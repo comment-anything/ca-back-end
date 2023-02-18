@@ -10,23 +10,23 @@ import (
 
 /** HandleCommandGetComments on a guest controller calls the appropriate functions on a pagemanager and page so that they can maintain which members and which guests are present. */
 func (c *GuestController) HandleCommandGetComments(comm *communication.GetComments, serv *Server) {
+	serv.PageManager.MoveGuestToPage(c, comm.Url, serv)
 	if c.Page != nil {
-		c.Page.RemoveGuestFromPage(c)
+		c.Page.GetComments(c)
+	} else {
+		c.AddMessage(false, fmt.Sprintf("Couldn't get comments for %s", comm.Url))
 	}
-	c.Page = serv.PageManager.LoadPage(comm.Url, serv)
-	c.Page.AddGuestToPage(c)
-	c.Page.GetComments(c)
 
 }
 
 /** HandleCommandGetComments on a member controller calls the appropriate functions on a pagemanager and page so that they can maintain which members and which guests are present. */
 func (c *MemberControllerBase) HandleCommandGetComments(comm *communication.GetComments, serv *Server) {
+	serv.PageManager.MoveMemberToPage(c, comm.Url, serv)
 	if c.Page != nil {
-		c.Page.RemoveMemberFromPage(c)
+		c.Page.GetComments(c)
+	} else {
+		c.AddMessage(false, fmt.Sprintf("Couldn't get comments for %s", comm.Url))
 	}
-	c.Page = serv.PageManager.LoadPage(comm.Url, serv)
-	c.Page.AddMemberToPage(c)
-	c.Page.GetComments(c)
 }
 
 // getComments is the API endpoint for when a user attempts to login to their account. It expects a JSON object of type 'communication.GetComments'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. getComments then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the actual login logic.

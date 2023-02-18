@@ -1,7 +1,6 @@
 package util
 
 import (
-	"fmt"
 	"regexp"
 )
 
@@ -29,8 +28,8 @@ func ExtractPathParts(s string) PathExtractResult {
 			}
 		}
 	}
-	fmt.Printf("\n extract path parts called on : %s", s)
 	var returnResult PathExtractResult
+	returnResult.Success = true
 	var ok bool
 	var dom string
 	var path string

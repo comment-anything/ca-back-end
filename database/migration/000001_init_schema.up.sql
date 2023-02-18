@@ -33,7 +33,7 @@ CREATE TABLE "VoteRecords" (
   "category" varchar,
   "user_id" bigint,
   "value" int8,
-  PRIMARY KEY ("comment_id", "category")
+  PRIMARY KEY ("comment_id", "category", "user_id")
 );
 
 CREATE TABLE "Domains" (

@@ -138,6 +138,6 @@ type VerificationCode struct {
 type VoteRecord struct {
 	CommentID int64         `json:"comment_id"`
 	Category  string        `json:"category"`
-	UserID    sql.NullInt64 `json:"user_id"`
+	UserID    int64         `json:"user_id"`
 	Value     sql.NullInt64 `json:"value"`
 }
