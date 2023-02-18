@@ -1,3 +1,14 @@
+2/18/2023: Karl
+- in store, created transformGeneratedCommentToCommunicationComment
+- in store, created NewComment
+- CreateComment and GetCommentByID generated funcs
+- HandleCommandCommentReply
+- fixed nextResponse bug: next responses weren't clearing after succesful responses and front ends were receiving all old responses
+- Page is now responsible for calling user.SetPage 
+- Page.NewComment 
+- New CLI functions for page manager, such as GetPageInfo and GetPagesList
+- route_newComment.go
+
 
 2/17/2023: Karl
 - Page.GetComments 

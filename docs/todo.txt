@@ -1,7 +1,27 @@
+--- Comments
+
+
+2/18/23 
+Will know more after testing, but....
+
+should Server-Client communication comments have info regarding the url they are for? 
+
+should Page.NewComment push a communication.Comment to all user's on the page? Will that cause the other user's on that page to possibly have wrong responses when they subsequently get comments for a different page? 
+ Solutions: A map for each user with pending comments...
+            Keeping domain and path data with Server.Comment structures
+
+The latter is probably the right solution. Then the front end can choose to display or not display the comments in the server response, if they match the page the user is actually wanting to view. 
+
+Actually, may not be a problem. A NewPage struct will always be later in the ServerResponse array and will cause a clearing of the current page on the front end....
+Maybe I'm overthinking it!
+
+
 
 --- UserProfile
 
 - in both register and login, the UserProfile portion of a LoginResponse is generated line by line, but is incomplete. Additional queries need to be performed to determine, for example, which domains a user can moderate. A func which converts a User to a UserProfile response could be used in both situations. 
+
+2/18/23 : Do this with Store 
 
 
 --- Validators
@@ -14,20 +34,10 @@ should also check a rainbow table of common passwords
 
 Can move to util module
 
----- Register pipeline
-
-- finish creating testRegister.html / integrate test with the front end work
-
-- create sub functions for encrypting and decrypting user password
-- create function for validating email address and username
-- run these functions in the handle register method of a guest controller, push appropriate message errors
-- tests for communication methods
-- tests for controller methods and sub functions
 
 ---- auth 
 
 - gettoken function in server/auth ; we should make the expiration time changable in the .env file perhaps
-
 
 
 

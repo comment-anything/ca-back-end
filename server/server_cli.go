@@ -39,8 +39,13 @@ func parseCommand(inp string) {
 		fmt.Printf("\n%s\n\n", serv.users.GetUserCountString())
 	} else if inp == "pages count" {
 		fmt.Printf("\n%s\n\n", serv.PageManager.GetPageManagerCountString())
+	} else if inp == "pages list" {
+		fmt.Printf("\n%s\n\n", serv.PageManager.GetPagesListString())
+	} else if len(inp) >= 9 && inp[0:9] == "page info" {
+		fmt.Printf("\n%s\n\n", serv.PageManager.GetPageInfo(inp))
 	} else {
 		fmt.Printf(getHelp())
+
 	}
 }
 
@@ -57,5 +62,7 @@ func getHelp() string {
    log            toggle logging
    user count     get a count of the users
    pages count    get a count of the pages
+   pages list	  list the loaded pages
+   page info n    gets page info for page with id n
 ` + "\n")
 }

@@ -3,6 +3,7 @@ package server
 import (
 	"errors"
 	"fmt"
+	"strconv"
 
 	"github.com/comment-anything/ca-back-end/util"
 )
@@ -30,7 +31,6 @@ func (pm *PageManager) MoveMemberToPage(user UserControllerInterface, fullpagePa
 		fmt.Printf("\n Problem with page load! %s", err.Error())
 	} else {
 		newpage.AddMemberToPage(user)
-		user.SetPage(page)
 	}
 }
 
@@ -45,7 +45,6 @@ func (pm *PageManager) MoveGuestToPage(user *GuestController, pagePath string, s
 		fmt.Printf("\n Problem with page load! %s", err.Error())
 	} else {
 		newpage.AddGuestToPage(user)
-		user.Page = newpage
 	}
 }
 
@@ -81,6 +80,40 @@ func (pm *PageManager) LoadPage(path string, serv *Server) (*Page, error) {
 // Used with the server cli to get some information about the state of PageManager.
 func (pm *PageManager) GetPageManagerCountString() string {
 	return fmt.Sprintf("Pages Loaded: %d", len(pm.Pages))
+}
+
+// gets a list of all the active pages and their ids for the cli.
+func (pm *PageManager) GetPagesListString() string {
+	var res string
+	for key, val := range pm.Pages {
+		res += fmt.Sprintf("<%d> : %s | %s\n", key, val.domain, val.path)
+	}
+	return res
+}
+
+// gets info about a page for the cli
+func (pm *PageManager) GetPageInfo(s string) string {
+	// string like page info <id>
+	if len(s) < 10 {
+		return "Please supply an id."
+	}
+	substr := s[10:]
+	id, err := strconv.Atoi(substr)
+	if err != nil {
+		return "Id not understood."
+	}
+	page, ok := pm.Pages[int64(id)]
+	if !ok {
+		return "Page not found."
+	}
+	res := fmt.Sprintf("Page info for %d , domain: %s, path: %s", id, page.domain, page.path)
+	res += fmt.Sprintf("\n\t%d guests on page.", len(page.GuestsOnPage))
+	for _, mem := range page.MembersOnPage {
+		user := mem.GetUser()
+		res += fmt.Sprintf("\n\tUser %s on page.", user.Username)
+	}
+	return res
+
 }
 
 func (pm *PageManager) UnloadEmptyPage(serv *Server) {}
