@@ -68,11 +68,11 @@ func (q *Queries) GetCommentByID(ctx context.Context, id int64) (Comment, error)
 
 const getCommentsForPath = `-- name: GetCommentsForPath :many
 SELECT id, path_id, author, content, created_at, parent, hidden, removed FROM "Comments"
-WHERE id = $1 ORDER BY id
+WHERE path_id = $1 ORDER BY id
 `
 
-func (q *Queries) GetCommentsForPath(ctx context.Context, id int64) ([]Comment, error) {
-	rows, err := q.db.QueryContext(ctx, getCommentsForPath, id)
+func (q *Queries) GetCommentsForPath(ctx context.Context, pathID int64) ([]Comment, error) {
+	rows, err := q.db.QueryContext(ctx, getCommentsForPath, pathID)
 	if err != nil {
 		return nil, err
 	}

@@ -8,12 +8,12 @@ import (
 	"github.com/comment-anything/ca-back-end/communication"
 )
 
-/** HandleCommandGetComments on a guest controller calls the appropriate functions on a pagemanager and page so that they can maintain which members and which guests are present. */
+/** HandleCommandCommentReply tells a guest they must be logged in to post a comment.  */
 func (c *GuestController) HandleCommandCommentReply(comm *communication.CommentReply, serv *Server) {
 	c.AddMessage(false, "You must be logged in to post a comment.")
 }
 
-/** HandleCommandGetComments on a member controller calls the appropriate functions on a pagemanager and page so that they can maintain which members and which guests are present. */
+/** HandleCommandCommentReply on a member controller calls the appropriate functions on a pagemanager and page to post a new comment. */
 func (c *MemberControllerBase) HandleCommandCommentReply(comm *communication.CommentReply, serv *Server) {
 	if c.Page == nil {
 		c.AddMessage(false, "You can't post a comment here.")

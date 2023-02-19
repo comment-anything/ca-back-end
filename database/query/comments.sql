@@ -1,6 +1,6 @@
 -- name: GetCommentsForPath :many
 SELECT * FROM "Comments"
-WHERE id = $1 ORDER BY id;
+WHERE path_id = $1 ORDER BY id;
 
 -- name: GetUpVotesForComment :many
 SELECT category, SUM(value) FROM "VoteRecords"

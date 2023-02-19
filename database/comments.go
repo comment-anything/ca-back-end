@@ -19,6 +19,8 @@ func (s *Store) GetComments(pathID int64) ([]communication.Comment, error) {
 	for i, val := range rawcomms {
 		ccom := ccomms[i]
 		err = s.transformGeneratedCommentToCommunicationComment(&val, &ccom)
+		// WHY DO WE NEED THIS NEXT LINE?! but we do!
+		ccomms[i] = ccom
 
 	}
 	return ccomms, nil
@@ -115,14 +117,15 @@ func (s *Store) NewComment(comm *communication.CommentReply, userId int64, pathI
 	params.Content = comm.Reply
 	params.PathID = pathId
 	if comm.ReplyingTo != 0 { // 0 is root comment
-		fmt.Printf("\nDB.NewComment, we are not replying to root!")
+		fmt.Printf("\nDB.NewComment, we are not replying to root! We are replying to %d", comm.ReplyingTo)
 		_, err := s.Queries.GetCommentByID(ctx, comm.ReplyingTo)
 		if err != nil {
 			fmt.Printf("\nDB.NewComment, parent result: %s", err.Error())
 			return nil, err
+		} else {
+			params.Parent.Valid = true
 		}
 	}
-	params.Parent.Valid = false
 	params.Parent.Int64 = comm.ReplyingTo
 	gencom, err := s.Queries.CreateComment(ctx, params)
 	if err != nil {

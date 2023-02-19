@@ -69,8 +69,9 @@ func (pm *PageManager) LoadPage(path string, serv *Server) (*Page, error) {
 
 		comms, err := serv.DB.GetComments(pathID)
 		if err != nil {
-			page.LoadComments(comms)
+			fmt.Printf("\nError loading comments for %d: %s", pathID, err.Error())
 		}
+		page.LoadComments(comms)
 
 		pm.Pages[pathID] = page
 	}
@@ -108,12 +109,12 @@ func (pm *PageManager) GetPageInfo(s string) string {
 	}
 	res := fmt.Sprintf("Page info for %d , domain: %s, path: %s", id, page.domain, page.path)
 	res += fmt.Sprintf("\n\t%d guests on page.", len(page.GuestsOnPage))
+	res += fmt.Sprintf("\n\t%d comments on page.", len(page.CachedComments))
 	for _, mem := range page.MembersOnPage {
 		user := mem.GetUser()
 		res += fmt.Sprintf("\n\tUser %s on page.", user.Username)
 	}
 	return res
-
 }
 
 func (pm *PageManager) UnloadEmptyPage(serv *Server) {}

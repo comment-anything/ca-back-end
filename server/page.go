@@ -52,7 +52,7 @@ func (p *Page) AddGuestToPage(user *GuestController) {
 
 func (p *Page) GetComments(user UserControllerInterface) {
 
-	r := make([]communication.Comment, len(p.CachedComments))
+	r := make([]communication.Comment, 0, len(p.CachedComments))
 
 	for _, val := range p.CachedComments {
 		r = append(r, val)
