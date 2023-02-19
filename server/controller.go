@@ -37,6 +37,9 @@ type UserControllerInterface interface {
 	// HandleCommandCommentReply handles when a user attempts to post a new comment.
 	HandleCommandCommentReply(comm *communication.CommentReply, serv *Server)
 
+	// HandleCommandVoteComment handles when a user attempts to vote on a comment.
+	HandleCommandVoteComment(comm *communication.CommentVote, serv *Server)
+
 	// GetUser returns the user associated with this controller
 	GetUser() *generated.User
 

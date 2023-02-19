@@ -32,7 +32,7 @@ CREATE TABLE "VoteRecords" (
   "comment_id" bigint,
   "category" varchar,
   "user_id" bigint,
-  "value" int8,
+  "value" smallint NOT NULL,
   PRIMARY KEY ("comment_id", "category", "user_id")
 );
 

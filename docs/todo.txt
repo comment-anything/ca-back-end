@@ -1,5 +1,10 @@
 --- Comments
 
+2/19/2023
+- should disallow empty comments
+- should disallow comments over some max limit
+- should regex validate comments to filter bad words and such
+
 
 2/18/23 
 Will know more after testing, but....

@@ -1,6 +1,8 @@
 package server
 
 import (
+	"fmt"
+
 	"github.com/comment-anything/ca-back-end/communication"
 )
 
@@ -14,6 +16,7 @@ type Page struct {
 	GuestsOnPage   map[int64]*GuestController
 }
 
+// NewPage initializes a page object and returns it, creating the maps the page needs.
 func NewPage() Page {
 	var p Page
 	p.CachedComments = make(map[int64]communication.Comment, 50)
@@ -22,6 +25,7 @@ func NewPage() Page {
 	return p
 }
 
+// RemoveMemberFromPage removes a member user from this page's map and sets that user's page to nil.
 func (p *Page) RemoveMemberFromPage(user UserControllerInterface) {
 	user_data := user.GetUser()
 	_, ok := p.MembersOnPage[user_data.ID]
@@ -31,6 +35,8 @@ func (p *Page) RemoveMemberFromPage(user UserControllerInterface) {
 	user.SetPage(nil)
 
 }
+
+// RemoveGuestFromPage removes a guest user from this page's map and sets that user's page to nil.
 func (p *Page) RemoveGuestFromPage(user *GuestController) {
 	user_data := user.GetUser()
 	_, ok := p.GuestsOnPage[user_data.ID]
@@ -39,17 +45,22 @@ func (p *Page) RemoveGuestFromPage(user *GuestController) {
 	}
 	user.SetPage(nil)
 }
+
+// AddMemberToPage adds a member to this page's map and sets that member's page to this page.
 func (p *Page) AddMemberToPage(user UserControllerInterface) {
 	user_data := user.GetUser()
 	p.MembersOnPage[user_data.ID] = user
 	user.SetPage(p)
 }
+
+// AddGuestToPage adds a guest to this page's map and sets that guest's page to this page.
 func (p *Page) AddGuestToPage(user *GuestController) {
 	user_data := user.GetUser()
 	p.GuestsOnPage[user_data.ID] = user
 	user.SetPage(p)
 }
 
+// GetComments populates a user's next response with a "FullPage" response consisting of all the comments on this page.
 func (p *Page) GetComments(user UserControllerInterface) {
 
 	r := make([]communication.Comment, 0, len(p.CachedComments))
@@ -63,6 +74,7 @@ func (p *Page) GetComments(user UserControllerInterface) {
 	user.AddWrapped("FullPage", fp)
 }
 
+// LoadComments loads the CachedComments map from an array of communication.Comment s.
 func (p *Page) LoadComments(comments []communication.Comment) {
 	for _, val := range comments {
 		p.CachedComments[val.CommentId] = val
@@ -82,14 +94,31 @@ func (p *Page) NewComment(user UserControllerInterface, comm *communication.Comm
 	if err != nil {
 		return false, "Couldn't create the comment."
 	} else {
-		p.CachedComments[commResult.CommentId] = *commResult
-		for _, gst := range p.GuestsOnPage {
-			gst.AddWrapped("Comment", *commResult)
-		}
-		for _, mem := range p.MembersOnPage {
-			mem.AddWrapped("Comment", *commResult)
-		}
+		p.UpdateComment(commResult)
 	}
 	return true, "Created comment."
 
+}
+
+func (p *Page) UpdateComment(com *communication.Comment) {
+	p.CachedComments[com.CommentId] = *com
+	for _, gst := range p.GuestsOnPage {
+		gst.AddWrapped("Comment", *com)
+	}
+	for _, mem := range p.MembersOnPage {
+		mem.AddWrapped("Comment", *com)
+	}
+}
+
+// VoteComment effects a user's vote for a comment on this page.
+func (p *Page) VoteComment(user UserControllerInterface, comm *communication.CommentVote, serv *Server) (bool, string) {
+	if comm.VoteType != "funny" && comm.VoteType != "factual" && comm.VoteType != "agree" {
+		return false, fmt.Sprintf("%s is not a valid vote dimension.", comm.VoteType)
+	}
+	comupdate, err := serv.DB.VoteComment(user.GetUser().ID, comm)
+	if err != nil {
+		return false, err.Error()
+	}
+	p.UpdateComment(comupdate)
+	return true, "Voted on Comment."
 }

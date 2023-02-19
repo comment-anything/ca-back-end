@@ -52,7 +52,7 @@ type CommentReply struct {
 type CommentVote struct {
 	VotingOn int64
 	VoteType string
-	Value    int8
+	Value    int16
 }
 
 // GetComments is dispatched to the server when a user opens the Browser Extension or when they navigate to a new page with the browser extension over. It is a request for all comments associated with the given url.
