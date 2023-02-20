@@ -7,15 +7,72 @@ package generated
 
 import (
 	"context"
+	"database/sql"
 )
+
+const createComment = `-- name: CreateComment :one
+INSERT INTO "Comments"
+("path_id", "author", "content", "parent")
+VALUES
+( $1, $2, $3, $4) RETURNING id, path_id, author, content, created_at, parent, hidden, removed
+`
+
+type CreateCommentParams struct {
+	PathID  int64         `json:"path_id"`
+	Author  int64         `json:"author"`
+	Content string        `json:"content"`
+	Parent  sql.NullInt64 `json:"parent"`
+}
+
+func (q *Queries) CreateComment(ctx context.Context, arg CreateCommentParams) (Comment, error) {
+	row := q.db.QueryRowContext(ctx, createComment,
+		arg.PathID,
+		arg.Author,
+		arg.Content,
+		arg.Parent,
+	)
+	var i Comment
+	err := row.Scan(
+		&i.ID,
+		&i.PathID,
+		&i.Author,
+		&i.Content,
+		&i.CreatedAt,
+		&i.Parent,
+		&i.Hidden,
+		&i.Removed,
+	)
+	return i, err
+}
+
+const getCommentByID = `-- name: GetCommentByID :one
+SELECT id, path_id, author, content, created_at, parent, hidden, removed from "Comments"
+WHERE id = $1
+`
+
+func (q *Queries) GetCommentByID(ctx context.Context, id int64) (Comment, error) {
+	row := q.db.QueryRowContext(ctx, getCommentByID, id)
+	var i Comment
+	err := row.Scan(
+		&i.ID,
+		&i.PathID,
+		&i.Author,
+		&i.Content,
+		&i.CreatedAt,
+		&i.Parent,
+		&i.Hidden,
+		&i.Removed,
+	)
+	return i, err
+}
 
 const getCommentsForPath = `-- name: GetCommentsForPath :many
 SELECT id, path_id, author, content, created_at, parent, hidden, removed FROM "Comments"
-WHERE id = $1 ORDER BY id
+WHERE path_id = $1 ORDER BY id
 `
 
-func (q *Queries) GetCommentsForPath(ctx context.Context, id int64) ([]Comment, error) {
-	rows, err := q.db.QueryContext(ctx, getCommentsForPath, id)
+func (q *Queries) GetCommentsForPath(ctx context.Context, pathID int64) ([]Comment, error) {
+	rows, err := q.db.QueryContext(ctx, getCommentsForPath, pathID)
 	if err != nil {
 		return nil, err
 	}

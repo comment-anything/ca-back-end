@@ -33,6 +33,9 @@ func (c *UserControllerBase) Respond(w http.ResponseWriter, r *http.Request) {
 		w.Write(communication.GetErrMsg(true, ""))
 	} else {
 		w.Write(outp)
+		c.nextResponse = nil
+		c.nextResponse = make([]interface{}, 0)
+
 	}
 }
 

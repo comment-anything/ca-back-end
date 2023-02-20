@@ -2,6 +2,7 @@ package util
 
 import (
 	"regexp"
+	"strings"
 )
 
 /**
@@ -38,8 +39,8 @@ func ExtractPathParts(s string) PathExtractResult {
 		path, ok = result["path"]
 	}
 	if ok {
-		returnResult.Domain = dom
-		returnResult.Path = path
+		returnResult.Domain = strings.ToLower(dom)
+		returnResult.Path = strings.ToLower(path)
 	} else {
 		returnResult.Success = false
 	}

@@ -34,6 +34,9 @@ type UserControllerInterface interface {
 	// HandleCommandGetComments handles when a user requests the comment data for a particular url.
 	HandleCommandGetComments(comm *communication.GetComments, server *Server)
 
+	// HandleCommandCommentReply handles when a user attempts to post a new comment.
+	HandleCommandCommentReply(comm *communication.CommentReply, serv *Server)
+
 	// GetUser returns the user associated with this controller
 	GetUser() *generated.User
 
