@@ -1,3 +1,10 @@
+2/19/2023: Karl
+- Implemented CommentVote 
+- Changed communication.CommentVote.Value to type int16 and the type in the table to match. Also made table value non-null. 
+- GetVotesForCommentAndCategoryByUser, CreateCommentVote, DeleteCommentVote, UpdateCommentVote queries
+- controller.HandleCommandVoteComment, server.voteComment for the API path
+
+
 2/18/2023: All group members
 - Fixed null-comment bugs ( making the slice was starting with empty structs, capacity was being passed in as length)
 - Fixed no comments being pulled from database (comment.sql error) ; was querying based on comment id not path id 

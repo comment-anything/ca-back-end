@@ -88,7 +88,7 @@ func (s *Store) populateVotes(comm *communication.Comment) error {
 		case "factual":
 			comm.Factual.Ups += val.Sum
 		case "agree":
-			comm.Factual.Ups += val.Sum
+			comm.Agree.Ups += val.Sum
 		}
 	}
 	results2, err := s.Queries.GetDownVotesForComment(ctx, comm.CommentId)
@@ -102,7 +102,7 @@ func (s *Store) populateVotes(comm *communication.Comment) error {
 		case "factual":
 			comm.Factual.Downs += val.Sum
 		case "agree":
-			comm.Factual.Downs += val.Sum
+			comm.Agree.Downs += val.Sum
 		}
 	}
 	return nil

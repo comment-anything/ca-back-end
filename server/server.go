@@ -59,6 +59,7 @@ func (s *Server) setupRouter() {
 	r.HandleFunc("/newPassword", responder(s.postSetNewPass))
 	r.HandleFunc("/getComments", responder(s.getComments))
 	r.HandleFunc("/newComment", responder(s.postCommentReply))
+	r.HandleFunc("/voteComment", responder(s.voteComment))
 
 	s.httpServer.Handler = s.router
 	s.router = r

@@ -45,6 +45,48 @@ func (q *Queries) CreateComment(ctx context.Context, arg CreateCommentParams) (C
 	return i, err
 }
 
+const createCommentVote = `-- name: CreateCommentVote :exec
+INSERT INTO "VoteRecords"
+("comment_id", "user_id", "category", "value")
+VALUES
+($1, $2, $3, $4)
+`
+
+type CreateCommentVoteParams struct {
+	CommentID int64  `json:"comment_id"`
+	UserID    int64  `json:"user_id"`
+	Category  string `json:"category"`
+	Value     int16  `json:"value"`
+}
+
+func (q *Queries) CreateCommentVote(ctx context.Context, arg CreateCommentVoteParams) error {
+	_, err := q.db.ExecContext(ctx, createCommentVote,
+		arg.CommentID,
+		arg.UserID,
+		arg.Category,
+		arg.Value,
+	)
+	return err
+}
+
+const deleteCommentVote = `-- name: DeleteCommentVote :exec
+DELETE FROM "VoteRecords"
+WHERE comment_id = $1
+AND category = $2
+AND user_id = $3
+`
+
+type DeleteCommentVoteParams struct {
+	CommentID int64  `json:"comment_id"`
+	Category  string `json:"category"`
+	UserID    int64  `json:"user_id"`
+}
+
+func (q *Queries) DeleteCommentVote(ctx context.Context, arg DeleteCommentVoteParams) error {
+	_, err := q.db.ExecContext(ctx, deleteCommentVote, arg.CommentID, arg.Category, arg.UserID)
+	return err
+}
+
 const getCommentByID = `-- name: GetCommentByID :one
 SELECT id, path_id, author, content, created_at, parent, hidden, removed from "Comments"
 WHERE id = $1
@@ -169,35 +211,44 @@ func (q *Queries) GetUpVotesForComment(ctx context.Context, commentID int64) ([]
 	return items, nil
 }
 
-const getVotesForCommentByUser = `-- name: GetVotesForCommentByUser :many
-SELECT category FROM "VoteRecords"
-WHERE comment_id = $1 and user_id = $2
+const getVotesForCommentAndCategoryByUser = `-- name: GetVotesForCommentAndCategoryByUser :one
+SELECT comment_id, category, user_id, value FROM "VoteRecords"
+WHERE comment_id = $1 and user_id = $2 and category = $3
 `
 
-type GetVotesForCommentByUserParams struct {
-	CommentID int64 `json:"comment_id"`
-	UserID    int64 `json:"user_id"`
+type GetVotesForCommentAndCategoryByUserParams struct {
+	CommentID int64  `json:"comment_id"`
+	UserID    int64  `json:"user_id"`
+	Category  string `json:"category"`
 }
 
-func (q *Queries) GetVotesForCommentByUser(ctx context.Context, arg GetVotesForCommentByUserParams) ([]string, error) {
-	rows, err := q.db.QueryContext(ctx, getVotesForCommentByUser, arg.CommentID, arg.UserID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []string
-	for rows.Next() {
-		var category string
-		if err := rows.Scan(&category); err != nil {
-			return nil, err
-		}
-		items = append(items, category)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
+func (q *Queries) GetVotesForCommentAndCategoryByUser(ctx context.Context, arg GetVotesForCommentAndCategoryByUserParams) (VoteRecord, error) {
+	row := q.db.QueryRowContext(ctx, getVotesForCommentAndCategoryByUser, arg.CommentID, arg.UserID, arg.Category)
+	var i VoteRecord
+	err := row.Scan(
+		&i.CommentID,
+		&i.Category,
+		&i.UserID,
+		&i.Value,
+	)
+	return i, err
+}
+
+const updateCommentVote = `-- name: UpdateCommentVote :exec
+UPDATE "VoteRecords"
+SET value = $1
+WHERE comment_id = $1
+AND category = $2
+AND user_id = $3
+`
+
+type UpdateCommentVoteParams struct {
+	Value    int16  `json:"value"`
+	Category string `json:"category"`
+	UserID   int64  `json:"user_id"`
+}
+
+func (q *Queries) UpdateCommentVote(ctx context.Context, arg UpdateCommentVoteParams) error {
+	_, err := q.db.ExecContext(ctx, updateCommentVote, arg.Value, arg.Category, arg.UserID)
+	return err
 }
