@@ -60,7 +60,8 @@ func (c *GuestController) HandleCommandRegister(comm *communication.Register, se
 			c.manager.TransferGuest(c, &user)
 			c.AddMessage(true, "You registered succesfully.")
 			var loginResponse communication.LoginResponse
-			loginResponse.LoggedInAs = serv.GetProfile(&user)
+			prof, _ := serv.DB.GetCommUser(&user)
+			loginResponse.LoggedInAs = *prof
 			loginResponse.Email = user.Email
 			c.AddWrapped("LoginResponse", loginResponse)
 		}

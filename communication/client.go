@@ -61,3 +61,15 @@ type GetComments struct {
 	SortedBy      string
 	SortAscending bool
 }
+
+// ViewUsersReport is dispatched to the server when an admin requests a report on the overall users of comment anywhere.
+type ViewUsersReport struct {
+}
+
+// ViewFeedback is dispatched to the Server when an admin wishes to view feedback submitted by users of Comment Anywhere
+type ViewFeedback struct {
+	From int64
+	To   int64
+	// May be "bug" | "feature" | "general" | "all"
+	FeedbackType string
+}

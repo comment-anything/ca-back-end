@@ -75,4 +75,31 @@ type Comment struct {
 // FullPage is returned when a user first requests comments for a new page. It contains an array of all comment data for that page.
 type FullPage struct {
 	Comments []Comment
+	Domain   string
+	Path     string
+}
+
+// FeedbackRecord contains data the Front End needs to render a FeedbackRecord, which is a record of a user-submitted feedback, viewed by an Admin, such as a feature request, or bug report.
+type FeedbackRecord struct {
+	Content     string
+	Hide        bool
+	ID          int64
+	SubmittedAt int64
+	// May be "bug" | "feature" | "general"
+	FeedbackType string
+	UserID       int64
+	Username     string
+}
+
+// FeedbackReport contains an array of feedbackRecords based on the admin's requesting parameters. It is sent to an admin when they request a report on feedbacks
+type FeedbackReport struct {
+	Records []FeedbackRecord
+}
+
+// AdminUsersReport is dispatched when an Admin requests the Users report
+type AdminUsersReport struct {
+	LoggedInUserCount int64
+	NewestUserId      int64
+	NewestUsername    string
+	UserCount         int64
 }

@@ -35,10 +35,13 @@ func (c *MemberControllerBase) HandleCommandChangeEmail(comm *communication.Chan
 		} else {
 			c.AddMessage(true, "Email updated.")
 			c.User.Email = comm.NewEmail
-			prof := serv.GetProfile(c.User)
+			prof, err := serv.DB.GetCommUser(c.User)
+			if err != nil {
+				c.AddMessage(false, "There was some problem with your profile.")
+			}
 			profResponse := communication.ProfileUpdateResponse{}
 			profResponse.Email = comm.NewEmail
-			profResponse.LoggedInAs = prof
+			profResponse.LoggedInAs = *prof
 			c.AddWrapped("ProfileUpdateResponse", profResponse)
 		}
 	}

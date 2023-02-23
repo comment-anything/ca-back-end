@@ -28,7 +28,11 @@ func (c *GuestController) HandleCommandLogin(comm *communication.Login, server *
 			if user.Password == comm.Password {
 				c.manager.TransferGuest(c, &user)
 				var loginResponse communication.LoginResponse
-				loginResponse.LoggedInAs = server.GetProfile(&user)
+				prof, err := server.DB.GetCommUser(&user)
+				if err != nil {
+					c.AddMessage(false, "There was some problem with your profile.")
+				}
+				loginResponse.LoggedInAs = *prof
 				loginResponse.Email = user.Email
 				c.AddWrapped("LoginResponse", loginResponse)
 				c.AddMessage(true, "Logged in.")
