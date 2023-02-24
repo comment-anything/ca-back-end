@@ -10,7 +10,7 @@ import (
 )
 
 const getAdminAssignment = `-- name: GetAdminAssignment :many
-Select id, assigned_to, assigned_by, assigned_at, is_deactivation from "AdminAssignments" where assigned_to = $1
+Select id, assigned_to, assigned_by, assigned_at, is_deactivation from "AdminAssignments" where assigned_to = $1 ORDER BY assigned_at DESC
 `
 
 func (q *Queries) GetAdminAssignment(ctx context.Context, assignedTo int64) ([]AdminAssignment, error) {

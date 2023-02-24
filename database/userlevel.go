@@ -16,12 +16,8 @@ func (s *Store) IsAdmin(id int64) (bool, error) {
 			return false, err
 		}
 	}
-	isAdmin := false
-	is_deactivation := false
-	for _, a := range assnments {
-		is_deactivation = a.IsDeactivation.Valid && a.IsDeactivation.Bool != false
-		isAdmin = !is_deactivation
-	}
-	return isAdmin, nil
+	last_row := assnments[len(assnments)-1]
+	last_row_indicates_admin := !last_row.IsDeactivation.Valid || last_row.IsDeactivation.Bool == false
+	return last_row_indicates_admin, nil
 
 }
