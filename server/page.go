@@ -71,6 +71,8 @@ func (p *Page) GetComments(user UserControllerInterface) {
 
 	var fp communication.FullPage
 	fp.Comments = r
+	fp.Domain = p.domain
+	fp.Path = p.path
 	user.AddWrapped("FullPage", fp)
 }
 
