@@ -59,3 +59,15 @@ func (c *UserControllerBase) AddMessage(success bool, text string) {
 func (c *UserControllerBase) AddWrapped(name string, data interface{}) {
 	c.nextResponse = append(c.nextResponse, communication.Wrap(name, data))
 }
+
+func (c *MemberController) GetControllerType() string {
+	return "MemberController"
+}
+
+func (c *AdminController) GetControllerType() string {
+	return "AdminController"
+}
+
+func (c *GuestController) GetControllerType() string {
+	return "GuestController"
+}

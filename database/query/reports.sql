@@ -14,6 +14,11 @@ WHERE "Feedbacks"."type" = $1 and submitted_at > $2 and submitted_at < $3 and "F
 SELECT * FROM "Feedbacks"
 WHERE "Feedbacks"."type" = $1 and "Feedbacks"."hidden" = $2;
 
+-- name: SetFeedbackHiddenTo :exec
+UPDATE "Feedbacks"
+SET "hidden" = $2
+WHERE id = $1;
+
 -- name: GetUsersCount :one
 SELECT count(id) from "Users";
 

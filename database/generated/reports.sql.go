@@ -7,7 +7,6 @@ package generated
 
 import (
 	"context"
-	"database/sql"
 	"time"
 )
 
@@ -15,7 +14,7 @@ const getAllFeedbacks = `-- name: GetAllFeedbacks :many
 SELECT id, user_id, type, submitted_at, content, hidden FROM "Feedbacks" WHERE "Feedbacks"."hidden" = $1
 `
 
-func (q *Queries) GetAllFeedbacks(ctx context.Context, hidden sql.NullBool) ([]Feedback, error) {
+func (q *Queries) GetAllFeedbacks(ctx context.Context, hidden bool) ([]Feedback, error) {
 	rows, err := q.db.QueryContext(ctx, getAllFeedbacks, hidden)
 	if err != nil {
 		return nil, err
@@ -51,9 +50,9 @@ WHERE submitted_at > $1 and submitted_at < $2 and "Feedbacks"."hidden" = $3
 `
 
 type GetAllFeedbacksInRangeParams struct {
-	SubmittedAt   time.Time    `json:"submitted_at"`
-	SubmittedAt_2 time.Time    `json:"submitted_at_2"`
-	Hidden        sql.NullBool `json:"hidden"`
+	SubmittedAt   time.Time `json:"submitted_at"`
+	SubmittedAt_2 time.Time `json:"submitted_at_2"`
+	Hidden        bool      `json:"hidden"`
 }
 
 func (q *Queries) GetAllFeedbacksInRange(ctx context.Context, arg GetAllFeedbacksInRangeParams) ([]Feedback, error) {
@@ -92,8 +91,8 @@ WHERE "Feedbacks"."type" = $1 and "Feedbacks"."hidden" = $2
 `
 
 type GetAllFeedbacksOfTypeParams struct {
-	Type   sql.NullString `json:"type"`
-	Hidden sql.NullBool   `json:"hidden"`
+	Type   string `json:"type"`
+	Hidden bool   `json:"hidden"`
 }
 
 func (q *Queries) GetAllFeedbacksOfType(ctx context.Context, arg GetAllFeedbacksOfTypeParams) ([]Feedback, error) {
@@ -132,10 +131,10 @@ WHERE "Feedbacks"."type" = $1 and submitted_at > $2 and submitted_at < $3 and "F
 `
 
 type GetFeedbacksInRangeOfTypeParams struct {
-	Type          sql.NullString `json:"type"`
-	SubmittedAt   time.Time      `json:"submitted_at"`
-	SubmittedAt_2 time.Time      `json:"submitted_at_2"`
-	Hidden        sql.NullBool   `json:"hidden"`
+	Type          string    `json:"type"`
+	SubmittedAt   time.Time `json:"submitted_at"`
+	SubmittedAt_2 time.Time `json:"submitted_at_2"`
+	Hidden        bool      `json:"hidden"`
 }
 
 func (q *Queries) GetFeedbacksInRangeOfType(ctx context.Context, arg GetFeedbacksInRangeOfTypeParams) ([]Feedback, error) {
@@ -199,4 +198,20 @@ func (q *Queries) GetUsersCount(ctx context.Context) (int64, error) {
 	var count int64
 	err := row.Scan(&count)
 	return count, err
+}
+
+const setFeedbackHiddenTo = `-- name: SetFeedbackHiddenTo :exec
+UPDATE "Feedbacks"
+SET "hidden" = $2
+WHERE id = $1
+`
+
+type SetFeedbackHiddenToParams struct {
+	ID     int64 `json:"id"`
+	Hidden bool  `json:"hidden"`
+}
+
+func (q *Queries) SetFeedbackHiddenTo(ctx context.Context, arg SetFeedbackHiddenToParams) error {
+	_, err := q.db.ExecContext(ctx, setFeedbackHiddenTo, arg.ID, arg.Hidden)
+	return err
 }

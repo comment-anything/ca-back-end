@@ -40,8 +40,20 @@ type UserControllerInterface interface {
 	// HandleCommandVoteComment handles when a user attempts to vote on a comment.
 	HandleCommandVoteComment(comm *communication.CommentVote, serv *Server)
 
+	// HandleCommandViewUsersReport handles the request, only valid for an admin, to view the report on users and usage
+	HandleCommandViewUsersReport(comm *communication.ViewUsersReport, serv *Server)
+
+	// HandleCommandViewUsersReport handles the request, only valid for an admin, to view the report on users and usage
+	HandleCommandViewFeedback(comm *communication.ViewFeedback, serv *Server)
+
+	// ToggleFeedbackHidden handles the request, only valid for an admin, to toggle whether a given feedback is hidden.
+	ToggleFeedbackHidden(comm *communication.ToggleFeedbackHidden, serv *Server)
+
 	// GetUser returns the user associated with this controller
 	GetUser() *generated.User
+
+	// GetControllerType returns the controller type, eg "GuestController", "AdminController"
+	GetControllerType() string
 
 	// GetPage gets the current page associated with this controller.
 	GetPage() *Page

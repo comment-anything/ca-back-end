@@ -73,3 +73,9 @@ type ViewFeedback struct {
 	// May be "bug" | "feature" | "general" | "all"
 	FeedbackType string
 }
+
+// ToggleFeedbackHidden is dispatched to the server when an admin wishes to toggle whether a particular feedback entry is hidden and should be shown on future feedback reports. */
+type ToggleFeedbackHidden struct {
+	ID          int64
+	SetHiddenTo bool
+}

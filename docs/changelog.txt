@@ -1,3 +1,14 @@
+
+2/24/2023 : Karl 
+- ViewUsersReport pipeline
+- ToggleFeedbackHidden pipeline 
+- ViewFeedbackSection pipeline 
+- Assign AdminControllers to admins 
+- Store.IsAdmin 
+- Controller.GetControllerType() 
+- user list in cli and usermanager
+
+
 2/19/2023: Karl
 - Implemented CommentVote 
 - Changed communication.CommentVote.Value to type int16 and the type in the table to match. Also made table value non-null. 

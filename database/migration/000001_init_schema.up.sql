@@ -11,9 +11,9 @@ CREATE TABLE "Users" (
 );
 
 CREATE TABLE "DomainBans" (
-  "user_id" bigint,
-  "banned_from" varchar,
-  "banned_by" bigint,
+  "user_id" bigint NOT NULL,
+  "banned_from" varchar NOT NULL,
+  "banned_by" bigint NOT NULL,
   "banned_at" timestamptz NOT NULL DEFAULT (now())
 );
 
@@ -124,11 +124,11 @@ CREATE TABLE "PasswordResetCodes" (
 
 CREATE TABLE "Feedbacks" (
   "id" bigserial PRIMARY KEY,
-  "user_id" bigint,
-  "type" varchar,
+  "user_id" bigint NOT NULL,
+  "type" varchar NOT NULL ,
   "submitted_at" timestamptz NOT NULL DEFAULT (now()),
-  "content" varchar,
-  "hidden" boolean
+  "content" varchar NOT NULL,
+  "hidden" boolean NOT NULL DEFAULT(FALSE)
 );
 
 CREATE INDEX ON "Users" ("username");

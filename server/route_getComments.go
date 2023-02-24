@@ -20,7 +20,17 @@ func (c *GuestController) HandleCommandGetComments(comm *communication.GetCommen
 }
 
 /** HandleCommandGetComments on a member controller calls the appropriate functions on a pagemanager and page so that they can maintain which members and which guests are present. */
-func (c *MemberControllerBase) HandleCommandGetComments(comm *communication.GetComments, serv *Server) {
+func (c *MemberController) HandleCommandGetComments(comm *communication.GetComments, serv *Server) {
+	serv.PageManager.MoveMemberToPage(c, comm.Url, serv)
+	if c.Page != nil {
+		c.Page.GetComments(c)
+	} else {
+		c.AddMessage(false, fmt.Sprintf("Couldn't get comments for %s", comm.Url))
+	}
+}
+
+/** HandleCommandGetComments on an admin controller calls the appropriate functions on a pagemanager and page so that they can maintain which members and which guests are present. */
+func (c *AdminController) HandleCommandGetComments(comm *communication.GetComments, serv *Server) {
 	serv.PageManager.MoveMemberToPage(c, comm.Url, serv)
 	if c.Page != nil {
 		c.Page.GetComments(c)

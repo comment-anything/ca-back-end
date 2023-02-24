@@ -63,10 +63,10 @@ type Domain struct {
 }
 
 type DomainBan struct {
-	UserID     sql.NullInt64  `json:"user_id"`
-	BannedFrom sql.NullString `json:"banned_from"`
-	BannedBy   sql.NullInt64  `json:"banned_by"`
-	BannedAt   time.Time      `json:"banned_at"`
+	UserID     int64     `json:"user_id"`
+	BannedFrom string    `json:"banned_from"`
+	BannedBy   int64     `json:"banned_by"`
+	BannedAt   time.Time `json:"banned_at"`
 }
 
 type DomainModeratorAssignment struct {
@@ -79,12 +79,12 @@ type DomainModeratorAssignment struct {
 }
 
 type Feedback struct {
-	ID          int64          `json:"id"`
-	UserID      sql.NullInt64  `json:"user_id"`
-	Type        sql.NullString `json:"type"`
-	SubmittedAt time.Time      `json:"submitted_at"`
-	Content     sql.NullString `json:"content"`
-	Hidden      sql.NullBool   `json:"hidden"`
+	ID          int64     `json:"id"`
+	UserID      int64     `json:"user_id"`
+	Type        string    `json:"type"`
+	SubmittedAt time.Time `json:"submitted_at"`
+	Content     string    `json:"content"`
+	Hidden      bool      `json:"hidden"`
 }
 
 type GlobalModeratorAssignment struct {

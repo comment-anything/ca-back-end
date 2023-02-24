@@ -36,10 +36,11 @@ func (um *UserManager) TransferMember(oldMemberController *MemberControllerBase)
 	gc := um.CreateGuestController()
 	oldMemberController.User.ID = gc.User.ID
 	oldMemberController.hasloggedin = false
-	newmembctrlr, err := um.AttemptCreateMemberController(oldMemberController.User.ID)
-	if err != nil {
-		um.members[oldMemberController.User.ID] = newmembctrlr
-	}
+	delete(um.members, oldMemberController.User.ID)
+	// newmembctrlr, err := um.AttemptCreateMemberController(oldMemberController.User.ID)
+	// if err != nil {
+	// 	um.members[oldMemberController.User.ID] = newmembctrlr
+	// }
 }
 
 // GetControllerById returns a UserController if it exists in the map and returns an error if it doesnt.
@@ -54,9 +55,11 @@ func (um *UserManager) GetControllerById(id int64, isGuest bool) (UserController
 	} else {
 		cont, ok := um.members[id]
 		if ok {
+			fmt.Printf("\nFound controller %d of type %s", id, cont.GetControllerType())
 			return cont, nil
 		} else {
 			newcont, err := um.AttemptCreateMemberController(id)
+			fmt.Printf("\nCreated controller %d of type %s", id, newcont.GetControllerType())
 			if err != nil {
 				return nil, errors.New("Member controller could not be created.")
 			}
@@ -65,7 +68,7 @@ func (um *UserManager) GetControllerById(id int64, isGuest bool) (UserController
 	}
 }
 
-// AttemptCreateMemberController will query the database to see if a member with that id exists. If so, it will add that controller to the map. //TODO: different controllers for various levels of members
+// AttemptCreateMemberController will query the database to see if a member with that id exists. If so, it will add that controller to the map. //TODO: different controllers for various levels of members. Have Admin, need moderators.
 func (um *UserManager) AttemptCreateMemberController(id int64) (UserControllerInterface, error) {
 	user, err := um.serv.DB.Queries.GetUserByID(context.Background(), id)
 	if err != nil {
@@ -75,12 +78,22 @@ func (um *UserManager) AttemptCreateMemberController(id int64) (UserControllerIn
 		if ok {
 			return cont, nil // if controller was already made, just return that
 		} else {
-			cont := &MemberController{}
-			cont.User = &user
-			cont.manager = um
-			cont.hasloggedin = true
-			um.members[id] = cont
-			return cont, nil
+			adm, err := um.serv.DB.IsAdmin(id)
+			if adm == true && err == nil {
+				cont := &AdminController{}
+				cont.User = &user
+				cont.manager = um
+				cont.hasloggedin = true
+				um.members[id] = cont
+				return cont, nil
+			} else {
+				cont := &MemberController{}
+				cont.User = &user
+				cont.manager = um
+				cont.hasloggedin = true
+				um.members[id] = cont
+				return cont, nil
+			}
 		}
 
 	}
@@ -106,4 +119,12 @@ func (um *UserManager) CreateGuestController() *GuestController {
 
 func (um *UserManager) GetUserCountString() string {
 	return fmt.Sprintf("%v users active; %v members and %v guests.", len(um.members)+len(um.guests), len(um.members), len(um.guests))
+}
+
+func (um *UserManager) GetUserListString() string {
+	userlist := " Users Online: "
+	for _, v := range um.members {
+		userlist += v.GetUser().Username + "  "
+	}
+	return userlist
 }
