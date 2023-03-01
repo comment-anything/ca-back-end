@@ -41,7 +41,10 @@ func (s *Store) Connect() error {
 		s.Disconnect()
 	}
 	postgres, err := sql.Open("postgres", config.Vals.DB.ConnectString())
-
+	if err != nil {
+		return err
+	}
+	err = postgres.Ping()
 	if err != nil {
 		return err
 	}

@@ -16,8 +16,12 @@ func (s *Store) IsAdmin(id int64) (bool, error) {
 			return false, err
 		}
 	}
-	last_row := assnments[len(assnments)-1]
-	last_row_indicates_admin := !last_row.IsDeactivation.Valid || last_row.IsDeactivation.Bool == false
-	return last_row_indicates_admin, nil
+	if len(assnments) > 0 {
+		last_row := assnments[len(assnments)-1]
+		last_row_indicates_admin := !last_row.IsDeactivation.Valid || last_row.IsDeactivation.Bool == false
+		return last_row_indicates_admin, nil
+	} else {
+		return false, nil
+	}
 
 }

@@ -1,3 +1,6 @@
+2/26/2023 : Karl
+- Server now produces error if it fails to connect to server 
+- Getting admin user level redone in a more reliable way
 
 2/24/2023 : Karl 
 - ViewUsersReport pipeline

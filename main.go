@@ -16,6 +16,8 @@ func main() {
 		s, err := server.New()
 		if err == nil {
 			s.Start(true)
+		} else {
+			fmt.Printf("\nError starting server: %s", err.Error())
 		}
 	}
 }
