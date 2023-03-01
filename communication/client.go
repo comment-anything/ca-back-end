@@ -79,3 +79,9 @@ type ToggleFeedbackHidden struct {
 	ID          int64
 	SetHiddenTo bool
 }
+
+// Feedback is dispatched to the Server when a user submits feedback, such as a feature request or bug report, on Comment Anywhere */
+type Feedback struct {
+	FeedbackType string
+	Content      string
+}

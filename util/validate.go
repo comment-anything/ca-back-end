@@ -57,3 +57,12 @@ func ValidateProfile(s string) (bool, string) {
 	// TODO: run regexes here
 	return true, ""
 }
+
+// ValidateFeedbackType confirms that a feedback type is valid
+func ValidateFeedbackType(s string) (bool, string) {
+	if s == "bug" || s == "feature" || s == "general" {
+		return true, ""
+	} else {
+		return false, "That's not a valid feedback category."
+	}
+}

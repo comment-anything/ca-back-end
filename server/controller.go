@@ -46,6 +46,9 @@ type UserControllerInterface interface {
 	// HandleCommandViewUsersReport handles the request, only valid for an admin, to view the report on users and usage
 	HandleCommandViewFeedback(comm *communication.ViewFeedback, serv *Server)
 
+	// HandleCommandNewFeedback handles a user attempting to post some new feedback for admins to view
+	HandleCommandNewFeedback(comm *communication.Feedback, serv *Server)
+
 	// ToggleFeedbackHidden handles the request, only valid for an admin, to toggle whether a given feedback is hidden.
 	ToggleFeedbackHidden(comm *communication.ToggleFeedbackHidden, serv *Server)
 

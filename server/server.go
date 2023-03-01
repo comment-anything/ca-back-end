@@ -64,6 +64,7 @@ func (s *Server) setupRouter() {
 	r.HandleFunc("/viewUsersReport", responder(s.viewUsersReport))
 	r.HandleFunc("/viewFeedback", responder(s.viewFeedback))
 	r.HandleFunc("/toggleFeedbackHidden", responder(s.toggleFeedbackHidden))
+	r.HandleFunc("/newFeedback", responder(s.newFeedback))
 
 	s.httpServer.Handler = s.router
 	s.router = r
