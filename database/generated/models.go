@@ -88,11 +88,11 @@ type Feedback struct {
 }
 
 type GlobalModeratorAssignment struct {
-	ID             int64        `json:"id"`
-	AssignedTo     int64        `json:"assigned_to"`
-	AssignedAt     time.Time    `json:"assigned_at"`
-	AssignedBy     int64        `json:"assigned_by"`
-	IsDeactivation sql.NullBool `json:"is_deactivation"`
+	ID             int64     `json:"id"`
+	AssignedTo     int64     `json:"assigned_to"`
+	AssignedAt     time.Time `json:"assigned_at"`
+	AssignedBy     int64     `json:"assigned_by"`
+	IsDeactivation bool      `json:"is_deactivation"`
 }
 
 type Log struct {

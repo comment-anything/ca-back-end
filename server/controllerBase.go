@@ -71,3 +71,15 @@ func (c *AdminController) GetControllerType() string {
 func (c *GuestController) GetControllerType() string {
 	return "GuestController"
 }
+
+func (c *DomainModeratorController) GetControllerType() string {
+	return "DomainModeratorController"
+}
+
+func (c *GlobalModeratorController) GetControllerType() string {
+	return "GlobalModeratorController"
+}
+
+func (c *MemberControllerBase) GetControllerType() string {
+	return "GlobalModeratorController"
+}

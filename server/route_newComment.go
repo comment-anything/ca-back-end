@@ -25,6 +25,28 @@ func (c *MemberController) HandleCommandCommentReply(comm *communication.Comment
 	}
 }
 
+func (c *DomainModeratorController) HandleCommandCommentReply(comm *communication.CommentReply, serv *Server) {
+	if c.Page == nil {
+		c.AddMessage(false, "You can't post a comment here.")
+	} else {
+		ok, msg := c.Page.NewComment(c, comm, serv)
+		if !ok {
+			c.AddMessage(false, msg)
+		}
+	}
+}
+
+func (c *GlobalModeratorController) HandleCommandCommentReply(comm *communication.CommentReply, serv *Server) {
+	if c.Page == nil {
+		c.AddMessage(false, "You can't post a comment here.")
+	} else {
+		ok, msg := c.Page.NewComment(c, comm, serv)
+		if !ok {
+			c.AddMessage(false, msg)
+		}
+	}
+}
+
 /** HandleCommandCommentReply on a admin controller calls the appropriate functions on a pagemanager and page to post a new comment. */
 func (c *AdminController) HandleCommandCommentReply(comm *communication.CommentReply, serv *Server) {
 	if c.Page == nil {

@@ -18,6 +18,16 @@ func (c *MemberController) HandleCommandViewFeedback(comm *communication.ViewFee
 	c.AddMessage(false, "You don't have permission to see the feedback report.")
 }
 
+/** HandleCommandViewFeedback tells a member they don't have permission to view this report. */
+func (c *GlobalModeratorController) HandleCommandViewFeedback(comm *communication.ViewFeedback, serv *Server) {
+	c.AddMessage(false, "You don't have permission to see the feedback report.")
+}
+
+/** HandleCommandViewFeedback tells a member they don't have permission to view this report. */
+func (c *DomainModeratorController) HandleCommandViewFeedback(comm *communication.ViewFeedback, serv *Server) {
+	c.AddMessage(false, "You don't have permission to see the feedback report.")
+}
+
 /** HandleCommandViewFeedback provides an admin with the feedback report. */
 func (c *AdminController) HandleCommandViewFeedback(comm *communication.ViewFeedback, serv *Server) {
 	rep, err := serv.DB.GetFeedbackReport(comm)

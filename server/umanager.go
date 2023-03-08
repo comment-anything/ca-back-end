@@ -22,7 +22,7 @@ func NewUserManager() UserManager {
 	return um
 }
 
-// TransferGuest deletes a previous guest controller from the map, sets the user in the calling guestController to the logged in user, and sets the hasLogged val to true for correct cookie generation.
+// TransferGuest is called when a user logs in. It deletes a previous guest controller from the map, sets the user in the calling guestController to the logged in user, and sets the hasLogged val to true for correct cookie generation.
 func (um *UserManager) TransferGuest(oldGuestController *GuestController, user *generated.User) {
 	delete(um.guests, oldGuestController.User.ID)
 
@@ -30,17 +30,13 @@ func (um *UserManager) TransferGuest(oldGuestController *GuestController, user *
 	oldGuestController.hasloggedin = true
 }
 
-// TransferMember deletes a member controller from the map, and sets the calling member controller User to an associated member ID, and sets the hasLoggedIn val to false for correct cookie generation.
+// TransferMember is called when a user logs out. It deletes a member controller from the map, and sets the calling member controller User to an associated member ID, and sets the hasLoggedIn val to false for correct cookie generation.
 func (um *UserManager) TransferMember(oldMemberController *MemberControllerBase) {
 	delete(um.members, oldMemberController.User.ID)
 	gc := um.CreateGuestController()
 	oldMemberController.User.ID = gc.User.ID
 	oldMemberController.hasloggedin = false
 	delete(um.members, oldMemberController.User.ID)
-	// newmembctrlr, err := um.AttemptCreateMemberController(oldMemberController.User.ID)
-	// if err != nil {
-	// 	um.members[oldMemberController.User.ID] = newmembctrlr
-	// }
 }
 
 // GetControllerById returns a UserController if it exists in the map and returns an error if it doesnt.
@@ -78,6 +74,7 @@ func (um *UserManager) AttemptCreateMemberController(id int64) (UserControllerIn
 		if ok {
 			return cont, nil // if controller was already made, just return that
 		} else {
+			// check if they are an admin
 			adm, err := um.serv.DB.IsAdmin(id)
 			if adm == true && err == nil {
 				cont := &AdminController{}
@@ -86,14 +83,32 @@ func (um *UserManager) AttemptCreateMemberController(id int64) (UserControllerIn
 				cont.hasloggedin = true
 				um.members[id] = cont
 				return cont, nil
-			} else {
-				cont := &MemberController{}
+			}
+			gmod, err := um.serv.DB.IsGlobalModerator(id)
+			if gmod == true && err == nil {
+				cont := &GlobalModeratorController{}
 				cont.User = &user
 				cont.manager = um
 				cont.hasloggedin = true
 				um.members[id] = cont
 				return cont, nil
 			}
+			dmod, err := um.serv.DB.GetDomainModeratorAssignments(id)
+			if dmod != nil && err != nil {
+				cont := &DomainModeratorController{}
+				cont.User = &user
+				cont.manager = um
+				cont.hasloggedin = true
+				cont.DomainsModerated = dmod
+				um.members[id] = cont
+				return cont, nil
+			}
+			cont := &MemberController{}
+			cont.User = &user
+			cont.manager = um
+			cont.hasloggedin = true
+			um.members[id] = cont
+			return cont, nil
 		}
 
 	}

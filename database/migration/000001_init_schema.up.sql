@@ -60,7 +60,7 @@ CREATE TABLE "GlobalModeratorAssignments" (
   "assigned_to" bigint NOT NULL,
   "assigned_at" timestamptz NOT NULL DEFAULT (now()),
   "assigned_by" bigint NOT NULL,
-  "is_deactivation" boolean DEFAULT false
+  "is_deactivation" boolean NOT NULL DEFAULT false
 );
 
 CREATE TABLE "AdminAssignments" (

@@ -18,6 +18,16 @@ func (c *MemberController) ToggleFeedbackHidden(comm *communication.ToggleFeedba
 	c.AddMessage(false, "You don't have permission to alter feedbacks.")
 }
 
+/** ToggleFeedbackHidden tells a member they don't have permission to view this report. */
+func (c *DomainModeratorController) ToggleFeedbackHidden(comm *communication.ToggleFeedbackHidden, serv *Server) {
+	c.AddMessage(false, "You don't have permission to alter feedbacks.")
+}
+
+/** ToggleFeedbackHidden tells a member they don't have permission to view this report. */
+func (c *GlobalModeratorController) ToggleFeedbackHidden(comm *communication.ToggleFeedbackHidden, serv *Server) {
+	c.AddMessage(false, "You don't have permission to alter feedbacks.")
+}
+
 /** ToggleFeedbackHidden provides an admin with the feedback report. */
 func (c *AdminController) ToggleFeedbackHidden(comm *communication.ToggleFeedbackHidden, serv *Server) {
 	ok, msg := serv.DB.ToggleFeedback(comm)

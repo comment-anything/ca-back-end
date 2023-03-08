@@ -12,7 +12,6 @@ func (st *Store) GetCommUser(user *generated.User) (*communication.UserProfile, 
 	prof := communication.UserProfile{}
 	prof.CreatedOn = user.CreatedAt.UnixMilli()
 
-	prof.IsGlobalModerator = false
 	if user.ProfileBlurb.Valid {
 		prof.ProfileBlurb = user.ProfileBlurb.String
 	} else {
@@ -23,6 +22,21 @@ func (st *Store) GetCommUser(user *generated.User) (*communication.UserProfile, 
 
 	isAdmin, _ := st.IsAdmin(user.ID)
 	prof.IsAdmin = isAdmin
+	if !isAdmin {
+		isgmod, err := st.IsGlobalModerator(user.ID)
+		if isgmod && err != nil {
+			prof.IsGlobalModerator = true
+		} else {
+			doms_moderated, err := st.GetDomainModeratorAssignments(user.ID)
+			if doms_moderated != nil && err != nil {
+				prof.IsDomainModerator = true
+				prof.DomainsModerating = doms_moderated
+			}
+		}
+	} else {
+		prof.IsGlobalModerator = false
+		prof.IsDomainModerator = false
+	}
 	return &prof, nil
 }
 

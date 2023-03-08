@@ -1,3 +1,11 @@
+3/8/2023 : Karl 
+- SCHEMA CHANGE: GlobalModeratorAssignments is_deactivation now NOT NULL. Re migrate your DBs!
+- umanager.go : domain and global moderator controllers initialized and assigned when appropriate 
+- added methods to domain and global moderator controllers where polymorphically necessary 
+- Queries.GetDomainModeratorAssignments, Queries.GetGlobalModeratorAssignments (sqlc generated)
+- Store.GetDomainModeratorAssignments, Store.IsGlobalModerator
+- user profile in login response now populated correct based on SQL table for IsDomainModerator, IsGlobalModerator, and DomainsModerating. Data can be used as appropriate to realize UI on the front end. 
+
 3/1/2023 : Karl 
 - newFeedback implemented
 

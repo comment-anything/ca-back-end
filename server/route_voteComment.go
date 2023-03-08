@@ -26,6 +26,30 @@ func (c *MemberController) HandleCommandVoteComment(comm *communication.CommentV
 }
 
 /** HandleCommandVoteComment on a member controller calls the appropriate functions on a pagemanager and page to post a new comment. */
+func (c *DomainModeratorController) HandleCommandVoteComment(comm *communication.CommentVote, serv *Server) {
+	if c.Page == nil {
+		c.AddMessage(false, "You can't vote on a comment here.")
+	} else {
+		ok, msg := c.Page.VoteComment(c, comm, serv)
+		if !ok {
+			c.AddMessage(false, msg)
+		}
+	}
+}
+
+/** HandleCommandVoteComment on a member controller calls the appropriate functions on a pagemanager and page to post a new comment. */
+func (c *GlobalModeratorController) HandleCommandVoteComment(comm *communication.CommentVote, serv *Server) {
+	if c.Page == nil {
+		c.AddMessage(false, "You can't vote on a comment here.")
+	} else {
+		ok, msg := c.Page.VoteComment(c, comm, serv)
+		if !ok {
+			c.AddMessage(false, msg)
+		}
+	}
+}
+
+/** HandleCommandVoteComment on a member controller calls the appropriate functions on a pagemanager and page to post a new comment. */
 func (c *AdminController) HandleCommandVoteComment(comm *communication.CommentVote, serv *Server) {
 	if c.Page == nil {
 		c.AddMessage(false, "You can't vote on a comment here.")

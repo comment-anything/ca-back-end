@@ -18,6 +18,16 @@ func (c *MemberController) HandleCommandViewUsersReport(comm *communication.View
 	c.AddMessage(false, "You don't have permission to see the users report.")
 }
 
+/** HandleCommandViewUsersReport tells a member they don't have permission to view this report. */
+func (c *DomainModeratorController) HandleCommandViewUsersReport(comm *communication.ViewUsersReport, serv *Server) {
+	c.AddMessage(false, "You don't have permission to see the users report.")
+}
+
+/** HandleCommandViewUsersReport tells a member they don't have permission to view this report. */
+func (c *GlobalModeratorController) HandleCommandViewUsersReport(comm *communication.ViewUsersReport, serv *Server) {
+	c.AddMessage(false, "You don't have permission to see the users report.")
+}
+
 /** HandleCommandViewUsersReport provides an admin with the users report. */
 func (c *AdminController) HandleCommandViewUsersReport(comm *communication.ViewUsersReport, serv *Server) {
 	rep := serv.DB.GetUserReportDBPartial(comm)
