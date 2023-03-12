@@ -1,3 +1,7 @@
+3/12/2023: Karl
+- AssignGlobalModerator, AssignAdmin structs and pipeline 
+- Changing a logged-in user's controller will swap it at runtime and push a login response to the user's nextmessages so their front end can quickly realize the changes. 
+
 3/8/2023 : Karl 
 - SCHEMA CHANGE: GlobalModeratorAssignments is_deactivation now NOT NULL. Re migrate your DBs!
 - umanager.go : domain and global moderator controllers initialized and assigned when appropriate 

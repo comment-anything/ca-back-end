@@ -9,7 +9,7 @@ import (
 
 // GetProfile will perform the required queries to generate a communication.UserProfile object
 func (st *Store) GetCommUser(user *generated.User) (*communication.UserProfile, error) {
-	prof := communication.UserProfile{}
+	prof := &communication.UserProfile{}
 	prof.CreatedOn = user.CreatedAt.UnixMilli()
 
 	if user.ProfileBlurb.Valid {
@@ -24,7 +24,7 @@ func (st *Store) GetCommUser(user *generated.User) (*communication.UserProfile, 
 	prof.IsAdmin = isAdmin
 	if !isAdmin {
 		isgmod, err := st.IsGlobalModerator(user.ID)
-		if isgmod && err != nil {
+		if isgmod && err == nil {
 			prof.IsGlobalModerator = true
 		} else {
 			doms_moderated, err := st.GetDomainModeratorAssignments(user.ID)
@@ -37,10 +37,21 @@ func (st *Store) GetCommUser(user *generated.User) (*communication.UserProfile, 
 		prof.IsGlobalModerator = false
 		prof.IsDomainModerator = false
 	}
-	return &prof, nil
+	return prof, nil
 }
 
+// Gets a username given an ID
 func (st *Store) GetUsername(id int64) string {
 	s, _ := st.Queries.GetUsername(context.Background(), id)
 	return s
+}
+
+// Gets a user's ID given a user name
+func (st *Store) GetUserID(name string) (int64, error) {
+	u, err := st.Queries.GetUserByUserName(context.Background(), name)
+	if err != nil {
+		return 0, err
+	} else {
+		return u.ID, nil
+	}
 }

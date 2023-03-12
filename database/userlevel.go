@@ -60,8 +60,8 @@ func (s *Store) IsGlobalModerator(userID int64) (bool, error) {
 		}
 	}
 	if len(assnments) > 0 {
-		last_row := assnments[len(assnments)-1]
-		return last_row.IsDeactivation == false, nil // return true if they weren't most recently deactivated
+		first_row := assnments[0]
+		return first_row.IsDeactivation == false, nil // return true if they weren't most recently deactivated
 	} else {
 		return false, nil
 	}

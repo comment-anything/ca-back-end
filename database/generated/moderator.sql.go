@@ -9,6 +9,24 @@ import (
 	"context"
 )
 
+const createGlobalModeratorAssignment = `-- name: CreateGlobalModeratorAssignment :exec
+INSERT INTO "GlobalModeratorAssignments"
+ (assigned_to, assigned_by, is_deactivation)
+ VALUES
+ ($1, $2, $3)
+`
+
+type CreateGlobalModeratorAssignmentParams struct {
+	AssignedTo     int64 `json:"assigned_to"`
+	AssignedBy     int64 `json:"assigned_by"`
+	IsDeactivation bool  `json:"is_deactivation"`
+}
+
+func (q *Queries) CreateGlobalModeratorAssignment(ctx context.Context, arg CreateGlobalModeratorAssignmentParams) error {
+	_, err := q.db.ExecContext(ctx, createGlobalModeratorAssignment, arg.AssignedTo, arg.AssignedBy, arg.IsDeactivation)
+	return err
+}
+
 const getDomainModeratorAssignments = `-- name: GetDomainModeratorAssignments :many
 select distinct on (domain) domain, is_deactivation, id
  from "DomainModeratorAssignments"

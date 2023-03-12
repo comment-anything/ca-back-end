@@ -65,6 +65,8 @@ func (s *Server) setupRouter() {
 	r.HandleFunc("/viewFeedback", responder(s.viewFeedback))
 	r.HandleFunc("/toggleFeedbackHidden", responder(s.toggleFeedbackHidden))
 	r.HandleFunc("/newFeedback", responder(s.newFeedback))
+	r.HandleFunc("/assignGlobalModerator", responder(s.assignGlobalModerator))
+	r.HandleFunc("/assignAdmin", responder(s.assignAdmin))
 
 	s.httpServer.Handler = s.router
 	s.router = r

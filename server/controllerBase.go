@@ -81,5 +81,5 @@ func (c *GlobalModeratorController) GetControllerType() string {
 }
 
 func (c *MemberControllerBase) GetControllerType() string {
-	return "GlobalModeratorController"
+	return "MemberControllerBase"
 }

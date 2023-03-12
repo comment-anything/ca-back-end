@@ -85,3 +85,14 @@ type Feedback struct {
 	FeedbackType string
 	Content      string
 }
+
+// AssignGlobalModerator is dispatched to the server when an admin grants or removes global moderator privileges to another user.
+type AssignGlobalModerator struct {
+	User           string
+	IsDeactivation bool
+}
+
+// AssignAdmin is dispatched to the server when an admin grants another user admin privileges.
+type AssignAdmin struct {
+	User string
+}

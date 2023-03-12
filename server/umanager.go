@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/comment-anything/ca-back-end/communication"
 	"github.com/comment-anything/ca-back-end/database/generated"
 )
 
@@ -37,6 +38,98 @@ func (um *UserManager) TransferMember(oldMemberController *MemberControllerBase)
 	oldMemberController.User.ID = gc.User.ID
 	oldMemberController.hasloggedin = false
 	delete(um.members, oldMemberController.User.ID)
+}
+
+// Swaps an existing member controller to a global mod controller and pushes a login response to their next message to update them on their next action. Used when a logged-in domain moderator or lower is granted global mod privileges.
+func (um *UserManager) ChangeMemberControllerToGlobalModController(id int64) (bool, string) {
+	mem, ok := um.members[id]
+	if !ok {
+		return true, "Assignment added; member will have mod privileges on next login."
+	}
+	curtype := mem.GetControllerType()
+	if curtype == "GlobalModeratorController" || curtype == "AdminController" {
+		return false, "Member already has privileges."
+	}
+	curpage := mem.GetPage()
+	if curpage != nil {
+		curpage.RemoveMemberFromPage(mem)
+	}
+	delete(um.members, id)
+	gmod := &GlobalModeratorController{}
+	gmod.User = mem.GetUser()
+	gmod.manager = um
+	gmod.hasloggedin = true
+	gmod.SetPage(curpage)
+	um.members[id] = gmod
+	lr := &communication.LoginResponse{}
+	lr.Email = gmod.User.Email
+	lr.LoggedInAs.CreatedOn = gmod.User.CreatedAt.Unix()
+	lr.LoggedInAs.ProfileBlurb = gmod.User.ProfileBlurb.String
+	lr.LoggedInAs.UserId = gmod.User.ID
+	lr.LoggedInAs.Username = gmod.User.Username
+	lr.LoggedInAs.IsGlobalModerator = true
+	lr.LoggedInAs.IsDomainModerator = false
+	gmod.AddWrapped("LoginResponse", lr)
+	return true, "Assignment added; logged in member given Global Moderator Controller"
+}
+
+// Swaps an existing member controller to an admin controller and pushes a login response to their next message to update them on their next action. Used when a logged-in domain moderator or lower is granted admin privileges.
+func (um *UserManager) ChangeMemberControllerToAdminController(id int64) (bool, string) {
+	mem, ok := um.members[id]
+	if !ok {
+		return true, "Assignment added; member will have admin privileges on next login."
+	}
+	curtype := mem.GetControllerType()
+	if curtype == "AdminController" {
+		return false, "Member already has admin privileges."
+	}
+	curpage := mem.GetPage()
+	if curpage != nil {
+		curpage.RemoveMemberFromPage(mem)
+	}
+	delete(um.members, id)
+	cont, err := um.AttemptCreateMemberController(id)
+	if err != nil {
+		return false, fmt.Sprintf("Failed to create controller: %s", err.Error())
+	}
+
+	prof, err := um.serv.DB.GetCommUser(mem.GetUser())
+	if err != nil {
+		return false, fmt.Sprintf("Failed to get prof: %s", err.Error())
+	}
+	lr := &communication.LoginResponse{}
+	lr.Email = mem.GetUser().Email
+	lr.LoggedInAs = *prof
+	cont.AddWrapped("LoginResponse", lr)
+	return true, "Assignment added; Admin added to user"
+}
+
+// Removes GlobalMod privileges from a user. Regenerates a login response so changes are realized on their end.
+func (um *UserManager) RemoveGlobalModPrivileges(id int64) (bool, string) {
+	mem, ok := um.members[id]
+	if !ok {
+		return true, "Assignment added; member will not have mod privileges on next login."
+	}
+	curpage := mem.GetPage()
+	if curpage != nil {
+		curpage.RemoveMemberFromPage(mem)
+	}
+	delete(um.members, id)
+	cont, err := um.AttemptCreateMemberController(id)
+	if err != nil {
+		return false, fmt.Sprintf("Failed to create controller: %s", err.Error())
+	}
+	cont.SetPage(curpage)
+
+	prof, err := um.serv.DB.GetCommUser(mem.GetUser())
+	if err != nil {
+		return false, fmt.Sprintf("Failed to create controller: %s", err.Error())
+	}
+	lr := &communication.LoginResponse{}
+	lr.Email = mem.GetUser().Email
+	lr.LoggedInAs = *prof
+	cont.AddWrapped("LoginResponse", lr)
+	return true, "Assignment removed; GlobalMod removed from user"
 }
 
 // GetControllerById returns a UserController if it exists in the map and returns an error if it doesnt.
