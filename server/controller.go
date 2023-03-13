@@ -54,10 +54,13 @@ type UserControllerInterface interface {
 
 	// HandleCommandAssignGlobalModerator handles the request, only valid for an admin, to assign or remove a global moderator.
 	HandleCommandAssignGlobalModerator(comm *communication.AssignGlobalModerator, serv *Server)
-
+	
 	// HandleCommandAssignAdmin handles the request, only valid for an admin, to grant admin privileges to another user.
 	HandleCommandAssignAdmin(comm *communication.AssignAdmin, serv *Server)
-
+	
+	// HandleCommandViewCommentReports handles the request, only valid for a moderator, to view reported comments.
+	HandleCommandViewCommentReports(comm *communication.ViewCommentReports, serv *Server)
+	
 	// GetUser returns the user associated with this controller
 	GetUser() *generated.User
 

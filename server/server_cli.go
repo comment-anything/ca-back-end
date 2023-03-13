@@ -21,7 +21,7 @@ func (s *Server) CLIBegin() {
 	for cli_is_running { // loop until user runs exit command
 		fmt.Printf(getStatusHeader())
 		userinput, _ := reader.ReadString('\n')
-		userinput = userinput[:len(userinput)-2] /* chop the newline and EOF chars */
+		userinput = userinput[:len(userinput)-1] /* chop the newline and EOF chars */
 		parseCommand(userinput)
 	}
 }

@@ -103,3 +103,19 @@ type AdminUsersReport struct {
 	NewestUsername    string
 	UserCount         int64
 }
+
+// CommentReport is dispatched when a moderator requests the reported comments
+type CommentReport struct {
+    ID                int64
+    ReportingUserID   int64
+    ReportingUsername string
+    Comment           Comment
+    Reason            string
+    ActionTaken       bool
+    TimeCreated       int64
+}
+
+// CommentReports is dispatched when a moderator requests the reported comments
+type CommentReports struct {
+       Reports []CommentReport
+}

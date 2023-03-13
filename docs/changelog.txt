@@ -1,3 +1,6 @@
+3/12/2023: Luke & Karl
+- Started pipeline for sending CommentReports
+
 3/12/2023: Karl
 - AssignGlobalModerator, AssignAdmin structs and pipeline 
 - Changing a logged-in user's controller will swap it at runtime and push a login response to the user's nextmessages so their front end can quickly realize the changes. 

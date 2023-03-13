@@ -96,3 +96,8 @@ type AssignGlobalModerator struct {
 type AssignAdmin struct {
 	User string
 }
+
+// ViewCommentReports is dispatched to the server when a user requests a list of reported comments
+type ViewCommentReports struct {
+	Domain string
+}
