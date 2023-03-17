@@ -45,6 +45,24 @@ func (q *Queries) CreateComment(ctx context.Context, arg CreateCommentParams) (C
 	return i, err
 }
 
+const createCommentReport = `-- name: CreateCommentReport :exec
+INSERT INTO "CommentReports"
+("reporting_user", "comment", "reason", "action_taken")
+VALUES
+($1, $2, $3, false)
+`
+
+type CreateCommentReportParams struct {
+	ReportingUser int64          `json:"reporting_user"`
+	Comment       int64          `json:"comment"`
+	Reason        sql.NullString `json:"reason"`
+}
+
+func (q *Queries) CreateCommentReport(ctx context.Context, arg CreateCommentReportParams) error {
+	_, err := q.db.ExecContext(ctx, createCommentReport, arg.ReportingUser, arg.Comment, arg.Reason)
+	return err
+}
+
 const createCommentVote = `-- name: CreateCommentVote :exec
 INSERT INTO "VoteRecords"
 ("comment_id", "user_id", "category", "value")

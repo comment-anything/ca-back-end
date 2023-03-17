@@ -27,6 +27,7 @@ func (s *Store) GetComments(pathID int64) ([]communication.Comment, error) {
 
 }
 
+// transformGeneratedCommentToCommunicationComment runs queries necessary to transform a raw generated.Comment as received from the database into a communication.Comment used by front ends for comment rendering.
 func (s *Store) transformGeneratedCommentToCommunicationComment(gen *generated.Comment, com *communication.Comment) error {
 	com.CommentId = gen.ID
 	com.UserId = gen.Author
@@ -109,6 +110,7 @@ func (s *Store) populateVotes(comm *communication.Comment) error {
 
 }
 
+// NewComment inserts a new comment into the database. It returns an error if it couldn't insert the comment. It transforms the comment into a communication.Comment so it can be sent to front ends that need the update.
 func (s *Store) NewComment(comm *communication.CommentReply, userId int64, pathId int64) (*communication.Comment, error) {
 	result := communication.Comment{}
 	ctx := context.Background()
@@ -135,4 +137,18 @@ func (s *Store) NewComment(comm *communication.CommentReply, userId int64, pathI
 	s.transformGeneratedCommentToCommunicationComment(&gencom, &result)
 	return &result, nil
 
+}
+
+func (s *Store) NewCommentReport(comm *communication.PostCommentReport, user int64) (bool, string) {
+	params := generated.CreateCommentReportParams{}
+	params.Comment = comm.CommentID
+	params.ReportingUser = user
+	params.Reason.String = comm.Reason
+	params.Reason.Valid = true
+	err := s.Queries.CreateCommentReport(context.Background(), params)
+	if err != nil {
+		return false, "Failed to create comment."
+	} else {
+		return true, "Your report has been submitted."
+	}
 }

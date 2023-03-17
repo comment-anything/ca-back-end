@@ -43,3 +43,10 @@ VALUES
 SELECT * from "Comments"
 WHERE id = $1;
 
+-- name: CreateCommentReport :exec
+INSERT INTO "CommentReports"
+("reporting_user", "comment", "reason", "action_taken")
+VALUES
+($1, $2, $3, false);
+
+

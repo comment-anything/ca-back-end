@@ -101,3 +101,9 @@ type AssignAdmin struct {
 type ViewCommentReports struct {
 	Domain string
 }
+
+// PostCommentReport is dispatched to the server when a user reports a comment.
+type PostCommentReport struct {
+	CommentID int64
+	Reason    string
+}

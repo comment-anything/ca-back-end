@@ -54,7 +54,7 @@ type CommentReport struct {
 	ReportingUser int64          `json:"reporting_user"`
 	Comment       int64          `json:"comment"`
 	Reason        sql.NullString `json:"reason"`
-	ActionTaken   sql.NullBool   `json:"action_taken"`
+	ActionTaken   bool           `json:"action_taken"`
 	TimeCreated   time.Time      `json:"time_created"`
 }
 

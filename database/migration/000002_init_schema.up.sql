@@ -17,3 +17,6 @@ INSERT INTO public."VoteRecords" VALUES (1, 'agree', 1, 1);
 INSERT INTO public."VoteRecords" VALUES (1, 'funny', 1, 1);
 INSERT INTO public."VoteRecords" VALUES (1, 'factual', 2, 1);
 INSERT INTO public."VoteRecords" VALUES (1, 'funny', 2, 1);
+
+INSERT INTO public."CommentReports" VALUES (1, 1, 1, 'This comment SUCKS!', false, '2023-03-17 16:07:18.767566+00');
+INSERT INTO public."CommentReports" VALUES (2, 1, 2, 'This one is bad too. Who says ''sup'' anymore?!', false, '2023-03-17 16:07:40.449595+00');

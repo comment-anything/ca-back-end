@@ -1,3 +1,4 @@
+DELETE FROM "CommentReports";
 DELETE FROM "VoteRecords";
 DELETE FROM "Comments";
 DELETE FROM "Paths";

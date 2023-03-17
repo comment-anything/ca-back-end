@@ -105,7 +105,7 @@ CREATE TABLE "CommentReports" (
   "reporting_user" bigint NOT NULL,
   "comment" bigint NOT NULL,
   "reason" varchar,
-  "action_taken" boolean,
+  "action_taken" boolean NOT NULL DEFAULT false,
   "time_created" timestamptz NOT NULL DEFAULT (now())
 );
 
