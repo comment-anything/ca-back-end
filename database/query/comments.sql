@@ -2,6 +2,7 @@
 SELECT * FROM "Comments"
 WHERE path_id = $1 ORDER BY id;
 
+
 -- name: GetUpVotesForComment :many
 SELECT category, SUM(value) FROM "VoteRecords"
 WHERE comment_id = $1 and value > 0 GROUP BY category;

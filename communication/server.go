@@ -106,16 +106,17 @@ type AdminUsersReport struct {
 
 // CommentReport is dispatched when a moderator requests the reported comments
 type CommentReport struct {
-    ID                int64
-    ReportingUserID   int64
-    ReportingUsername string
-    Comment           Comment
-    Reason            string
-    ActionTaken       bool
-    TimeCreated       int64
+	ID                int64
+	ReportingUserID   int64
+	ReportingUsername string
+	Comment           Comment
+	Reason            string
+	ActionTaken       bool
+	TimeCreated       int64
+	Domain            string
 }
 
 // CommentReports is dispatched when a moderator requests the reported comments
 type CommentReports struct {
-       Reports []CommentReport
+	Reports []CommentReport
 }

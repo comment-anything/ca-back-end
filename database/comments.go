@@ -131,24 +131,10 @@ func (s *Store) NewComment(comm *communication.CommentReply, userId int64, pathI
 	params.Parent.Int64 = comm.ReplyingTo
 	gencom, err := s.Queries.CreateComment(ctx, params)
 	if err != nil {
-		fmt.Printf("\nDB.NewComment, Failure to create comment! %s", err.Error())
+		fmt.Printf("\nDB.NewComment, Failure to create comment! %s Had params: %v", err.Error(), params)
 		return nil, err
 	}
 	s.transformGeneratedCommentToCommunicationComment(&gencom, &result)
 	return &result, nil
 
-}
-
-func (s *Store) NewCommentReport(comm *communication.PostCommentReport, user int64) (bool, string) {
-	params := generated.CreateCommentReportParams{}
-	params.Comment = comm.CommentID
-	params.ReportingUser = user
-	params.Reason.String = comm.Reason
-	params.Reason.Valid = true
-	err := s.Queries.CreateCommentReport(context.Background(), params)
-	if err != nil {
-		return false, "Failed to create comment."
-	} else {
-		return true, "Your report has been submitted."
-	}
 }

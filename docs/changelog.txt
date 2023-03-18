@@ -1,3 +1,6 @@
+3/18/2023 : Karl
+- Finished back-end portion of pipeline for sending CommentReports. Wrote SQL query. Validates if domain is one moderated for domain moderator or global moderator. Will send all commentReports to Global and Admins if the domain requested is 'all', otherwise will provide just for a specific domain. 
+
 3/17/2023 : Karl 
 - PostCommentReport, needed queries and routes, also added 2 default reports to the 2nd migration
 
