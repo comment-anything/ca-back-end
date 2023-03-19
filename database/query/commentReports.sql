@@ -19,3 +19,4 @@ inner join
 (select id, domain from "Paths" where domain = $1) as "P"
 on "C".path_id = "P".id
 ;
+

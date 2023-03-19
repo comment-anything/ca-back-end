@@ -77,18 +77,18 @@ func (s *Store) transformGeneratedCommentReport1(item generated.GetAllCommentRep
 		return nil, err
 	}
 	result.ReportingUsername = un
-	err = s.transformGeneratedCommentToCommunicationComment(&comm, &result.Comment)
+	err = s.transformGeneratedCommentToCommunicationComment(&comm, &result.CommentData)
 	if err != nil {
 		return nil, err
 	}
 	result.ActionTaken = item.ActionTaken
-	result.ID = item.ID
+	result.ReportId = item.ID
 	if item.Reason.Valid {
-		result.Reason = item.Reason.String
+		result.ReasonReported = item.Reason.String
 	} else {
-		result.Reason = ""
+		result.ReasonReported = ""
 	}
-	result.TimeCreated = item.TimeCreated.Unix()
+	result.TimeReported = item.TimeCreated.Unix()
 	result.Domain = item.Domain.String
 	return &result, nil
 }
@@ -108,18 +108,18 @@ func (s *Store) transformGeneratedCommentReport2(item generated.GetCommentReport
 		return nil, err
 	}
 	result.ReportingUsername = un
-	err = s.transformGeneratedCommentToCommunicationComment(&comm, &result.Comment)
+	err = s.transformGeneratedCommentToCommunicationComment(&comm, &result.CommentData)
 	if err != nil {
 		return nil, err
 	}
 	result.ActionTaken = item.ActionTaken
-	result.ID = item.ID
+	result.ReportId = item.ID
 	if item.Reason.Valid {
-		result.Reason = item.Reason.String
+		result.ReasonReported = item.Reason.String
 	} else {
-		result.Reason = ""
+		result.ReasonReported = ""
 	}
-	result.TimeCreated = item.TimeCreated.Unix()
+	result.TimeReported = item.TimeCreated.Unix()
 	result.Domain = item.Domain.String
 	return &result, nil
 }

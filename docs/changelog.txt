@@ -1,3 +1,7 @@
+3/19/2023: Karl
+- Update communication.CommentReport to match design document field names
+
+
 3/18/2023 : Karl
 - Finished back-end portion of pipeline for sending CommentReports. Wrote SQL query. Validates if domain is one moderated for domain moderator or global moderator. Will send all commentReports to Global and Admins if the domain requested is 'all', otherwise will provide just for a specific domain. 
 
