@@ -131,6 +131,7 @@ type AdminAccessLog struct {
 	Username string
 }
 
+// AdminAccessLogs are dispatched when an admin wants to see what IPs have been accessing the server, which users are associated with them, and what endpoints they are accessing.
 type AdminAccessLogs struct {
 	Logs []AdminAccessLog
 }

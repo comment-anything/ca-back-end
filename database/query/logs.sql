@@ -1,5 +1,5 @@
 -- name: CreateLog :one
-INSERT INTO "Logs" ("ip", "url") VALUES ($1, $2) RETURNING 1;
+INSERT INTO "Logs" ("ip", "url") VALUES ($1, $2) RETURNING *;
 
 -- name: UpdateLogUser :exec
 UPDATE "Logs" SET 

@@ -12,7 +12,7 @@ import (
 )
 
 const createLog = `-- name: CreateLog :one
-INSERT INTO "Logs" ("ip", "url") VALUES ($1, $2) RETURNING 1
+INSERT INTO "Logs" ("ip", "url") VALUES ($1, $2) RETURNING id, user_id, ip, url, at_time
 `
 
 type CreateLogParams struct {
@@ -20,11 +20,17 @@ type CreateLogParams struct {
 	Url sql.NullString `json:"url"`
 }
 
-func (q *Queries) CreateLog(ctx context.Context, arg CreateLogParams) (interface{}, error) {
+func (q *Queries) CreateLog(ctx context.Context, arg CreateLogParams) (Log, error) {
 	row := q.db.QueryRowContext(ctx, createLog, arg.Ip, arg.Url)
-	var column_1 interface{}
-	err := row.Scan(&column_1)
-	return column_1, err
+	var i Log
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Ip,
+		&i.Url,
+		&i.AtTime,
+	)
+	return i, err
 }
 
 const getLogsInRange = `-- name: GetLogsInRange :many

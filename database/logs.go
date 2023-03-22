@@ -23,7 +23,7 @@ func (s *Store) CreateLoggedRequest(r *http.Request) *http.Request {
 
 	log, err := s.Queries.CreateLog(context.Background(), p)
 	if err == nil {
-		newctx := context.WithValue(r.Context(), CtxLog, log)
+		newctx := context.WithValue(r.Context(), CtxLog, log.ID)
 		return r.WithContext(newctx)
 	} else {
 		return r
@@ -99,7 +99,7 @@ func (s *Store) GetLogs(view *communication.ViewAccessLogs) (*communication.Admi
 		if val.UserID.Valid {
 			adAcc.Logs[i].UserId = val.UserID.Int64
 			un, err := s.Queries.GetUserByID(c, val.UserID.Int64)
-			if err != nil {
+			if err == nil {
 				adAcc.Logs[i].Username = un.Username
 			}
 		}
