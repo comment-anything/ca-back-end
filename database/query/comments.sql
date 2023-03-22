@@ -50,4 +50,14 @@ INSERT INTO "CommentReports"
 VALUES
 ($1, $2, $3, false);
 
+-- name: GetCommentDomain :one
+SELECT "P".domain
+from 
+(select id, path_id from "Comments" where "Comments"."id"=$1) as "C"
+inner join
+(select id, domain from "Paths") as "P"
+on "C".path_id = "P".id
+;
+
+
 

@@ -38,15 +38,16 @@ func (s *Store) transformGeneratedCommentToCommunicationComment(gen *generated.C
 		com.Hidden = false
 	}
 	if gen.Removed.Valid {
-		com.Removed = gen.Hidden.Bool
+		com.Removed = gen.Removed.Bool
 	} else {
-		com.Hidden = false
+		com.Removed = false
 	}
 	if gen.Parent.Valid {
 		com.Parent = gen.Parent.Int64
 	} else {
 		com.Parent = 0 // It's a root level comment. Or should this be -1?
 	}
+
 	com.Content = gen.Content
 	com.Agree.Downs = 0
 	com.Agree.Ups = 0
@@ -61,6 +62,10 @@ func (s *Store) transformGeneratedCommentToCommunicationComment(gen *generated.C
 	err = s.populateVotes(com)
 	if err != nil {
 		return err
+	}
+	if com.Removed {
+		com.Username = ""
+		com.Content = "~Removed~"
 	}
 	return nil
 }
@@ -136,5 +141,10 @@ func (s *Store) NewComment(comm *communication.CommentReply, userId int64, pathI
 	}
 	s.transformGeneratedCommentToCommunicationComment(&gencom, &result)
 	return &result, nil
+
+}
+
+// Gets the Domain associated with this comment.
+func (s *Store) GetCommentDomain(commentID int64) {
 
 }

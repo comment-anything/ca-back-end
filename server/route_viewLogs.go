@@ -15,7 +15,6 @@ func (c *GuestController) HandleCommandViewLogs(comm *communication.ViewAccessLo
 
 /** HandleCommandViewLogs tells a member they don't have permission to view this report. */
 func (c *MemberController) HandleCommandViewLogs(comm *communication.ViewAccessLogs, serv *Server) {
-	c.AddMessage(false, "You don't have permission to see the feedback report.")
 	c.AddMessage(false, "You must be an admin to view logs.")
 }
 

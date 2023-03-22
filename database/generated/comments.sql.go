@@ -126,6 +126,22 @@ func (q *Queries) GetCommentByID(ctx context.Context, id int64) (Comment, error)
 	return i, err
 }
 
+const getCommentDomain = `-- name: GetCommentDomain :one
+SELECT "P".domain
+from 
+(select id, path_id from "Comments" where "Comments"."id"=$1) as "C"
+inner join
+(select id, domain from "Paths") as "P"
+on "C".path_id = "P".id
+`
+
+func (q *Queries) GetCommentDomain(ctx context.Context, id int64) (sql.NullString, error) {
+	row := q.db.QueryRowContext(ctx, getCommentDomain, id)
+	var domain sql.NullString
+	err := row.Scan(&domain)
+	return domain, err
+}
+
 const getCommentsForPath = `-- name: GetCommentsForPath :many
 SELECT id, path_id, author, content, created_at, parent, hidden, removed FROM "Comments"
 WHERE path_id = $1 ORDER BY id

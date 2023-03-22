@@ -70,6 +70,7 @@ func (s *Server) setupRouter() {
 	r.HandleFunc("/viewCommentReports", responder(s.viewCommentReports))
 	r.HandleFunc("/newReport", responder(s.newReport))
 	r.HandleFunc("/viewLogs", responder(s.viewLogs))
+	r.HandleFunc("/moderate", responder(s.postModerate))
 
 	s.httpServer.Handler = s.router
 	s.router = r

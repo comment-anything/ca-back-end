@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/comment-anything/ca-back-end/communication"
@@ -91,8 +92,8 @@ MAYBE: It also notifies all users on the page that there is a new comment by add
 	(could be prone to errors... what if another user's next request is for getting comments on some other page? )
 	- hold off on this implementation for now; we will just use GetComments again on the user that posted a comment so at least theirs is updated...
 */
-func (p *Page) NewComment(user UserControllerInterface, comm *communication.CommentReply, serv *Server) (bool, string) {
-	commResult, err := serv.DB.NewComment(comm, user.GetUser().ID, p.pathID)
+func (p *Page) NewComment(postingUserID int64, comm *communication.CommentReply, serv *Server) (bool, string) {
+	commResult, err := serv.DB.NewComment(comm, postingUserID, p.pathID)
 	if err != nil {
 		return false, "Couldn't create the comment."
 	} else {
@@ -102,6 +103,7 @@ func (p *Page) NewComment(user UserControllerInterface, comm *communication.Comm
 
 }
 
+// UpdateComment updates some data for a comment on the page, then pushes the changes to all users on this page.
 func (p *Page) UpdateComment(com *communication.Comment) {
 	p.CachedComments[com.CommentId] = *com
 	for _, gst := range p.GuestsOnPage {
@@ -109,6 +111,29 @@ func (p *Page) UpdateComment(com *communication.Comment) {
 	}
 	for _, mem := range p.MembersOnPage {
 		mem.AddWrapped("Comment", *com)
+	}
+}
+
+// ModerateComment is called by PageManager only after a moderation request has been validated and the comment moderation action has been recorded in the database. It updates the comment data on this page, then calls UpdateComment to push the changes to all users currently on the page.
+func (p *Page) ModerateComment(comm *communication.Moderate, serv *Server) {
+	com, ok := p.CachedComments[comm.CommentID]
+	if ok {
+		com.Hidden = comm.SetHiddenTo
+		com.Removed = comm.SetRemovedTo
+		if comm.SetRemovedTo == true {
+			com.Username = ""
+			com.Content = "~Removed~"
+		} else {
+			gcom, err := serv.DB.Queries.GetCommentByID(context.Background(), comm.CommentID)
+			if err != nil {
+				com.Content = gcom.Content
+				usname, err := serv.DB.Queries.GetUsername(context.Background(), gcom.Author)
+				if err != nil {
+					com.Username = usname
+				}
+			}
+		}
+		p.UpdateComment(&com)
 	}
 }
 
@@ -121,6 +146,7 @@ func (p *Page) VoteComment(user UserControllerInterface, comm *communication.Com
 	if err != nil {
 		return false, err.Error()
 	}
+	fmt.Printf("com update removed val: %v", comupdate.Removed)
 	p.UpdateComment(comupdate)
 	return true, "Voted on Comment."
 }

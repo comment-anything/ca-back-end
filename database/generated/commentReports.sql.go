@@ -11,9 +11,20 @@ import (
 	"time"
 )
 
+const actionTakenOnReport = `-- name: ActionTakenOnReport :exec
+UPDATE "CommentReports"
+set "action_taken" = true
+where id = $1
+`
+
+func (q *Queries) ActionTakenOnReport(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, actionTakenOnReport, id)
+	return err
+}
+
 const getAllCommentReports = `-- name: GetAllCommentReports :many
 select "CR".id, "P".domain, "CR".reporting_user, "CR".comment, "CR".reason, "CR".action_taken, "CR".time_created
-from "CommentReports" as "CR"
+from (select id, reporting_user, comment, reason, action_taken, time_created from "CommentReports" where action_taken = false) as "CR"
 inner join
 (select id, path_id from "Comments") as "C"
 on "CR".comment = "C".id
@@ -65,7 +76,7 @@ func (q *Queries) GetAllCommentReports(ctx context.Context) ([]GetAllCommentRepo
 
 const getCommentReportsForDomain = `-- name: GetCommentReportsForDomain :many
 select "CR".id, "P".domain, "CR".reporting_user, "CR".comment, "CR".reason, "CR".action_taken, "CR".time_created
-from "CommentReports" as "CR"
+from (select id, reporting_user, comment, reason, action_taken, time_created from "CommentReports" where action_taken = false) as "CR"
 inner join
 (select id, path_id from "Comments") as "C"
 on "CR".comment = "C".id

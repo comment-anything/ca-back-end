@@ -11,18 +11,18 @@ import (
 // UserControllerInterface provides method signatures which other UserController types implement. Controller references are attached to HTTP Request Contexts in the first middleware that a Request passes through. Those controller references are subsequently used by API endpoints to execute access-appropriate code associated with a particular user or guest. At the API endpoints, the Server is “blind”, and will tell whatever controller is attached to the Request to deal with the command extracted from the Request body, which necessitates the interface polymorphism. UserControllerInterface is also used to track which pages are currently being viewed by users, via maps on Pages.
 type UserControllerInterface interface {
 
-	// HandleCommandRegister handles a register request. Only Guest controllers should not automatically produce an error if this is called.
+	// HandleCommandRegister handles a register command. Only Guest controllers should not automatically produce an error if this is called.
 	HandleCommandRegister(*communication.Register, *Server)
-	// HandleCommandLogin handles a login request. Only Guest controllers should not respond with an error message if this is called.
+	// HandleCommandLogin handles a login command. Only Guest controllers should not respond with an error message if this is called.
 	HandleCommandLogin(*communication.Login, *Server)
 
-	// HandleCommandLogout handles a logout request. Guest Controllers should respond with an error message.
+	// HandleCommandLogout handles a logout command. Guest Controllers should respond with an error message.
 	HandleCommandLogout(*communication.Logout, *Server)
 
-	// HandleCommandEmail handles a user's request to change the email associated with their account.
+	// HandleCommandEmail handles a user's command to change the email associated with their account.
 	HandleCommandChangeEmail(*communication.ChangeEmail, *Server)
 
-	// HandleCommandChangeProfileBlurb handles a user's request to change their profile blurb.
+	// HandleCommandChangeProfileBlurb handles a user's command to change their profile blurb.
 	HandleCommandChangeProfileBlurb(*communication.ChangeProfileBlurb, *Server)
 
 	// HandleCommandPasswordResetRequest handles a user's request for a new password by generating a unique code, saving it in the database, and deleting any previous codes for that user.
@@ -40,32 +40,35 @@ type UserControllerInterface interface {
 	// HandleCommandVoteComment handles when a user attempts to vote on a comment.
 	HandleCommandVoteComment(comm *communication.CommentVote, serv *Server)
 
-	// HandleCommandViewUsersReport handles the request, only valid for an admin, to view the report on users and usage
+	// HandleCommandViewUsersReport handles the command, only valid for an admin, to view the report on users and usage
 	HandleCommandViewUsersReport(comm *communication.ViewUsersReport, serv *Server)
 
-	// HandleCommandViewUsersReport handles the request, only valid for an admin, to view the report on users and usage
+	// HandleCommandViewUsersReport handles the command, only valid for an admin, to view the report on users and usage
 	HandleCommandViewFeedback(comm *communication.ViewFeedback, serv *Server)
 
 	// HandleCommandNewFeedback handles a user attempting to post some new feedback for admins to view
 	HandleCommandNewFeedback(comm *communication.Feedback, serv *Server)
 
-	// ToggleFeedbackHidden handles the request, only valid for an admin, to toggle whether a given feedback is hidden.
+	// ToggleFeedbackHidden handles the command, only valid for an admin, to toggle whether a given feedback is hidden.
 	ToggleFeedbackHidden(comm *communication.ToggleFeedbackHidden, serv *Server)
 
-	// HandleCommandAssignGlobalModerator handles the request, only valid for an admin, to assign or remove a global moderator.
+	// HandleCommandAssignGlobalModerator handles the command, only valid for an admin, to assign or remove a global moderator.
 	HandleCommandAssignGlobalModerator(comm *communication.AssignGlobalModerator, serv *Server)
 
-	// HandleCommandAssignAdmin handles the request, only valid for an admin, to grant admin privileges to another user.
+	// HandleCommandAssignAdmin handles the command, only valid for an admin, to grant admin privileges to another user.
 	HandleCommandAssignAdmin(comm *communication.AssignAdmin, serv *Server)
 
-	// HandleCommandViewCommentReports handles the request, only valid for a moderator, to view reported comments.
+	// HandleCommandViewCommentReports handles the command, only valid for a moderator, to view reported comments.
 	HandleCommandViewCommentReports(comm *communication.ViewCommentReports, serv *Server)
 
-	// HandleCommandNewReport handles a request, submitted by a user, to submit a comment report.
+	// HandleCommandNewReport handles a command, submitted by a user, to submit a comment report.
 	HandleCommandNewReport(comm *communication.PostCommentReport, serv *Server)
 
-	// HandleCommandNewReport handles a request, submitted by an admin, to view access logs.
+	// HandleCommandNewReport handles a command, submitted by an admin, to view access logs.
 	HandleCommandViewLogs(comm *communication.ViewAccessLogs, serv *Server)
+
+	// Handle a command, valid for a moderator or above, to validate a command.
+	HandleCommandModerate(comm *communication.Moderate, serv *Server)
 
 	// GetUser returns the user associated with this controller
 	GetUser() *generated.User

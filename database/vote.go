@@ -11,6 +11,15 @@ import (
 
 func (s *Store) VoteComment(userID int64, comm *communication.CommentVote) (*communication.Comment, error) {
 	ctx := context.Background()
+	gencom, err := s.Queries.GetCommentByID(ctx, comm.VotingOn)
+	if err != nil {
+		return nil, errors.New("Couldn't find the comment you were voting on.")
+	}
+	if gencom.Removed.Valid {
+		if gencom.Removed.Bool == true {
+			return nil, errors.New("Can't vote on a removed comment.")
+		}
+	}
 	params := generated.GetVotesForCommentAndCategoryByUserParams{}
 	params.CommentID = comm.VotingOn
 	params.UserID = userID
@@ -41,10 +50,6 @@ func (s *Store) VoteComment(userID int64, comm *communication.CommentVote) (*com
 		if err != nil {
 			return nil, errors.New("Couldn't vote on that comment due to your previous vote.")
 		}
-	}
-	gencom, err := s.Queries.GetCommentByID(ctx, comm.VotingOn)
-	if err != nil {
-		return nil, errors.New("Couldn't find the comment you were voting on.")
 	}
 	comcom := communication.Comment{}
 	s.transformGeneratedCommentToCommunicationComment(&gencom, &comcom)

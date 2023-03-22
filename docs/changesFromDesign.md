@@ -9,6 +9,9 @@
 
 
 # Package communication
+3/22/2023:
+- Communication.Moderate, ReportID changed to *int64 to allow to nil values. (Comments can be moderated without associated report)
+- Moderate.ViewModRecords was given field 'From', 'To', 'ByUser', and 'ForDomain'
 
 3/21/2023 
 - ViewLogs.ForUserID to ViewLogs.ForUser

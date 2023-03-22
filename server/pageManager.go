@@ -1,10 +1,12 @@
 package server
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strconv"
 
+	"github.com/comment-anything/ca-back-end/communication"
 	"github.com/comment-anything/ca-back-end/util"
 )
 
@@ -76,6 +78,22 @@ func (pm *PageManager) LoadPage(path string, serv *Server) (*Page, error) {
 		pm.Pages[pathID] = page
 	}
 	return &page, nil
+}
+
+// ModerateComment performs the associated call on the database and returns it to the calling controller. It also calls the relevant page to alter the instanced comment, if such a page exists, so that an instanced comment can be moderated in real-time and the changes can be pushed to any users who may be viewing that page.
+func (pm *PageManager) ModerateComment(moderatingUser int64, comm *communication.Moderate, serv *Server) (bool, string) {
+	success, msg := serv.DB.ModerateComment(moderatingUser, comm)
+	if success {
+		commnt, err := serv.DB.Queries.GetCommentByID(context.Background(), comm.CommentID)
+		if err == nil {
+			page, ok := pm.Pages[commnt.PathID]
+			if ok {
+				page.ModerateComment(comm, serv)
+			}
+		}
+	}
+	return success, msg
+
 }
 
 // Used with the server cli to get some information about the state of PageManager.

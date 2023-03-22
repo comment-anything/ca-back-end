@@ -1,3 +1,12 @@
+3/22/2023: Karl
+- Moderate pipeline "/moderate"
+- comment reports and votes won't work for removed comments
+- removed comments return "~removed~" and empty string username to requesting users. This is only in the page cache, not what is stored in the database. 
+- removed comments update in the page cache in real time to "remove" so we don't have to restart server to see removed comments
+- viewing comment reports only shows reports that have had no action taken on them 
+- Queries.GetCurrentDomain(commentID) to quickly get a comment's domain 
+- 
+
 3/21/2023: Karl
 - adding logs to the database for every request. Uses a context associated with the request to update the userID in case that request results in a log-in.
 - /viewLogs pipeline. Used a decently long function in package database for all the filtering. (store.GetLogs)

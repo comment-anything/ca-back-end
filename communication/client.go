@@ -118,3 +118,20 @@ type ViewAccessLogs struct {
 	// This is only a pointer so "nil" can be read when unmarshaling
 	EndingAt *int64
 }
+
+// Moderate is dispatched to the server when a moderator or admin takes a moderation action on a comment.
+type Moderate struct {
+	ReportID     *int64
+	CommentID    int64
+	SetHiddenTo  bool
+	SetRemovedTo bool
+	Reason       string
+}
+
+// ViewModRecords is dispatched to the served when an admin requests moderation records.
+type ViewModRecords struct {
+	From      int64
+	To        int64
+	ByUser    string
+	ForDomain string
+}
