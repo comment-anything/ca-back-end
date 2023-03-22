@@ -17,7 +17,7 @@ type TserverLoggerSettings struct {
 var Slogger *TserverLoggerSettings = &TserverLoggerSettings{}
 
 // Returns a middleware function for attaching an ID to an incoming request and logging that request (if logging is enabled). It's called near the beginning of a requests lifecycle.
-func LogMiddleware(handler http.Handler) http.Handler {
+func (s *Server) LogMiddleware(handler http.Handler) http.Handler {
 	Slogger.logs = log.Default()
 	next := handler.ServeHTTP
 
@@ -26,7 +26,7 @@ func LogMiddleware(handler http.Handler) http.Handler {
 			r = logContext(r)
 			Slogger.logs.Println(reqString1(r))
 		}
-		next(w, r)
+		next(w, s.DB.CreateLoggedRequest(r))
 	})
 }
 

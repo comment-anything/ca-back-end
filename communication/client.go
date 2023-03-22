@@ -107,3 +107,14 @@ type PostCommentReport struct {
 	CommentID int64
 	Reason    string
 }
+
+// ViewAccessLogs is dispatched to the server when an admin requests access logs.
+type ViewAccessLogs struct {
+	ForUser     string
+	ForIp       string
+	ForEndpoint string
+	// This is only a pointer so "nil" can be read when unmarshaling
+	StartingAt *int64
+	// This is only a pointer so "nil" can be read when unmarshaling
+	EndingAt *int64
+}

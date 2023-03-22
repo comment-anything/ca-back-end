@@ -47,7 +47,7 @@ func (s *Server) setupRouter() {
 	r := mux.NewRouter()
 
 	// setup the middleware
-	r.Use(CORS, LogMiddleware, s.ReadsAuth, s.EnsureController)
+	r.Use(CORS, s.LogMiddleware, s.ReadsAuth, s.EnsureController)
 
 	// register api endpoint
 	r.HandleFunc("/register", responder(s.postRegister))
@@ -69,6 +69,7 @@ func (s *Server) setupRouter() {
 	r.HandleFunc("/assignAdmin", responder(s.assignAdmin))
 	r.HandleFunc("/viewCommentReports", responder(s.viewCommentReports))
 	r.HandleFunc("/newReport", responder(s.newReport))
+	r.HandleFunc("/viewLogs", responder(s.viewLogs))
 
 	s.httpServer.Handler = s.router
 	s.router = r

@@ -120,3 +120,17 @@ type CommentReport struct {
 type CommentReports struct {
 	Reports []CommentReport
 }
+
+// AdminAccessLogs are dispatched when an admin wants to see what IPs have been accessing the server, which users are associated with them, and what endpoints they are accessing.
+type AdminAccessLog struct {
+	LogId    int64
+	Ip       string
+	Url      string
+	AtTime   int64
+	UserId   int64
+	Username string
+}
+
+type AdminAccessLogs struct {
+	Logs []AdminAccessLog
+}

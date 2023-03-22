@@ -64,6 +64,9 @@ type UserControllerInterface interface {
 	// HandleCommandNewReport handles a request, submitted by a user, to submit a comment report.
 	HandleCommandNewReport(comm *communication.PostCommentReport, serv *Server)
 
+	// HandleCommandNewReport handles a request, submitted by an admin, to view access logs.
+	HandleCommandViewLogs(comm *communication.ViewAccessLogs, serv *Server)
+
 	// GetUser returns the user associated with this controller
 	GetUser() *generated.User
 

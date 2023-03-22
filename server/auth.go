@@ -105,6 +105,7 @@ func (s *Server) ReadsAuth(handler http.Handler) http.Handler {
 			next(w, r)
 			return
 		}
+		s.DB.LogUser(r, user_id)
 		newctx := context.WithValue(r.Context(), CtxController, controller)
 		next(w, r.WithContext(newctx))
 	})

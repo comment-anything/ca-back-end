@@ -10,6 +10,11 @@
 
 # Package communication
 
+3/21/2023 
+- ViewLogs.ForUserID to ViewLogs.ForUser
+- ViewLogs.ForDomain to ViewLogs.ForEndpoint
+- AdminAccessLog.AtTime was added.
+
 2/16/2023
 - Change Comment.UserId from type 'string' to type 'int64'. (Typo in design doc. )
 - Added FullPage server-client communication entity for when a client first requests comments for a page.  

@@ -1,3 +1,7 @@
+3/21/2023: Karl
+- adding logs to the database for every request. Uses a context associated with the request to update the userID in case that request results in a log-in.
+- /viewLogs pipeline. Used a decently long function in package database for all the filtering. (store.GetLogs)
+
 3/19/2023: Karl
 - Update communication.CommentReport to match design document field names
 
