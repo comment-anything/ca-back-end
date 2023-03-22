@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -66,16 +67,18 @@ func (s *Store) GetLogs(view *communication.ViewAccessLogs) (*communication.Admi
 		}
 		user_filter := make([]generated.Log, 0, len(logs_range))
 		for _, val := range logs_range {
-			if val.ID == u_id.ID {
-				user_filter = append(user_filter, val)
+			if val.UserID.Valid == true {
+				if val.UserID.Int64 == u_id.ID {
+					user_filter = append(user_filter, val)
+				}
 			}
 		}
 		logs_range = user_filter
 	}
 	if len(view.ForIp) > 0 {
 		ip_filter := make([]generated.Log, 0, len(logs_range))
-		for _, val := range ip_filter {
-			if val.Ip.Valid && val.Ip.String == view.ForIp {
+		for _, val := range logs_range {
+			if val.Ip.String == view.ForIp {
 				ip_filter = append(ip_filter, val)
 			}
 		}
@@ -83,8 +86,9 @@ func (s *Store) GetLogs(view *communication.ViewAccessLogs) (*communication.Admi
 	}
 	if len(view.ForEndpoint) > 0 {
 		endpoint_filter := make([]generated.Log, 0, len(logs_range))
-		for _, val := range endpoint_filter {
-			if val.Url.Valid && val.Url.String == view.ForEndpoint {
+		for _, val := range logs_range {
+			fmt.Printf("\n val %s", val.Url.String)
+			if val.Url.String == view.ForEndpoint {
 				endpoint_filter = append(endpoint_filter, val)
 			}
 		}

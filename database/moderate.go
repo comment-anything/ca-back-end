@@ -20,7 +20,6 @@ func (s *Store) ModerateComment(moderator int64, mod *communication.Moderate) (b
 	if err != nil {
 		return false, err.Error()
 	}
-
 	p2 := generated.CreateModActionRecordParams{}
 	if mod.ReportID != nil {
 		p2.AssociatedReport.Valid = true
