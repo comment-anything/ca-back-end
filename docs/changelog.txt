@@ -1,3 +1,7 @@
+3/24/2023: Karl 
+- ViewModRecords pipeline
+- Made some schema changes, re-migrate required 
+
 3/22/2023: Karl
 - Moderate pipeline "/moderate"
 - comment reports and votes won't work for removed comments
