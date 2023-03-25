@@ -130,8 +130,8 @@ type Moderate struct {
 
 // ViewModRecords is dispatched to the served when an admin requests moderation records.
 type ViewModRecords struct {
-	From      int64
-	To        int64
+	From      *int64
+	To        *int64
 	ByUser    string
 	ForDomain string
 }

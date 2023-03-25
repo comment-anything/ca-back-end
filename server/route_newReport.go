@@ -18,8 +18,8 @@ func (c *MemberControllerBase) HandleCommandNewReport(comm *communication.PostCo
 	c.AddMessage(serv.DB.NewCommentReport(comm, c.User.ID))
 }
 
-// newReport is the API endpoint for when a user attempts to add a comment report. It's called when they send a POST request to "/newReport". It expects a JSON object of type 'communication.PostCommentReport'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. It then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the response-populating logic.
-func (s *Server) newReport(w http.ResponseWriter, r *http.Request) {
+// postCommentReport is the API endpoint for when a user attempts to add a comment report. It's called when they send a POST request to "/postCommentReport". It expects a JSON object of type 'communication.PostCommentReport'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. It then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the response-populating logic.
+func (s *Server) postCommentReport(w http.ResponseWriter, r *http.Request) {
 	cont := r.Context().Value(CtxController).(UserControllerInterface)
 	if cont != nil {
 		comm := communication.PostCommentReport{}

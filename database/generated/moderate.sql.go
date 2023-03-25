@@ -8,6 +8,7 @@ package generated
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 const createModActionRecord = `-- name: CreateModActionRecord :exec
@@ -50,8 +51,8 @@ WHERE taken_on > $1 AND taken_on < $2
 `
 
 type GetModerationRecordsParams struct {
-	TakenOn   sql.NullTime `json:"taken_on"`
-	TakenOn_2 sql.NullTime `json:"taken_on_2"`
+	TakenOn   time.Time `json:"taken_on"`
+	TakenOn_2 time.Time `json:"taken_on_2"`
 }
 
 func (q *Queries) GetModerationRecords(ctx context.Context, arg GetModerationRecordsParams) ([]CommentModerationAction, error) {

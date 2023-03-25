@@ -52,7 +52,7 @@ func (s *Store) VoteComment(userID int64, comm *communication.CommentVote) (*com
 		}
 	}
 	comcom := communication.Comment{}
-	s.transformGeneratedCommentToCommunicationComment(&gencom, &comcom)
+	s.transformGeneratedCommentToCommunicationCommentWithRemoved(&gencom, &comcom)
 	return &comcom, nil
 
 }

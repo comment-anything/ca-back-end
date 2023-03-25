@@ -84,7 +84,7 @@ CREATE TABLE "CommentModerationActions" (
   "taken_by" bigint NOT NULL,
   "comment_id" bigint NOT NULL,
   "reason" varchar,
-  "taken_on" timestamptz,
+  "taken_on" timestamptz NOT NULL DEFAULT(now()),
   "set_hidden_to" boolean,
   "set_removed_to" boolean,
   "associated_report" bigint
@@ -95,7 +95,7 @@ CREATE TABLE "BanActions" (
   "taken_by" bigint NOT NULL,
   "target_user" bigint NOT NULL,
   "reason" varchar,
-  "taken_on" timestamptz,
+  "taken_on" timestamptz NOT NULL DEFAULT(now()),
   "domain" varchar,
   "set_banned_to" boolean
 );

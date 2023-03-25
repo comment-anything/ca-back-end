@@ -59,8 +59,8 @@ func (c *AdminController) HandleCommandViewCommentReports(comm *communication.Vi
 	}
 }
 
-// viewCommentReports is the API endpoint for when a user attempts to view a list of reported comments. It's called when they send a POST request to "/viewCommentReports". It expects a JSON object of type 'communication.ViewCommentReports'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. It then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the response-populating logic.
-func (s *Server) viewCommentReports(w http.ResponseWriter, r *http.Request) {
+// getCommentReports is the API endpoint for when a user attempts to view a list of reported comments. It's called when they send a POST request to "/getCommentReports". It expects a JSON object of type 'communication.ViewCommentReports'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. It then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the response-populating logic.
+func (s *Server) getCommentReports(w http.ResponseWriter, r *http.Request) {
 	cont := r.Context().Value(CtxController).(UserControllerInterface)
 	if cont != nil {
 		comm := communication.ViewCommentReports{}

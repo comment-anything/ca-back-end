@@ -11,13 +11,15 @@ import (
 func (s *Store) GetPathResult(domain string, path string) (int64, error) {
 	ctx := context.Background()
 	var params generated.GetPathParams
-	params.Domain = sql.NullString{Valid: true, String: domain}
+	params.Domain.Valid = true
+	params.Domain.String = domain
 	params.Path = sql.NullString{Valid: true, String: path}
 	pathOb, err := s.Queries.GetPath(ctx, params)
 	if err != nil {
 		var cprams generated.CreatePathParams
 		s.Queries.EnsureDomainRecordExits(ctx, domain)
-		cprams.Domain = sql.NullString{Valid: true, String: domain}
+		cprams.Domain.Valid = true
+		cprams.Domain.String = domain
 		cprams.Path = sql.NullString{Valid: true, String: path}
 		pathOb, err = s.Queries.CreatePath(ctx, cprams)
 	}

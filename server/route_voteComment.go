@@ -61,8 +61,8 @@ func (c *AdminController) HandleCommandVoteComment(comm *communication.CommentVo
 	}
 }
 
-// voteComment is the API endpoint for when a user attempts to vote on a comment. It's called when they send a POST request to "/voteComment". It expects a JSON object of type 'communication.CommentVote'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. voteComment then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the actual comment-post logic.
-func (s *Server) voteComment(w http.ResponseWriter, r *http.Request) {
+// postCommentVote is the API endpoint for when a user attempts to vote on a comment. It's called when they send a POST request to "/postCommentVote". It expects a JSON object of type 'communication.CommentVote'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. postCommentVote then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the actual comment-post logic.
+func (s *Server) postCommentVote(w http.ResponseWriter, r *http.Request) {
 	cont := r.Context().Value(CtxController).(UserControllerInterface)
 	if cont != nil {
 		comm := communication.CommentVote{}

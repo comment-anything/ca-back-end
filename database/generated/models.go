@@ -22,7 +22,7 @@ type BanAction struct {
 	TakenBy     int64          `json:"taken_by"`
 	TargetUser  int64          `json:"target_user"`
 	Reason      sql.NullString `json:"reason"`
-	TakenOn     sql.NullTime   `json:"taken_on"`
+	TakenOn     time.Time      `json:"taken_on"`
 	Domain      sql.NullString `json:"domain"`
 	SetBannedTo sql.NullBool   `json:"set_banned_to"`
 }
@@ -43,7 +43,7 @@ type CommentModerationAction struct {
 	TakenBy          int64          `json:"taken_by"`
 	CommentID        int64          `json:"comment_id"`
 	Reason           sql.NullString `json:"reason"`
-	TakenOn          sql.NullTime   `json:"taken_on"`
+	TakenOn          time.Time      `json:"taken_on"`
 	SetHiddenTo      sql.NullBool   `json:"set_hidden_to"`
 	SetRemovedTo     sql.NullBool   `json:"set_removed_to"`
 	AssociatedReport sql.NullInt64  `json:"associated_report"`

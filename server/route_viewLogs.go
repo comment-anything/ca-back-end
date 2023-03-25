@@ -19,12 +19,12 @@ func (c *MemberController) HandleCommandViewLogs(comm *communication.ViewAccessL
 }
 
 /** HandleCommandViewLogs tells a member they don't have permission to view this report. */
-func (c *GlobalModeratorController) HandleCommandViewLogs(comm *communication.ViewAccessLogs, serv *Server) {
+func (c *DomainModeratorController) HandleCommandViewLogs(comm *communication.ViewAccessLogs, serv *Server) {
 	c.AddMessage(false, "You must be an admin to view logs.")
 }
 
 /** HandleCommandViewLogs tells a member they don't have permission to view this report. */
-func (c *DomainModeratorController) HandleCommandViewLogs(comm *communication.ViewAccessLogs, serv *Server) {
+func (c *GlobalModeratorController) HandleCommandViewLogs(comm *communication.ViewAccessLogs, serv *Server) {
 	c.AddMessage(false, "You must be an admin to view logs.")
 }
 
@@ -38,8 +38,8 @@ func (c *AdminController) HandleCommandViewLogs(comm *communication.ViewAccessLo
 	}
 }
 
-// viewLogs is the API endpoint for when a user attempts to view a feedback report. It's called when they send a POST request to "/viewLogs". It expects a JSON object of type 'communication.ViewAccessLogs'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. It then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the response-populating logic.
-func (s *Server) viewLogs(w http.ResponseWriter, r *http.Request) {
+// getLogs is the API endpoint for when a user attempts to view a feedback report. It's called when they send a POST request to "/getLogs". It expects a JSON object of type 'communication.ViewAccessLogs'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. It then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the response-populating logic.
+func (s *Server) getLogs(w http.ResponseWriter, r *http.Request) {
 	cont := r.Context().Value(CtxController).(UserControllerInterface)
 	if cont != nil {
 		comm := communication.ViewAccessLogs{}

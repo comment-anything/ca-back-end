@@ -67,8 +67,11 @@ type UserControllerInterface interface {
 	// HandleCommandNewReport handles a command, submitted by an admin, to view access logs.
 	HandleCommandViewLogs(comm *communication.ViewAccessLogs, serv *Server)
 
-	// Handle a command, valid for a moderator or above, to validate a command.
+	// Handle a command, valid for a moderator or above, to moderate a comment.
 	HandleCommandModerate(comm *communication.Moderate, serv *Server)
+
+	// Handle a command, valid for a moderator or above, to view Moderator Actions
+	HandleCommandViewModRecords(comm *communication.ViewModRecords, serv *Server)
 
 	// GetUser returns the user associated with this controller
 	GetUser() *generated.User

@@ -24,8 +24,6 @@ func (c *DomainModeratorController) HandleCommandModerate(comm *communication.Mo
 	str, err := serv.DB.Queries.GetCommentDomain(context.Background(), comm.CommentID)
 	if err != nil {
 		c.AddMessage(false, err.Error())
-	} else if !str.Valid {
-		c.AddMessage(false, "Comment did not seem to have a domain.")
 	} else {
 		for _, val := range c.DomainsModerated {
 			if val == str.String {

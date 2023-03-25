@@ -38,8 +38,8 @@ func (c *AdminController) HandleCommandViewFeedback(comm *communication.ViewFeed
 	}
 }
 
-// viewFeedback is the API endpoint for when a user attempts to view a feedback report. It's called when they send a POST request to "/viewFeedback". It expects a JSON object of type 'communication.ViewFeedback'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. It then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the response-populating logic.
-func (s *Server) viewFeedback(w http.ResponseWriter, r *http.Request) {
+// getFeedback is the API endpoint for when a user attempts to view a feedback report. It's called when they send a POST request to "/getFeedback". It expects a JSON object of type 'communication.ViewFeedback'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. It then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the response-populating logic.
+func (s *Server) getFeedback(w http.ResponseWriter, r *http.Request) {
 	cont := r.Context().Value(CtxController).(UserControllerInterface)
 	if cont != nil {
 		comm := communication.ViewFeedback{}

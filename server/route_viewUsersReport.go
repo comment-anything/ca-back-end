@@ -35,8 +35,8 @@ func (c *AdminController) HandleCommandViewUsersReport(comm *communication.ViewU
 	c.AddWrapped("AdminUsersReport", *rep)
 }
 
-// viewUsersReport is the API endpoint for when a user attempts to view the user's report. It's called when they send a POST request to "/viewUsersReport". It expects a JSON object of type 'communication.ViewUsersReport'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. It then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the response-populating logic.
-func (s *Server) viewUsersReport(w http.ResponseWriter, r *http.Request) {
+// getUsersReport is the API endpoint for when a user attempts to view the user's report. It's called when they send a POST request to "/getUsersReport". It expects a JSON object of type 'communication.ViewUsersReport'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. It then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the response-populating logic.
+func (s *Server) getUsersReport(w http.ResponseWriter, r *http.Request) {
 	cont := r.Context().Value(CtxController).(UserControllerInterface)
 	if cont != nil {
 		comm := communication.ViewUsersReport{}

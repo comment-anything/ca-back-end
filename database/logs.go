@@ -43,6 +43,7 @@ func (s *Store) LogUser(r *http.Request, id int64) {
 	}
 }
 
+// GetLogs parses a ViewAccessLogs message to determine the filtering, applying the filters to data returned by a database query
 func (s *Store) GetLogs(view *communication.ViewAccessLogs) (*communication.AdminAccessLogs, error) {
 	c := context.Background()
 	p := generated.GetLogsInRangeParams{}

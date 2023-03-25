@@ -35,8 +35,8 @@ func (c *MemberControllerBase) HandleCommandNewFeedback(comm *communication.Feed
 	}
 }
 
-// newFeedback is the API endpoint for when a user attempts to view a feedback report. It's called when they send a POST request to "/newFeedback". It expects a JSON object of type 'communication.Feedback'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. It then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the response-populating logic.
-func (s *Server) newFeedback(w http.ResponseWriter, r *http.Request) {
+// postFeedback is the API endpoint for when a user attempts to view a feedback report. It's called when they send a POST request to "/postFeedback". It expects a JSON object of type 'communication.Feedback'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. It then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the response-populating logic.
+func (s *Server) postFeedback(w http.ResponseWriter, r *http.Request) {
 	cont := r.Context().Value(CtxController).(UserControllerInterface)
 	if cont != nil {
 		comm := communication.Feedback{}

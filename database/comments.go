@@ -18,7 +18,7 @@ func (s *Store) GetComments(pathID int64) ([]communication.Comment, error) {
 	ccomms := make([]communication.Comment, len(rawcomms))
 	for i, val := range rawcomms {
 		ccom := ccomms[i]
-		err = s.transformGeneratedCommentToCommunicationComment(&val, &ccom)
+		err = s.transformGeneratedCommentToCommunicationCommentWithRemoved(&val, &ccom)
 		// WHY DO WE NEED THIS NEXT LINE?! but we do!
 		ccomms[i] = ccom
 
@@ -27,7 +27,21 @@ func (s *Store) GetComments(pathID int64) ([]communication.Comment, error) {
 
 }
 
-// transformGeneratedCommentToCommunicationComment runs queries necessary to transform a raw generated.Comment as received from the database into a communication.Comment used by front ends for comment rendering.
+// As the lower transform, but also overwrites the username, ID, and content if the comment has been removed.
+func (s *Store) transformGeneratedCommentToCommunicationCommentWithRemoved(gen *generated.Comment, com *communication.Comment) error {
+	err := s.transformGeneratedCommentToCommunicationComment(gen, com)
+	if err != nil {
+		if com.Removed {
+			com.Username = ""
+			com.Content = "~Removed~"
+			com.UserId = 0
+		}
+		return nil
+	}
+	return err
+}
+
+// transformGeneratedCommentToCommunicationCommentWithRemoved runs queries necessary to transform a raw generated.Comment as received from the database into a communication.Comment used by front ends for comment rendering.
 func (s *Store) transformGeneratedCommentToCommunicationComment(gen *generated.Comment, com *communication.Comment) error {
 	com.CommentId = gen.ID
 	com.UserId = gen.Author
@@ -62,10 +76,6 @@ func (s *Store) transformGeneratedCommentToCommunicationComment(gen *generated.C
 	err = s.populateVotes(com)
 	if err != nil {
 		return err
-	}
-	if com.Removed {
-		com.Username = ""
-		com.Content = "~Removed~"
 	}
 	return nil
 }
@@ -139,7 +149,7 @@ func (s *Store) NewComment(comm *communication.CommentReply, userId int64, pathI
 		fmt.Printf("\nDB.NewComment, Failure to create comment! %s Had params: %v", err.Error(), params)
 		return nil, err
 	}
-	s.transformGeneratedCommentToCommunicationComment(&gencom, &result)
+	s.transformGeneratedCommentToCommunicationCommentWithRemoved(&gencom, &result)
 	return &result, nil
 
 }

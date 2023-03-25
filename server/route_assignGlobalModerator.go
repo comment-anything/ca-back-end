@@ -47,8 +47,8 @@ func (c *AdminController) HandleCommandAssignGlobalModerator(comm *communication
 	}
 }
 
-// assignGlobalModerator is the API endpoint for when a user attempts to assign a global moderator. It's called when they send a POST request to "/assignGlobalModerator". It expects a JSON object of type 'communication.AssignGlobalModerator'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. It then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the response-populating logic.
-func (s *Server) assignGlobalModerator(w http.ResponseWriter, r *http.Request) {
+// postAssignGlobalModerator is the API endpoint for when a user attempts to assign a global moderator. It's called when they send a POST request to "/postAssignGlobalModerator". It expects a JSON object of type 'communication.AssignGlobalModerator'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. It then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the response-populating logic.
+func (s *Server) postAssignGlobalModerator(w http.ResponseWriter, r *http.Request) {
 	cont := r.Context().Value(CtxController).(UserControllerInterface)
 	if cont != nil {
 		comm := communication.AssignGlobalModerator{}

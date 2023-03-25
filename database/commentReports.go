@@ -88,7 +88,7 @@ func (s *Store) transformGeneratedCommentReport1(item generated.GetAllCommentRep
 		return nil, err
 	}
 	result.ReportingUsername = un
-	err = s.transformGeneratedCommentToCommunicationComment(&comm, &result.CommentData)
+	err = s.transformGeneratedCommentToCommunicationCommentWithRemoved(&comm, &result.CommentData)
 	if err != nil {
 		return nil, err
 	}
@@ -119,7 +119,7 @@ func (s *Store) transformGeneratedCommentReport2(item generated.GetCommentReport
 		return nil, err
 	}
 	result.ReportingUsername = un
-	err = s.transformGeneratedCommentToCommunicationComment(&comm, &result.CommentData)
+	err = s.transformGeneratedCommentToCommunicationCommentWithRemoved(&comm, &result.CommentData)
 	if err != nil {
 		return nil, err
 	}

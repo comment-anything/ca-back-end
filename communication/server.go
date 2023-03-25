@@ -135,3 +135,32 @@ type AdminAccessLog struct {
 type AdminAccessLogs struct {
 	Logs []AdminAccessLog
 }
+
+// ModRecord contains all the data a moderator or above needs to visualize a moderation action that was taken on comment.
+type ModRecord struct {
+	Comment           Comment
+	Domain            string
+	ModeratorID       int64
+	ModeratorUsername string
+	Reason            string
+	Time              int64
+	// may be nil
+	SetHiddenTo *bool
+	// may be nil
+	SetRemovedTo *bool
+	// may be nil
+	AssociatedReport *int64
+	// may be nil
+	ReportingUserID *int64
+	// may be nil
+	ReportingUsername string
+	// may be nil
+	ReportReason string
+	// may be nil
+	ReportedAt *int64
+}
+
+// The collection of ModRecords sent to the front end, matching their filtering parameters.
+type ModRecords struct {
+	Records []ModRecord
+}
