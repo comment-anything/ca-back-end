@@ -56,6 +56,7 @@ func (c *GuestController) HandleCommandRegister(comm *communication.Register, se
 		user, err := server.DB.Queries.CreateUser(context.Background(), args)
 		if err != nil {
 			c.AddMessage(false, "Failed to register.")
+			fmt.Printf("\n! Unexpected registration error for user %s: %s", comm.Username, err.Error())
 		} else {
 			c.manager.TransferGuest(c, &user)
 			c.AddMessage(true, "You registered succesfully.")

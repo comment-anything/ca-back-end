@@ -71,6 +71,7 @@ func (s *Server) setupRouter() {
 	r.HandleFunc("/viewLogs", responder(s.getLogs))
 	r.HandleFunc("/moderate", responder(s.postModerate))
 	r.HandleFunc("/viewModRecords", responder(s.getModRecords))
+	r.HandleFunc("/ban", responder(s.postBan))
 
 	s.httpServer.Handler = s.router
 	s.router = r

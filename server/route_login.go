@@ -26,16 +26,20 @@ func (c *GuestController) HandleCommandLogin(comm *communication.Login, server *
 			c.AddMessage(false, "Could not log in with those credentials.")
 		} else {
 			if user.Password == comm.Password {
-				c.manager.TransferGuest(c, &user)
-				var loginResponse communication.LoginResponse
-				prof, err := server.DB.GetCommUser(&user)
-				if err != nil {
-					c.AddMessage(false, "There was some problem with your profile.")
+				if user.Banned {
+					c.AddMessage(false, "You have been banned from comment anywhere.")
+				} else {
+					c.manager.TransferGuest(c, &user)
+					var loginResponse communication.LoginResponse
+					prof, err := server.DB.GetCommUser(&user)
+					if err != nil {
+						c.AddMessage(false, "There was some problem with your profile.")
+					}
+					loginResponse.LoggedInAs = *prof
+					loginResponse.Email = user.Email
+					c.AddWrapped("LoginResponse", loginResponse)
+					c.AddMessage(true, "Logged in.")
 				}
-				loginResponse.LoggedInAs = *prof
-				loginResponse.Email = user.Email
-				c.AddWrapped("LoginResponse", loginResponse)
-				c.AddMessage(true, "Logged in.")
 			} else {
 				c.AddMessage(false, "Could not log in with those credentials.")
 			}

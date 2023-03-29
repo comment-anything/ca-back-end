@@ -18,6 +18,12 @@ func (c *MemberControllerBase) HandleCommandCommentReply(comm *communication.Com
 	if c.Page == nil {
 		c.AddMessage(false, "You can't post a comment here.")
 	} else {
+		for _, d := range c.BannedFrom {
+			if d == c.Page.domain {
+				c.AddMessage(false, "You are banned from posting comments on this domain.")
+				return
+			}
+		}
 		ok, msg := c.Page.NewComment(c.User.ID, comm, serv)
 		if !ok {
 			c.AddMessage(false, msg)

@@ -141,6 +141,8 @@ CREATE INDEX ON "DomainBans" ("banned_by");
 
 CREATE INDEX ON "DomainBans" ("banned_from");
 
+CREATE UNIQUE INDEX ON "DomainBans" ("user_id", "banned_from");
+
 CREATE INDEX ON "Comments" ("author");
 
 CREATE INDEX ON "Comments" ("path_id");

@@ -73,6 +73,9 @@ type UserControllerInterface interface {
 	// Handle a command, valid for a moderator or above, to view Moderator Actions
 	HandleCommandViewModRecords(comm *communication.ViewModRecords, serv *Server)
 
+	// Handle a command, valid for a moderator or above, to ban a user from a domain or globally.
+	HandleCommandBan(comm *communication.Ban, serv *Server)
+
 	// GetUser returns the user associated with this controller
 	GetUser() *generated.User
 
@@ -93,6 +96,12 @@ type UserControllerInterface interface {
 	AddMessage(success bool, text string)
 	// AddMessage adds a ServerResponse of key 'name' containing data given by the data parameter.
 	AddWrapped(name string, data interface{})
+	// AddProfileUpdateResponse builds a communication.LoginResponse and fills it with what data is available to a MemberController. This is used for pushing user profile update responses.
+	AddProfileUpdateResponse()
+	// AddDomainBan adds a string to the list of domains a user is banned from.
+	AddDomainBan(s string)
+	// RemoveDomainBan removes a string from the list of domains a user is banned from.
+	RemoveDomainBan(s string)
 }
 
 // UserControllerBase provides data members for UserControllers. It does not implement UserControllerInterface fully. Other controllers are defined by extending this Base class and implementing the rest of the interface. Controllers also retain an array of messages that need to be sent to the client, which will be dispatched the next time a request from that user is received
@@ -110,6 +119,7 @@ type UserControllerBase struct {
 type MemberControllerBase struct {
 	UserControllerBase
 	canResetPassword bool
+	BannedFrom       []string
 }
 
 // GuestController is attached to an HTTP Request Context when a non-logged in user accesses Comment Anywhere.

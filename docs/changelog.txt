@@ -1,3 +1,9 @@
+3/29/2023: Karl 
+- Ban pipeline finished
+- Domain banning and global banning 
+- Making profileUpdateResponse a polymorphic method of controllers
+
+
 3/24/2023: Karl 
 - ViewModRecords pipeline
 - Made some schema changes, re-migrate required 

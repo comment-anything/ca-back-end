@@ -9,6 +9,10 @@
 
 
 # Package communication
+
+3/28/2023:
+- Communication.Ban now bans based on username rather than ID. Username is sent, not ID (and user is subsequently looked up in DB to get their ID). Also has Ban.ban to determine whether an action is supposed to be an unban.
+
 3/22/2023:
 - Communication.Moderate, ReportID changed to *int64 to allow to nil values. (Comments can be moderated without associated report)
 - Moderate.ViewModRecords was given field 'From', 'To', 'ByUser', and 'ForDomain'

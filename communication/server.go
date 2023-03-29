@@ -21,6 +21,7 @@ type UserProfile struct {
 	Username          string
 	CreatedOn         int64
 	DomainsModerating []string
+	DomainsBannedFrom []string
 	IsAdmin           bool
 	IsDomainModerator bool
 	IsGlobalModerator bool

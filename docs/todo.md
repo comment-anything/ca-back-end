@@ -1,3 +1,23 @@
+-- bans 3/29
+
+
+// TODO 
+
+- ~~unban user ~~
+- ~~add ban record for domain ban~~
+- ~~add ban record for global ban~~
+- ~~global bans ~~
+- ~~prevent global banned user from logging in~~
+- ~~log global banned user out immediately~~
+- ~~prevent domain banned user from commenting~~
+- ~~push ban lists to user profile~~
+
+--- Misc
+
+- limit max size of communication entity
+- make usernames not case sensitive?
+- encrypt passwords
+
 --- Comments
 
 2/19/2023

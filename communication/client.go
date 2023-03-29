@@ -135,3 +135,12 @@ type ViewModRecords struct {
 	ByUser    string
 	ForDomain string
 }
+
+// Ban is dispatched when a moderator or administrator bans a user.
+type Ban struct {
+	Username string
+	Reason   string
+	Domain   string
+	// If false, this is an unban action instead of a ban action.
+	Ban bool
+}

@@ -37,6 +37,10 @@ func (st *Store) GetCommUser(user *generated.User) (*communication.UserProfile, 
 		prof.IsGlobalModerator = false
 		prof.IsDomainModerator = false
 	}
+	bans, err := st.GetDomainBans(user.ID)
+	if err == nil {
+		prof.DomainsBannedFrom = bans
+	}
 	return prof, nil
 }
 

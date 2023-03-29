@@ -56,6 +56,7 @@ func (c *UserControllerBase) AddMessage(success bool, text string) {
 	c.nextResponse = append(c.nextResponse, communication.GetMessage(success, text))
 }
 
+// Adds a new message to the next response array. The parameter data should be of a type defined in communication.server so it can be processed correctly on the front end.
 func (c *UserControllerBase) AddWrapped(name string, data interface{}) {
 	c.nextResponse = append(c.nextResponse, communication.Wrap(name, data))
 }

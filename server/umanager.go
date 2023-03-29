@@ -31,6 +31,80 @@ func (um *UserManager) TransferGuest(oldGuestController *GuestController, user *
 	oldGuestController.hasloggedin = true
 }
 
+// DomainBanUser registers a domain ban for a user. It calls the relevant serv.DB function to add the record in the database. If the user is currently logged in, it adds the domain to their instanced slice of domains they are banned from. If the user is currently logged in, it also pushes a new login response to the user's nextResponse array so that the changes to their profile will be visible to them on the front end.
+func (um *UserManager) DomainBanUser(ban *communication.Ban, banned_by int64) (bool, string) {
+	user_id, err := um.serv.DB.GetUserID(ban.Username)
+	if err != nil {
+		return false, fmt.Sprintf("Could not find user %s.", ban.Username)
+	}
+	cont, ok := um.members[user_id]
+	if ok {
+		ctype := cont.GetControllerType()
+		if ctype == "AdminController" {
+			return false, "You cannot ban an admin."
+		}
+		if ctype == "GlobalModeratorController" {
+			return false, "You cannot ban a global moderator."
+		}
+		ok, why := um.serv.DB.AddDomainBan(user_id, ban.Domain, banned_by, &ban.Reason)
+		if !ok {
+			return ok, why
+		}
+		if ctype == "DomainModeratorController" {
+			cont.AddDomainBan(ban.Domain)
+			cont.AddProfileUpdateResponse()
+			return ok, why
+		}
+		if ctype == "MemberController" {
+			cont.AddDomainBan(ban.Domain)
+			cont.AddProfileUpdateResponse()
+			return ok, why
+		}
+	}
+	return um.serv.DB.AddDomainBan(user_id, ban.Domain, banned_by, &ban.Reason)
+}
+
+// DomainBanUser registers a domain unban for a user. It calls the relevant serv.DB function to add the record in the database. If the user is currently logged in, it removes the domain to their instanced slice of domains they are banned from. If the user is currently logged in, it also pushes a new login response to the user's nextResponse array so that the changes to their profile will be visible to them on the front end.
+func (um *UserManager) DomainUnbanUser(ban *communication.Ban, unbanned_by int64) (bool, string) {
+	user_id, err := um.serv.DB.GetUserID(ban.Username)
+	if err != nil {
+		return false, fmt.Sprintf("Could not find user %s.", ban.Username)
+	}
+	cont, ok := um.members[user_id]
+	if ok {
+		ok, why := um.serv.DB.RemoveDomainBan(user_id, ban.Domain, unbanned_by, &ban.Reason)
+		if !ok {
+			return ok, why
+		}
+		cont.RemoveDomainBan(ban.Domain)
+		cont.AddProfileUpdateResponse()
+
+	}
+	return um.serv.DB.RemoveDomainBan(user_id, ban.Domain, unbanned_by, &ban.Reason)
+}
+
+// GlobalBanUsers calls DB functions necessary to realize a user global ban. It also logs the user out, if they are logged in.
+func (um *UserManager) GlobalBanUser(ban *communication.Ban, banned_by int64) (bool, string) {
+	user_id, err := um.serv.DB.GetUserID(ban.Username)
+	if err != nil {
+		return false, fmt.Sprintf("Could not find user %s.", ban.Username)
+	}
+	cont, ok := um.members[user_id]
+	if ok {
+		ctype := cont.GetControllerType()
+		if ctype == "AdminController" {
+			return false, "You cannot ban admins."
+		}
+		if ctype == "GlobalModeratorController" {
+			return false, "You cannot ban global moderators."
+		}
+		user := cont.GetUser()
+		user.Banned = true
+		return um.serv.DB.GlobalBan(user_id, banned_by, &ban.Reason)
+	}
+	return um.serv.DB.GlobalBan(user_id, banned_by, &ban.Reason)
+}
+
 // TransferMember is called when a user logs out. It deletes a member controller from the map, and sets the calling member controller User to an associated member ID, and sets the hasLoggedIn val to false for correct cookie generation.
 func (um *UserManager) TransferMember(oldMemberController *MemberControllerBase) {
 	delete(um.members, oldMemberController.User.ID)
@@ -61,15 +135,7 @@ func (um *UserManager) ChangeMemberControllerToGlobalModController(id int64) (bo
 	gmod.hasloggedin = true
 	gmod.SetPage(curpage)
 	um.members[id] = gmod
-	lr := &communication.LoginResponse{}
-	lr.Email = gmod.User.Email
-	lr.LoggedInAs.CreatedOn = gmod.User.CreatedAt.Unix()
-	lr.LoggedInAs.ProfileBlurb = gmod.User.ProfileBlurb.String
-	lr.LoggedInAs.UserId = gmod.User.ID
-	lr.LoggedInAs.Username = gmod.User.Username
-	lr.LoggedInAs.IsGlobalModerator = true
-	lr.LoggedInAs.IsDomainModerator = false
-	gmod.AddWrapped("LoginResponse", lr)
+	gmod.AddProfileUpdateResponse()
 	return true, "Assignment added; logged in member given Global Moderator Controller"
 }
 
@@ -145,6 +211,10 @@ func (um *UserManager) GetControllerById(id int64, isGuest bool) (UserController
 		cont, ok := um.members[id]
 		if ok {
 			fmt.Printf("\nFound controller %d of type %s", id, cont.GetControllerType())
+			if cont.GetUser().Banned == true {
+				delete(um.members, id)
+				return nil, errors.New("You have been banned from Comment Anywhere.")
+			}
 			return cont, nil
 		} else {
 			newcont, err := um.AttemptCreateMemberController(id)
@@ -152,12 +222,22 @@ func (um *UserManager) GetControllerById(id int64, isGuest bool) (UserController
 			if err != nil {
 				return nil, errors.New("Member controller could not be created.")
 			}
+			if newcont.GetUser().Banned == true {
+				delete(um.members, id)
+				return nil, errors.New("You have been banned from Comment Anywhere.")
+			}
 			return newcont, nil
 		}
 	}
 }
 
-// AttemptCreateMemberController will query the database to see if a member with that id exists. If so, it will add that controller to the map. //TODO: different controllers for various levels of members. Have Admin, need moderators.
+/*
+* AttemptCreateMemberController will query the database to see if a member with that id exists. If so, it will add that controller to the map. If not the appropriate controller based on the user's privilege levels will be created and added to the map (with the key of the member ID). In either case, the interface will be returned unless there was an error.
+
+If the user is a domain moderator, the list of domains they can moderate is added to their slice.
+
+If the user is below a global moderator and is banned from any domains, the list of domains they are banned from is added to their slice.
+*/
 func (um *UserManager) AttemptCreateMemberController(id int64) (UserControllerInterface, error) {
 	user, err := um.serv.DB.Queries.GetUserByID(context.Background(), id)
 	if err != nil {
@@ -186,24 +266,30 @@ func (um *UserManager) AttemptCreateMemberController(id int64) (UserControllerIn
 				um.members[id] = cont
 				return cont, nil
 			}
+			bans, err_bans := um.serv.DB.GetDomainBans(id)
 			dmod, err := um.serv.DB.GetDomainModeratorAssignments(id)
-			if dmod != nil && err != nil {
+			if dmod != nil && err == nil {
 				cont := &DomainModeratorController{}
 				cont.User = &user
 				cont.manager = um
 				cont.hasloggedin = true
 				cont.DomainsModerated = dmod
 				um.members[id] = cont
+				if err_bans == nil {
+					cont.BannedFrom = bans
+				}
 				return cont, nil
 			}
 			cont := &MemberController{}
 			cont.User = &user
 			cont.manager = um
 			cont.hasloggedin = true
+			if err_bans == nil {
+				cont.BannedFrom = bans
+			}
 			um.members[id] = cont
 			return cont, nil
 		}
-
 	}
 }
 
