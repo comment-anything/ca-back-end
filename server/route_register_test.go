@@ -8,7 +8,7 @@ import (
 )
 
 func TestPostRegister(t *testing.T) {
-	config.Vals.Load("../.env")
+	config.Vals.Load("../.env", false)
 	defer config.Vals.Reset()
 	server, err := New()
 	if err != nil {

@@ -110,5 +110,96 @@ test-detailed-report:
 	go test ./... -coverprofile=tests_rep.tmp
 	go tool cover -html tests_rep.tmp
 
+
+# ---------------------------------------------------------------
+#						    Deploying
+# ---------------------------------------------------------------
+
+# -- A test container for confirming bridging
+test_container:
+	docker run -t -p 3000 --name ${SERVER_CONTAINER_NAME} -d alpine:3.17.3
+
+# -- Build the custom server image
+build_server_image:
+	docker build -t ${SERVER_IMAGE} --rm . \
+	--build-arg port=${SERVER_PORT} 
+	
+# -- Create the network, connect the containers
+
+create_net:
+	docker network create -d bridge ${SERVER_DB_NETWORK}
+
+net_con_server:
+	docker network connect ${SERVER_DB_NETWORK} ${SERVER_CONTAINER_NAME}
+
+net_con_db:
+	docker network connect ${SERVER_DB_NETWORK} ${DB_CONTAINER_NAME}
+
+net_dc_server:
+	docker network disconnect ${SERVER_DB_NETWORK} ${SERVER_CONTAINER_NAME}
+
+net_dc_db:
+	docker network disconnect ${SERVER_DB_NETWORK} ${DB_CONTAINER_NAME}
+
+remove_net:
+	docker network rm ${SERVER_DB_NETWORK}
+
+# -- Create server
+
+
+create_server:
+	docker run -t --name ${SERVER_CONTAINER_NAME}  \
+	-p ${SERVER_PORT}:${SERVER_PORT} -d ${SERVER_IMAGE}
+
+start_server:
+	docker start ${SERVER_CONTAINER_NAME}
+
+stop_server:
+	docker stop ${SERVER_CONTAINER_NAME}
+
+sc_server:
+	$(MAKE) create_server
+	$(MAKE) net_con_server
+	$(MAKE) start_server
+
+rm_server:
+	docker rm ${SERVER_CONTAINER_NAME} --force
+	$(MAKE) sc_server
+
+rebuild_server:
+	$(MAKE) build_server_image
+	$(MAKE) sc_server
+
+
+
+
+
+
+# ------------------------
+# 		Deprecated
+# ------------------------
+
+
+
+
+
+# --- Older stuff for when trying to run go inside of remote server rather than container
+
+buildgo:
+	go build .
+
+# runs ca-back-end as a headless process
+headless:
+	$(MAKE) buildgo
+	systemd-run --unit=serve-comm-any --working-directory=/COMANY/gosrc ./ca-back-end --nocli=true
+
+kill_headless:
+	systemctl kill serve-comm-any.service
+
+ca_cli:
+	journalctl -xfu serve-comm-any.service
+
+
+# really just for reference; this command has to be run manually and can't be done through make
 send_source:
 	scp -r * $(REMOTE_USER)@$(IP_DEPLOY):$(REMOTE_PATH)

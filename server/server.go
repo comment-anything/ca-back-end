@@ -89,8 +89,12 @@ func (s *Server) Start(startCli bool) {
 		/* When the CLI is done, we can close the server. */
 		s.httpServer.Close()
 	} else {
+		fmt.Println("Running server with no CLi.")
 		/* if startCli is false, server blocks main thread. */
 		s.httpServer.ListenAndServe()
+		var x string
+		fmt.Printf("\nType anything to exit.")
+		fmt.Scan(&x)
 	}
 
 }

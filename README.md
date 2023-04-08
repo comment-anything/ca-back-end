@@ -65,8 +65,28 @@ To start the comment anywhere back-end for the first time, you have to do the fo
 
 ## Deploying
 
-You'll need to know the remote password. Run `make send_source` to send this folder to the remote server. You'll be prompted for a password.
+CommentAnywhere deploys as two docker containers connected by a bridge network. One container is the server, one container is the postgres database.
 
-Then ssh into the remote and run the build process as needed. 
+1. Copy the source files to the server 
+ - run the following `scp` command:
+ - `scp -r * user@111.11.111.11:/COMANY/gosrc`
+2. Copy the env file to the server.
+ - `scp .env user@111.11.111.11:/COMANY/gosrc/.env`
+3. SSH into the server
+ - `ssh user@111.11.111.11`
+4. CD into `/COMANY/gosrc`
+5. Run appropriate `make` commands to build the server and postgres containers
+   - `make dependencies`
+   - `make build_postgres`
+   - `make create_db`
+   - `make migrate_up`
+   - `make build_server_image`
+   - `make create_net`
+   - `make net_con_db`
+   - `make create_server`
+   - `make net_con_server`
+   - `make start_server`
+
+The server should be running!
 
 

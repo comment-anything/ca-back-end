@@ -17,7 +17,7 @@ func TestNew(t *testing.T) {
 	if error == nil {
 		t.Errorf("The server should return an error if the config file isn't loaded.")
 	}
-	config.Vals.Load("../.env")
+	config.Vals.Load("../.env", false)
 	_, error = New()
 	if error != nil {
 		t.Errorf("Error with the server: %s", error)
@@ -39,7 +39,7 @@ func shutdown(s *Server, secs float32) {
 }
 
 func TestStart(t *testing.T) {
-	config.Vals.Load("../.env")
+	config.Vals.Load("../.env", false)
 	defer config.Vals.Reset()
 	s, _ := New()
 	go shutdown(s, 0.25)
@@ -47,7 +47,7 @@ func TestStart(t *testing.T) {
 }
 
 func TestStop(t *testing.T) {
-	config.Vals.Load("../.env")
+	config.Vals.Load("../.env", false)
 	defer config.Vals.Reset()
 	s, _ := New()
 	go s.Start(false)

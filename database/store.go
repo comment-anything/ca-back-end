@@ -24,9 +24,10 @@ func New(connect bool) (*Store, error) {
 	if connect {
 		err := store.Connect()
 		if err != nil {
+			fmt.Printf("\nError connecting to database! %s", err.Error())
 			return nil, err
 		} else {
-			return store, err
+			return store, nil
 		}
 	}
 	return store, nil
@@ -40,12 +41,28 @@ func (s *Store) Connect() error {
 	if s.DB != nil {
 		s.Disconnect()
 	}
-	postgres, err := sql.Open("postgres", config.Vals.DB.ConnectString())
-	if err != nil {
-		return err
+
+	var cstring string
+	if config.Vals.DockerMode {
+		cstring = config.Vals.DB.ConnectString2()
+	} else {
+		cstring = config.Vals.DB.ConnectString1()
+
 	}
+	postgres, err := sql.Open("postgres", cstring)
+	if err != nil {
+		fmt.Printf("\nFailed to open postgres! %s", err.Error())
+	}
+
 	err = postgres.Ping()
 	if err != nil {
+		var s string
+		if config.Vals.DockerMode {
+			s = config.Vals.DB.ConnectString2()
+		} else {
+			s = config.Vals.DB.ConnectString1()
+		}
+		fmt.Printf("\nFailed to ping DB with %s! %s", s, err.Error())
 		return err
 	}
 	fmt.Printf("\tConnecting to database: %s\n", config.Vals.DB.DBname)

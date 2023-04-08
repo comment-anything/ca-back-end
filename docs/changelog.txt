@@ -1,3 +1,15 @@
+Week of 4/7/2023: Karl
+- Dockerized the go server
+- Deployed to the cloud (Kamatera)
+- New flags for process start:
+   - --nocli={true|false} : starts server with/without cli 
+   - --env=my_env_path - starts server with path to .env file 
+   - --docker={true|false} - defaults to false. Starts server in docker mode. This configures how the connection to the database is made. 
+- Dockerfile builds a custom image of the server 
+- Added PostgresDocker to Config to track whether in Docker mode 
+- Got rid of second migration. It had problems incrementing the IDs and had some annoying bugs. 
+
+
 3/29/2023: Karl 
 - Ban pipeline finished
 - Domain banning and global banning 

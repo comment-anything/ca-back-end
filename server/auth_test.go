@@ -14,7 +14,7 @@ import (
 
 func TestGetToken(t *testing.T) {
 	os.Clearenv()
-	config.Vals.Load("../.env")
+	config.Vals.Load("../.env", false)
 	defer config.Vals.Reset()
 	tstring, err := GetToken(1, true)
 	if err != nil {
@@ -53,7 +53,7 @@ func TestGetToken(t *testing.T) {
 }
 
 func TestAuths(t *testing.T) {
-	config.Vals.Load("../.env")
+	config.Vals.Load("../.env", false)
 	defer config.Vals.Reset()
 	server, _ := New()
 	go server.Start(false)

@@ -23,6 +23,10 @@ type DbCredentials struct {
 	User string
 	/* The password credential. */
 	Password string
+	/* The docker container name of the postgres docker container (if applicable) */
+	PostgresDocker string
+	/* Whether or not this is in docker mode; affects the type of connection string returned. */
+	DockerMode bool
 }
 
 // ServerConfig is stored in the global Config singleton as Config.server. It holds the connection settings for the server.
@@ -41,13 +45,15 @@ type config struct {
 	DB       DbCredentials
 	Server   ServerConfig
 	IsLoaded bool
+	/* Whether or not this is in docker mode; affects the type of connection string returned. */
+	DockerMode bool
 }
 
 // Vals is a global configuration object singleton holding environment variables and other global data.
 var Vals config
 
 // Load loads the environment variables from the .env file. It should be called in the main function and then in the TestMain function of every package that needs access to those environment variables. While main calls the function with a path to the current working directory, tests will have to use relative directories to find the .env file.
-func (c *config) Load(path string) error {
+func (c *config) Load(path string, dockerMode bool) error {
 	err := godotenv.Load(path)
 	if err != nil {
 		return err
@@ -60,6 +66,7 @@ func (c *config) Load(path string) error {
 	if err != nil {
 		return err
 	}
+	Vals.DockerMode = dockerMode
 	Vals.IsLoaded = true
 	return nil
 }
@@ -69,6 +76,10 @@ func (c *config) loadDBEnv() error {
 	c.DB.Host = os.Getenv("DB_HOST")
 	if c.DB.Host == "" {
 		return getEnvError("DB_HOST")
+	}
+	c.DB.PostgresDocker = os.Getenv("DB_CONTAINER_NAME")
+	if c.DB.PostgresDocker == "" && c.DB.DockerMode {
+		return getEnvError("DB_CONTAINER_NAME")
 	}
 	c.DB.Port = os.Getenv("DB_HOST_PORT")
 	if c.DB.Port == "" {
@@ -100,12 +111,26 @@ func (c *config) loadDBEnv() error {
 	} else {
 		return getEnvError("CA_TESTING_MODE")
 	}
+	c.DB.DockerMode = c.DockerMode
 	return nil
 }
 
 // DBString builds a string from the database connection credentials and returns it. For use with sql.Open.
-func (d *DbCredentials) ConnectString() string {
+func (d *DbCredentials) ConnectString1() string {
 	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", d.Host, d.Port, d.User, d.Password, d.DBname)
+}
+
+// A DBString for use when both the server and postgres are containerized and need to connect via docker networking
+func (d *DbCredentials) ConnectString2() string {
+	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", d.User, d.Password, d.PostgresDocker, d.Port, d.DBname)
+}
+
+func (d *DbCredentials) ConnectString() string {
+	if d.DockerMode {
+		return d.ConnectString2()
+	} else {
+		return d.ConnectString1()
+	}
 }
 
 // loadServerEnv loads server related environment variables into the configuration struct. If it fails to load a variable, it terminates the program process. Correct environment variables are required for the program to run.

@@ -81,7 +81,7 @@ func TestConnectString(t *testing.T) {
 	envFilePopulate()
 	godotenv.Load(testEnvFile)
 	Vals.loadDBEnv()
-	test_str := Vals.DB.ConnectString()
+	test_str := Vals.DB.ConnectString1()
 	if test_str != "host=localhost port=5433 user=root password=dbsuperuser991 dbname=comm-anything-tests sslmode=disable" {
 		t.Errorf("The connection string was not formatted as expected.")
 	}
@@ -90,25 +90,25 @@ func TestConnectString(t *testing.T) {
 
 func TestLoad(t *testing.T) {
 	envFilePopulate()
-	err := Vals.Load(testEnvFile)
+	err := Vals.Load(testEnvFile, false)
 	if err != nil {
 		t.Errorf("No error should result from loading an env file: %s", err.Error())
 	}
 	deleteEnvFile()
 	os.Clearenv()
-	err = Vals.Load("...")
+	err = Vals.Load("...", false)
 	if err == nil {
 		t.Errorf("An error should result from a bad env file path.")
 	}
 	envFileWrite("EXISTS", "true")
-	err = Vals.Load(testEnvFile)
+	err = Vals.Load(testEnvFile, false)
 	if err == nil {
 		t.Errorf("An error should result when an env file exists but isnt populated correctly.")
 	}
 	os.Clearenv()
 	deleteEnvFile()
 	envFileDBPopulate()
-	err = Vals.Load(testEnvFile)
+	err = Vals.Load(testEnvFile, false)
 	if err == nil {
 		t.Errorf("An error should result when db stuff is set but server isnt.")
 	}
@@ -119,7 +119,7 @@ func TestLoad(t *testing.T) {
 
 func TestReset(t *testing.T) {
 	envFilePopulate()
-	_ = Vals.Load(testEnvFile)
+	_ = Vals.Load(testEnvFile, false)
 	Vals.Reset()
 	actual := os.Getenv("DB_NAME")
 	if actual != "" {

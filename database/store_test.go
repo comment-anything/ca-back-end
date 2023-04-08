@@ -16,10 +16,10 @@ func TestNew(t *testing.T) {
 	if err != nil || nstore == nil {
 		t.Errorf("if new called without connect, should get struct with no errors")
 	}
-	config.Vals.Load("../.env")
+	config.Vals.Load("../.env", false)
 	nstore, err = New(true)
 	if err != nil {
-		t.Logf("\nThe config string is : %s", config.Vals.DB.ConnectString())
+		t.Logf("\nThe config string is : %s", config.Vals.DB.ConnectString1())
 		t.Errorf("\nWith a proper config, store should be able to connect. Ensure the server instance is running and credentials are correct. \nError produced::\t %s", err.Error())
 	}
 	if nstore != nil {
