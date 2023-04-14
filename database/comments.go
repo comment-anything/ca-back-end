@@ -17,10 +17,8 @@ func (s *Store) GetComments(pathID int64) ([]communication.Comment, error) {
 	}
 	ccomms := make([]communication.Comment, len(rawcomms))
 	for i, val := range rawcomms {
-		ccom := ccomms[i]
-		err = s.transformGeneratedCommentToCommunicationCommentWithRemoved(&val, &ccom)
-		// WHY DO WE NEED THIS NEXT LINE?! but we do!
-		ccomms[i] = ccom
+		ccom := &ccomms[i]
+		err = s.transformGeneratedCommentToCommunicationCommentWithRemoved(&val, ccom)
 
 	}
 	return ccomms, nil

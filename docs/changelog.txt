@@ -1,3 +1,11 @@
+4/14/2023: Karl
+- added go-mail dependency for easy mail sending 
+- authorized app on gmail and got a token from them for use with sending emails 
+- SMTPServer, SMTPass, SMTPUser values in ServerConfig, correspond to SMTP_SERVER, SMTP_USERNAME, SMTP_PASS in .env file. 
+- Config validates those .env values exist and sets them in ServConfig 
+- Added Store.PwResetRequest to handle database queries needed related to a password reset request. (Deleting old codes, adding the new one) Store also calls the mail function.
+- Added database > SendPWResetCode(email, code) to actually dispatch the email. It's in database because that's who will call it. (Relies on Config for settings, otherwise would be in util) 
+
 Week of 4/7/2023: Karl
 - Dockerized the go server
 - Deployed to the cloud (Kamatera)

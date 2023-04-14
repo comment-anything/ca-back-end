@@ -39,6 +39,13 @@ type ServerConfig struct {
 	JWTKey string
 	/* The cookie name to store the access tokens as on user devices. */
 	JWTCookieName string
+
+	/* The SMTP server where emails are sent to/by */
+	SMTPServer string
+	/* The Password for the SMTP sever. */
+	SMTPPass string
+	/* The username for the SMTP server*/
+	SMTPUser string
 }
 
 type config struct {
@@ -161,6 +168,25 @@ func (c *config) loadServerEnv() error {
 	} else {
 		Vals.Server.JWTCookieName = cookie_name
 	}
+	smtp_server := os.Getenv("SMTP_SERVER")
+	if smtp_server == "" {
+		return getEnvError("SMTP_SERVER")
+	} else {
+		Vals.Server.SMTPServer = smtp_server
+	}
+	smtp_user := os.Getenv("SMTP_USERNAME")
+	if smtp_server == "" {
+		return getEnvError("SMTP_USERNAME")
+	} else {
+		Vals.Server.SMTPUser = smtp_user
+	}
+	smtp_pass := os.Getenv("SMTP_PASS")
+	if smtp_server == "" {
+		return getEnvError("SMTP_PASS")
+	} else {
+		Vals.Server.SMTPPass = smtp_pass
+	}
+
 	return nil
 }
 

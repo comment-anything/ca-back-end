@@ -1,48 +1,16 @@
 package server
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
-	"math/rand"
 	"net/http"
 
 	"github.com/comment-anything/ca-back-end/communication"
-	"github.com/comment-anything/ca-back-end/database/generated"
 )
-
-func randomCode() int64 {
-	return rand.Int63n(4294967295)
-}
 
 // HandleCommandPasswordResetRequest handles a user's request for a new password by generating a unique code, saving it in the database, and deleting any previous codes for that user.
 func (c *UserControllerBase) HandleCommandPasswordResetRequest(comm *communication.PasswordReset, serv *Server) {
-	user, err := serv.DB.Queries.GetUserByEmail(context.Background(), comm.Email)
-	if err == nil {
-		// delete all other code entries associated with this user; only the most recent will be valid.
-		err := serv.DB.Queries.DeletePreviousPWRestCodesForUser(context.Background(), user.ID)
-
-		tries := 0
-		params := generated.CreatePWResetCodeParams{}
-		params.ID = randomCode()
-		params.UserID = user.ID
-
-		var code generated.PasswordResetCode
-		for tries < 10 { // very unlikely the code will be already used, but try a few times just in case
-			code, err = serv.DB.Queries.CreatePWResetCode(context.Background(), params)
-			if err != nil {
-				params.ID = randomCode()
-				tries++
-			} else {
-				tries = 10
-			}
-		}
-		// if there is still an error, 10 tries didn't work and its a database problem not a code collision problem.
-		if err != nil {
-			_ = code // TODO: actually send the email
-		}
-	}
-	// Even if we don't send an email, we pretend we did for information hiding.
+	serv.DB.PwResetRequest(comm)
 	c.AddMessage(true, "A password reset code has been email to you.")
 }
 
