@@ -9,6 +9,7 @@ import (
 	"github.com/comment-anything/ca-back-end/communication"
 	"github.com/comment-anything/ca-back-end/database/generated"
 	"github.com/comment-anything/ca-back-end/util"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // validateRegisterRequest validates whether a register request can succeed or not by verifying the password, username, etc. are acceptable. If it can't succeed, this function will return a string intended for transmission to the end user explaining generally why the request doesn't work.
@@ -52,7 +53,12 @@ func (c *GuestController) HandleCommandRegister(comm *communication.Register, se
 		var args generated.CreateUserParams
 		args.Username = comm.Username
 		args.Email = comm.Email
-		args.Password = comm.Password
+		crypt_pass, err := bcrypt.GenerateFromPassword([]byte(comm.Password), 8)
+		if err != nil {
+			c.AddMessage(false, "Failed to process password.")
+			return
+		}
+		args.Password = string(crypt_pass)
 		user, err := server.DB.Queries.CreateUser(context.Background(), args)
 		if err != nil {
 			c.AddMessage(false, "Failed to register.")

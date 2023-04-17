@@ -3,6 +3,12 @@
 
 # Additional Features
 
+4/16/2023: 
+ - Created a message pipeline for ViewUser...
+    - apiEndpoint: "/viewUser"
+    - communication.ViewUser = { Username: string }
+    - sendsBack: communication.PublicUserProfile = UserProfile
+
 2/7/2023 
  - Included a server CLI. This is necessary and useful as we go forwards testing the server. We can use the CLI to get output for various statuses, such as the # of users logged in, the # of pages cached.
  - Instead of 1 logger function, there are two logger functions. An initial log occurs when a request is received, and it prints the API endpoint and the HTTP Method. The other logger is called last in the lifecycle, and it prints the User ID.

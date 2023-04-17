@@ -59,3 +59,20 @@ func (st *Store) GetUserID(name string) (int64, error) {
 		return u.ID, nil
 	}
 }
+
+func (st *Store) GetPublicUserProfile(name string) (*communication.PublicUserProfile, error) {
+	ctx := context.Background()
+	user, err := st.Queries.GetUserByUserName(ctx, name)
+	if err != nil {
+		return nil, err
+	}
+	comuser, err := st.GetCommUser(&user)
+	if err != nil {
+		return nil, err
+	}
+	retval := &communication.PublicUserProfile{
+		UserProfile: *comuser,
+		IsLoggedIn:  false,
+	}
+	return retval, nil
+}

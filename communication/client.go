@@ -136,6 +136,11 @@ type ViewModRecords struct {
 	ForDomain string
 }
 
+// ViewUser is dispatched to the server when a user requests another user's public profile info.
+type ViewUser struct {
+	Username string
+}
+
 // Ban is dispatched when a moderator or administrator bans a user.
 type Ban struct {
 	Username string

@@ -10,7 +10,7 @@ path.go is for splitting up url strings that comment anywhere receives so it can
 */
 
 // test at: https://regex101.com/r/JYSEte/1
-var url_re regexp.Regexp = *regexp.MustCompile(`.*://(www\.)?(?P<domain>[\w\d]*\.[\w\d]*(\.[\w\d]*)*(:\d*)?)/?(?P<path>(([\w\d]([\w\d]\.)*)*/)*([\w\d]*(\.[\w\d]*)*)|$)`)
+var url_re regexp.Regexp = *regexp.MustCompile(`.*:\/\/(www\.)?(?P<domain>[\w\-\%\d]*\.[\w\-\%\d]*(\.[\w\-\%\d]*)*(:\d*)?)/?(?P<path>(([\w\%\-\d]([\w\-\%\d]\.)*)*\/)*([\w\-\%\d]*(\.[\w\-\%\d]*)*)|$)`)
 
 type PathExtractResult struct {
 	Domain  string

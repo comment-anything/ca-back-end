@@ -49,6 +49,9 @@ type UserControllerInterface interface {
 	// HandleCommandNewFeedback handles a user attempting to post some new feedback for admins to view
 	HandleCommandNewFeedback(comm *communication.Feedback, serv *Server)
 
+	// Gets user profile information for some other user
+	HandleCommandViewUser(comm *communication.ViewUser, serv *Server)
+
 	// ToggleFeedbackHidden handles the command, only valid for an admin, to toggle whether a given feedback is hidden.
 	ToggleFeedbackHidden(comm *communication.ToggleFeedbackHidden, serv *Server)
 

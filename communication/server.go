@@ -28,6 +28,11 @@ type UserProfile struct {
 	ProfileBlurb      string
 }
 
+type PublicUserProfile struct {
+	UserProfile UserProfile
+	IsLoggedIn  bool
+}
+
 // ProfileUpdateResponse is dispatched to the client when a change to their profile has been realized on the server.
 type ProfileUpdateResponse struct {
 	LoggedInAs UserProfile

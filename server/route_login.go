@@ -8,6 +8,7 @@ import (
 
 	"github.com/comment-anything/ca-back-end/communication"
 	"github.com/comment-anything/ca-back-end/util"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func validateLoginRequest(comm *communication.Login) (bool, string) {
@@ -19,32 +20,34 @@ func (c *GuestController) HandleCommandLogin(comm *communication.Login, server *
 
 	canLogin, failMsg := validateLoginRequest(comm)
 	if !canLogin {
-		c.nextResponse = append(c.nextResponse, communication.GetMessage(false, failMsg))
-	} else {
-		user, err := server.DB.Queries.GetUserByUserName(context.Background(), comm.Username)
-		if err != nil {
-			c.AddMessage(false, "Could not log in with those credentials.")
-		} else {
-			if user.Password == comm.Password {
-				if user.Banned {
-					c.AddMessage(false, "You have been banned from comment anywhere.")
-				} else {
-					c.manager.TransferGuest(c, &user)
-					var loginResponse communication.LoginResponse
-					prof, err := server.DB.GetCommUser(&user)
-					if err != nil {
-						c.AddMessage(false, "There was some problem with your profile.")
-					}
-					loginResponse.LoggedInAs = *prof
-					loginResponse.Email = user.Email
-					c.AddWrapped("LoginResponse", loginResponse)
-					c.AddMessage(true, "Logged in.")
-				}
-			} else {
-				c.AddMessage(false, "Could not log in with those credentials.")
-			}
-		}
+		c.AddMessage(false, failMsg)
+		return
 	}
+	user, err := server.DB.Queries.GetUserByUserName(context.Background(), comm.Username)
+	if err != nil {
+		c.AddMessage(false, "Could not log in with those credentials.")
+		return
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(comm.Password))
+	if err != nil {
+		c.AddMessage(false, "Could not log in with those credentials.")
+		return
+	}
+	if user.Banned {
+		c.AddMessage(false, "You have been banned from comment anywhere.")
+		return
+	}
+	c.manager.TransferGuest(c, &user)
+	var loginResponse communication.LoginResponse
+	prof, err := server.DB.GetCommUser(&user)
+	if err != nil {
+		c.AddMessage(false, "There was some problem with your profile.")
+	}
+	loginResponse.LoggedInAs = *prof
+	loginResponse.Email = user.Email
+	c.AddWrapped("LoginResponse", loginResponse)
+	c.AddMessage(true, "Logged in.")
+
 }
 
 // HandleCommandLogin on a MemberController will fail.

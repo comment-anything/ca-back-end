@@ -1,3 +1,7 @@
+4/16/2023: Karl 
+- Added viewUser pipeline, for getting another users user profile and whether they are logged in
+- encrypting passwords 
+
 4/14/2023: Karl
 - added go-mail dependency for easy mail sending 
 - authorized app on gmail and got a token from them for use with sending emails 
