@@ -33,7 +33,7 @@ func (s *Store) PwResetRequest(comm *communication.PasswordReset) (bool, error) 
 		}
 	}
 	if err == nil {
-		SendPWResetCode(user.Email, code.ID)
+		SendPWResetCode(user.Email, user.Username, code.ID)
 	}
 	return true, nil
 

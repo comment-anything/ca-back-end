@@ -12,12 +12,12 @@ func RandomCode() int64 {
 	return rand.Int63n(4294967295)
 }
 
-func SendPWResetCode(to_email string, code int64) {
+func SendPWResetCode(to_email string, username string, code int64) {
 	msg := mail.NewMessage()
 	msg.SetHeader("From", config.Vals.Server.SMTPUser)
 	msg.SetHeader("To", to_email)
 	msg.SetHeader("Subject", "Comment Anywhere - Password Reset Code")
-	msg.SetBody("text/html", "<h2>Your password reset code is: <br /><b>"+fmt.Sprintf("%d", code)+"</b></h2>")
+	msg.SetBody("text/html", "<h1>Hi, "+username+"</h1><h2>Your password reset code is: <br /><b>"+fmt.Sprintf("%d", code)+"</b></h2>")
 
 	d := mail.NewDialer(config.Vals.Server.SMTPServer, 587, config.Vals.Server.SMTPUser, config.Vals.Server.SMTPPass)
 
