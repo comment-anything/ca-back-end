@@ -44,6 +44,7 @@ func GetToken(userid int64, isGuest bool) (string, error) {
 	} else {
 		claims[TokenGuestKey] = "false"
 	}
+	fmt.Printf("Sending token: %s %s \n", claims[TokenIDKey], claims[TokenGuestKey])
 	tstring, err := token.SignedString([]byte(config.Vals.Server.JWTKey))
 	if err != nil {
 		return "", err
@@ -93,6 +94,8 @@ func (s *Server) ReadsAuth(handler http.Handler) http.Handler {
 		}
 		user_id := int64(raw_id_int)
 
+		fmt.Printf("Parsed token %s %s\n", claims[TokenIDKey], claims[TokenGuestKey])
+
 		is_guest_string := claims[TokenGuestKey].(string)
 		is_guest, err := strconv.ParseBool(is_guest_string)
 		if err != nil {
@@ -105,6 +108,7 @@ func (s *Server) ReadsAuth(handler http.Handler) http.Handler {
 			next(w, r)
 			return
 		}
+		fmt.Printf("Parsed user %s type %s\n", controller.GetUser().Username, controller.GetControllerType())
 		s.DB.LogUser(r, user_id)
 		newctx := context.WithValue(r.Context(), CtxController, controller)
 		next(w, r.WithContext(newctx))

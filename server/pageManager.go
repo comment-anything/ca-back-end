@@ -53,7 +53,7 @@ func (pm *PageManager) MoveGuestToPage(user *GuestController, pagePath string, s
 /* LoadPage is called after a GetComments request is received, when a usercontroller moves into a page's map. The domain and subpath are extracted from the raw url provided by the user's communication entity. If a Page does not already exist for the associated url, one will be instantiated, and several other queries will be executed by the store to populate it with comment data. */
 func (pm *PageManager) LoadPage(path string, serv *Server) (*Page, error) {
 	path_extraction := util.ExtractPathParts(path)
-	if path_extraction.Success == false {
+	if !path_extraction.Success {
 		return nil, errors.New(fmt.Sprintf("\nFailed to extract path, got %s %s from %s", path_extraction.Domain, path_extraction.Path, path))
 	}
 

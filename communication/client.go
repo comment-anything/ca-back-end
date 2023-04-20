@@ -149,3 +149,6 @@ type Ban struct {
 	// If false, this is an unban action instead of a ban action.
 	Ban bool
 }
+
+type AmILoggedIn struct {
+}

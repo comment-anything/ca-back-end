@@ -79,6 +79,9 @@ type UserControllerInterface interface {
 	// Handle a command, valid for a moderator or above, to ban a user from a domain or globally.
 	HandleCommandBan(comm *communication.Ban, serv *Server)
 
+	// Handles a check if they are logged in
+	HandleCommandAmILoggedIn(comm *communication.AmILoggedIn, serv *Server)
+
 	// GetUser returns the user associated with this controller
 	GetUser() *generated.User
 

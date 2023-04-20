@@ -21,7 +21,7 @@ func TestGetToken(t *testing.T) {
 		t.Errorf("Failed to sign token")
 	}
 
-	token, err := jwt.Parse(tstring, keyfunc)
+	token, _ := jwt.Parse(tstring, keyfunc)
 	claims := token.Claims.(jwt.MapClaims)
 	timestring := claims[TokenExpKey].(string)
 	timeval, err := time.Parse(time.RFC3339, timestring)

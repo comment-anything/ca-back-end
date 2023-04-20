@@ -120,7 +120,7 @@ func (p *Page) ModerateComment(comm *communication.Moderate, serv *Server) {
 	if ok {
 		com.Hidden = comm.SetHiddenTo
 		com.Removed = comm.SetRemovedTo
-		if comm.SetRemovedTo == true {
+		if comm.SetRemovedTo {
 			com.Username = ""
 			com.Content = "~Removed~"
 		} else {
