@@ -82,6 +82,12 @@ type UserControllerInterface interface {
 	// Handles a check if they are logged in
 	HandleCommandAmILoggedIn(comm *communication.AmILoggedIn, serv *Server)
 
+	// Handles a command for a user requesting a verification code
+	HandleCommandRequestVerificationCode(comm *communication.RequestVerificationCode, serv *Server)
+
+	// Handles a command for a user inputting the verification code that they were emailed
+	HandleCommandInputVerificationCode(comm *communication.InputVerificationCode, serv *Server)
+
 	// GetUser returns the user associated with this controller
 	GetUser() *generated.User
 

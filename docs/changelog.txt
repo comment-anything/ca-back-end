@@ -1,3 +1,11 @@
+4/21/2023: Karl
+- RequestVerificationCode, InputVerificationCode entities
+- LoginResponse, PublicUserProfile, ProfileUpdateResponse now includes IsVerified
+- Queries for verification code (sqlc)
+- Handles on interface for verification code (HandleCommandRequestVerificationCode, HandleCommandInputVerificationCode)
+- route_changeEmail updated to unverify after email change
+- route_inputVerificationCode, route_requestVerificationCode
+
 4/16/2023: Karl 
 - Added viewUser pipeline, for getting another users user profile and whether they are logged in
 - encrypting passwords 

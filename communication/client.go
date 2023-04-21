@@ -150,5 +150,14 @@ type Ban struct {
 	Ban bool
 }
 
+// Dispatched when user requests a verification code
+type RequestVerificationCode struct {
+}
+
+// Dispatched when a user inputs a verification code they were emailed
+type InputVerificationCode struct {
+	Code int64
+}
+
 type AmILoggedIn struct {
 }

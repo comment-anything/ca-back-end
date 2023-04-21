@@ -74,6 +74,8 @@ func (s *Server) setupRouter() {
 	r.HandleFunc("/ban", responder(s.postBan))
 	r.HandleFunc("/viewUser", responder(s.postViewUser))
 	r.HandleFunc("/amILoggedIn", responder(s.postAmILoggedIn))
+	r.HandleFunc("/requestVerificationCode", responder(s.postRequestVerificationCode))
+	r.HandleFunc("/inputVerificationCode", responder(s.postInputVerificationCode))
 
 	s.httpServer.Handler = s.router
 	s.router = r

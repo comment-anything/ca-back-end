@@ -164,7 +164,6 @@ sc_server:
 
 rm_server:
 	docker rm ${SERVER_CONTAINER_NAME} --force
-	$(MAKE) sc_server
 
 rebuild_server:
 	$(MAKE) build_server_image

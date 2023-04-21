@@ -111,8 +111,7 @@ CREATE TABLE "CommentReports" (
 
 CREATE TABLE "VerificationCodes" (
   "id" bigserial PRIMARY KEY,
-  "user_id" bigint,
-  "verify_code" varchar,
+  "user_id" bigint NOT NULL,
   "created_on" timestamptz NOT NULL DEFAULT (now())
 );
 

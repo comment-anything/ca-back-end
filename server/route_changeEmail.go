@@ -35,6 +35,7 @@ func (c *MemberControllerBase) HandleCommandChangeEmail(comm *communication.Chan
 		} else {
 			c.AddMessage(true, "Email updated.")
 			c.User.Email = comm.NewEmail
+			c.User.IsVerified = false
 			prof, err := serv.DB.GetCommUser(c.User)
 			if err != nil {
 				c.AddMessage(false, "There was some problem with your profile.")
@@ -42,6 +43,12 @@ func (c *MemberControllerBase) HandleCommandChangeEmail(comm *communication.Chan
 			profResponse := communication.ProfileUpdateResponse{}
 			profResponse.Email = comm.NewEmail
 			profResponse.LoggedInAs = *prof
+
+			p := generated.UpdateVerificationParams{
+				ID:         c.User.ID,
+				IsVerified: false,
+			}
+			serv.DB.Queries.UpdateVerification(context.Background(), p)
 			c.AddWrapped("ProfileUpdateResponse", profResponse)
 		}
 	}

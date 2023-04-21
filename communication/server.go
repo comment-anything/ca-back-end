@@ -10,6 +10,7 @@ type ServerResponse struct {
 type LoginResponse struct {
 	LoggedInAs UserProfile
 	Email      string
+	IsVerified bool
 }
 
 // LogoutResponse is sent to the client when they succesfully log out.
@@ -31,12 +32,14 @@ type UserProfile struct {
 type PublicUserProfile struct {
 	UserProfile UserProfile
 	IsLoggedIn  bool
+	IsVerified  bool
 }
 
 // ProfileUpdateResponse is dispatched to the client when a change to their profile has been realized on the server.
 type ProfileUpdateResponse struct {
 	LoggedInAs UserProfile
 	Email      string
+	IsVerified bool
 }
 
 // Message is a general communication entity used to provide feedback to a client that some action has completed (or not completed) on requests where the client has not asked for any particular data.
