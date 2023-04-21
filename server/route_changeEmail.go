@@ -9,6 +9,7 @@ import (
 	"github.com/comment-anything/ca-back-end/communication"
 	"github.com/comment-anything/ca-back-end/database/generated"
 	"github.com/comment-anything/ca-back-end/util"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // HandleCommandChangeEmail on a GuestController will cause an error message to be appended to the next response of the controller.
@@ -20,37 +21,42 @@ func (c *GuestController) HandleCommandChangeEmail(comm *communication.ChangeEma
 func (c *MemberControllerBase) HandleCommandChangeEmail(comm *communication.ChangeEmail, serv *Server) {
 
 	ok, why := util.ValidateEmail(comm.NewEmail)
-
-	if comm.Password != c.User.Password {
-		c.nextResponse = append(c.nextResponse, communication.GetMessage(false, "You must supply your password to change your email."))
-	} else if !ok {
+	if !ok {
 		c.AddMessage(ok, why)
-	} else {
-		params := generated.UpdateUserEmailParams{}
-		params.ID = c.User.ID
-		params.Email = comm.NewEmail
-		err := serv.DB.Queries.UpdateUserEmail(context.Background(), params)
-		if err != nil {
-			c.AddMessage(false, "Failed to change email.")
-		} else {
-			c.AddMessage(true, "Email updated.")
-			c.User.Email = comm.NewEmail
-			c.User.IsVerified = false
-			prof, err := serv.DB.GetCommUser(c.User)
-			if err != nil {
-				c.AddMessage(false, "There was some problem with your profile.")
-			}
-			profResponse := communication.ProfileUpdateResponse{}
-			profResponse.Email = comm.NewEmail
-			profResponse.LoggedInAs = *prof
+		return
+	}
 
-			p := generated.UpdateVerificationParams{
-				ID:         c.User.ID,
-				IsVerified: false,
-			}
-			serv.DB.Queries.UpdateVerification(context.Background(), p)
-			c.AddWrapped("ProfileUpdateResponse", profResponse)
+	err := bcrypt.CompareHashAndPassword([]byte(comm.Password), []byte(c.User.Password))
+	if err != nil {
+		c.AddMessage(false, "Incorrect password")
+		return
+	}
+
+	params := generated.UpdateUserEmailParams{}
+	params.ID = c.User.ID
+	params.Email = comm.NewEmail
+	err = serv.DB.Queries.UpdateUserEmail(context.Background(), params)
+	if err != nil {
+		c.AddMessage(false, "Failed to change email.")
+	} else {
+		c.AddMessage(true, "Email updated.")
+		c.User.Email = comm.NewEmail
+		c.User.IsVerified = false
+		prof, err := serv.DB.GetCommUser(c.User)
+		if err != nil {
+			c.AddMessage(false, "There was some problem with your profile.")
 		}
+		profResponse := communication.ProfileUpdateResponse{}
+		profResponse.Email = comm.NewEmail
+		profResponse.LoggedInAs = *prof
+
+		p := generated.UpdateVerificationParams{
+			ID:         c.User.ID,
+			IsVerified: false,
+		}
+		serv.DB.Queries.UpdateVerification(context.Background(), p)
+		c.AddWrapped("ProfileUpdateResponse", profResponse)
+
 	}
 }
 
