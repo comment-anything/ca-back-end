@@ -70,7 +70,6 @@ func (c *GuestController) HandleCommandRegister(comm *communication.Register, se
 			prof, _ := serv.DB.GetCommUser(&user)
 			loginResponse.LoggedInAs = *prof
 			loginResponse.Email = user.Email
-			loginResponse.IsVerified = user.IsVerified
 			c.AddWrapped("LoginResponse", loginResponse)
 		}
 	}

@@ -22,7 +22,7 @@ func (c *MemberControllerBase) HandleCommandInputVerificationCode(comm *communic
 		profResponse := communication.ProfileUpdateResponse{}
 		profResponse.Email = c.User.Email
 		profResponse.LoggedInAs = *prof
-		profResponse.IsVerified = c.User.IsVerified
+		profResponse.LoggedInAs.IsVerified = c.User.IsVerified
 		c.AddWrapped("ProfileUpdateResponse", profResponse)
 	}
 	c.AddMessage(ok, msg)

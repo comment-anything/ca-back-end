@@ -24,6 +24,7 @@ type UserProfile struct {
 	DomainsModerating []string
 	DomainsBannedFrom []string
 	IsAdmin           bool
+	IsVerified        bool
 	IsDomainModerator bool
 	IsGlobalModerator bool
 	ProfileBlurb      string
@@ -39,7 +40,6 @@ type PublicUserProfile struct {
 type ProfileUpdateResponse struct {
 	LoggedInAs UserProfile
 	Email      string
-	IsVerified bool
 }
 
 // Message is a general communication entity used to provide feedback to a client that some action has completed (or not completed) on requests where the client has not asked for any particular data.

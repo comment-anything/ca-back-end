@@ -45,7 +45,6 @@ func (c *GuestController) HandleCommandLogin(comm *communication.Login, server *
 	}
 	loginResponse.LoggedInAs = *prof
 	loginResponse.Email = user.Email
-	loginResponse.IsVerified = user.IsVerified
 	c.AddWrapped("LoginResponse", loginResponse)
 	c.AddMessage(true, "Logged in.")
 

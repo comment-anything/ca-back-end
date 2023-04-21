@@ -37,6 +37,7 @@ func (st *Store) GetCommUser(user *generated.User) (*communication.UserProfile, 
 		prof.IsGlobalModerator = false
 		prof.IsDomainModerator = false
 	}
+	prof.IsVerified = user.IsVerified
 	bans, err := st.GetDomainBans(user.ID)
 	if err == nil {
 		prof.DomainsBannedFrom = bans

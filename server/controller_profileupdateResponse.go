@@ -14,6 +14,7 @@ func (uc *MemberController) AddProfileUpdateResponse() {
 	lr.LoggedInAs.DomainsBannedFrom = uc.BannedFrom
 	lr.LoggedInAs.ProfileBlurb = uc.User.ProfileBlurb.String
 	lr.LoggedInAs.Username = uc.User.Username
+	lr.LoggedInAs.IsVerified = uc.User.IsVerified
 	lr.LoggedInAs.IsAdmin = false
 	lr.LoggedInAs.IsDomainModerator = false
 	lr.LoggedInAs.IsGlobalModerator = false
@@ -29,6 +30,7 @@ func (uc *DomainModeratorController) AddProfileUpdateResponse() {
 	lr.LoggedInAs.ProfileBlurb = uc.User.ProfileBlurb.String
 	lr.LoggedInAs.Username = uc.User.Username
 	lr.LoggedInAs.DomainsModerating = uc.DomainsModerated
+	lr.LoggedInAs.IsVerified = uc.User.IsVerified
 	lr.LoggedInAs.IsAdmin = false
 	lr.LoggedInAs.IsDomainModerator = true
 	lr.LoggedInAs.IsGlobalModerator = false
@@ -42,6 +44,7 @@ func (uc *GlobalModeratorController) AddProfileUpdateResponse() {
 	lr.LoggedInAs.CreatedOn = uc.User.CreatedAt.Unix()
 	lr.LoggedInAs.DomainsBannedFrom = uc.BannedFrom
 	lr.LoggedInAs.ProfileBlurb = uc.User.ProfileBlurb.String
+	lr.LoggedInAs.IsVerified = uc.User.IsVerified
 	lr.LoggedInAs.Username = uc.User.Username
 	lr.LoggedInAs.DomainsModerating = nil
 	lr.LoggedInAs.IsAdmin = false
@@ -57,6 +60,7 @@ func (uc *AdminController) AddProfileUpdateResponse() {
 	lr.LoggedInAs.CreatedOn = uc.User.CreatedAt.Unix()
 	lr.LoggedInAs.DomainsBannedFrom = uc.BannedFrom
 	lr.LoggedInAs.ProfileBlurb = uc.User.ProfileBlurb.String
+	lr.LoggedInAs.IsVerified = uc.User.IsVerified
 	lr.LoggedInAs.Username = uc.User.Username
 	lr.LoggedInAs.DomainsModerating = nil
 	lr.LoggedInAs.IsAdmin = true
