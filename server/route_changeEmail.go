@@ -26,7 +26,7 @@ func (c *MemberControllerBase) HandleCommandChangeEmail(comm *communication.Chan
 		return
 	}
 
-	err := bcrypt.CompareHashAndPassword([]byte(comm.Password), []byte(c.User.Password))
+	err := bcrypt.CompareHashAndPassword([]byte(c.User.Password), []byte(comm.Password))
 	if err != nil {
 		c.AddMessage(false, "Incorrect password")
 		return
