@@ -14,18 +14,21 @@ func (c *GuestController) HandleCommandInputVerificationCode(comm *communication
 
 func (c *MemberControllerBase) HandleCommandInputVerificationCode(comm *communication.InputVerificationCode, serv *Server) {
 	ok, msg := serv.DB.AttemptVerify(comm, c.User.ID)
-	if ok {
-		c.User.IsVerified = true
+	if !ok {
+		c.AddMessage(ok, msg)
+		return
 	}
+	c.User.IsVerified = true
 	prof, err := serv.DB.GetCommUser(c.User)
 	if err != nil {
 		profResponse := communication.ProfileUpdateResponse{}
 		profResponse.Email = c.User.Email
 		profResponse.LoggedInAs = *prof
-		profResponse.LoggedInAs.IsVerified = c.User.IsVerified
 		c.AddWrapped("ProfileUpdateResponse", profResponse)
+		c.AddMessage(ok, msg)
+	} else {
+		c.AddMessage(false, "Problem updating profile!")
 	}
-	c.AddMessage(ok, msg)
 }
 
 // postInputVerificationCode is the API endpoint for when a user submits a verificationCode. It expects a JSON object of type 'communication.InputVerificationCode'. As with all endpoints, it first extracts the controller that was attached to the request by earlier middleware. It then then decodes the body of the HTTP Request into an expected communnication entity. It passes that entity to the Controller to perform the actual logic.
