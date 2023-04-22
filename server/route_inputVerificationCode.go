@@ -20,7 +20,7 @@ func (c *MemberControllerBase) HandleCommandInputVerificationCode(comm *communic
 	}
 	c.User.IsVerified = true
 	prof, err := serv.DB.GetCommUser(c.User)
-	if err != nil {
+	if err == nil {
 		profResponse := communication.ProfileUpdateResponse{}
 		profResponse.Email = c.User.Email
 		profResponse.LoggedInAs = *prof
