@@ -28,7 +28,7 @@ func (s *Store) NewCommentReport(comm *communication.PostCommentReport, user int
 	params.Reason.Valid = true
 	err = s.Queries.CreateCommentReport(context.Background(), params)
 	if err != nil {
-		return false, "Failed to create comment."
+		return false, "Failed to create comment." + err.Error()
 	} else {
 		return true, "Your report has been submitted."
 	}
