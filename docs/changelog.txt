@@ -1,3 +1,6 @@
+4/23/2023: Karl
+- Changed AmILoggedIn to take a URL as well
+
 4/21/2023: Karl
 - RequestVerificationCode, InputVerificationCode entities
 - LoginResponse, PublicUserProfile, ProfileUpdateResponse now includes IsVerified

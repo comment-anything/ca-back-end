@@ -160,4 +160,5 @@ type InputVerificationCode struct {
 }
 
 type AmILoggedIn struct {
+	Url string
 }
