@@ -36,6 +36,16 @@ func (pm *PageManager) MoveMemberToPage(user UserControllerInterface, fullpagePa
 	}
 }
 
+func (pm *PageManager) TransferMemberToPage(user UserControllerInterface, page *Page) {
+	oldpage := user.GetPage()
+	if oldpage != nil {
+		oldpage.RemoveMemberFromPage(user)
+	}
+
+	page.AddMemberToPage(user)
+
+}
+
 // MoveGuestToPage is responsible for calling functions on a user's old page to remove the user from that page's map, then calling functions on a new page to add the user to that page's map. In between, LoadPage is called, which may result in a new page instantiation if necessary.
 func (pm *PageManager) MoveGuestToPage(user *GuestController, pagePath string, serv *Server) {
 	page := user.GetPage()

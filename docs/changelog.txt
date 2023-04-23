@@ -1,5 +1,6 @@
 4/23/2023: Karl
 - Changed AmILoggedIn to take a URL as well
+- Changed route_login and route_register to fix not-on-page bug. Now the controller is created and transferred. 
 
 4/21/2023: Karl
 - RequestVerificationCode, InputVerificationCode entities

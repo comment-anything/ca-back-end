@@ -38,6 +38,14 @@ func (c *GuestController) HandleCommandLogin(comm *communication.Login, server *
 		return
 	}
 	c.manager.TransferGuest(c, &user)
+	tempcon, err := c.manager.AttemptCreateMemberController(user.ID)
+	if err == nil {
+		fmt.Println("setting page on new member controller")
+		server.PageManager.TransferMemberToPage(tempcon, c.GetPage())
+
+	} else {
+		fmt.Println("failed to create member controller", user.ID)
+	}
 	var loginResponse communication.LoginResponse
 	prof, err := server.DB.GetCommUser(&user)
 	if err != nil {
